@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Student Dash | NMT21305</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --accent: #6366f1; /* Modern Indigo */
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        [data-theme="dark"] {
+            --bg: #030712;
+            --card: #111827;
+            --accent: #818cf8;
+            --text: #f3f4f6;
+            --text-light: #9ca3af;
+            --border: #1f2937;
+        }
+
+        body { 
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 16px;
+            box-sizing: border-box;
+            transition: background 0.3s ease;
+        }
+
+        .user-profile {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .user-info h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-light); margin: 0; }
+        .user-info p { font-size: 1.1rem; font-weight: 800; margin: 4px 0 0 0; }
+
+        .theme-toggle {
+            background: var(--card);
+            border: 1px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .main-card {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            margin-bottom: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .course-tag {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .score-val { font-size: 4rem; font-weight: 800; color: var(--text); line-height: 1; }
+        .score-label { font-size: 0.75rem; color: var(--text-light); font-weight: 600; margin-top: 8px; }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .input-tile {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .tile-header { font-size: 0.7rem; color: var(--text-light); font-weight: 700; margin-bottom: 8px; }
+
+        .input-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 8px 12px;
+            transition: box-shadow 0.2s;
+        }
+
+        .input-box:focus-within { box-shadow: 0 0 0 2px var(--accent); }
+
+        input {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            width: 100%;
+            font-size: 1.2rem;
+            font-weight: 800;
+            outline: none;
+            text-align: center;
+        }
+
+        .max-denominator { font-size: 0.8rem; color: var(--text-light); font-weight: 600; margin-left: 4px; }
+
+    </style>
+</head>
+<body data-theme="light">
+
+    <div class="user-profile">
+        <div class="user-info">
+            <h2>Personal Dashboard</h2>
+            <p>Marks Calculator</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    </div>
+
+    <div class="main-card">
+        <div class="course-tag">NMT21305 Embedded System</div>
+        <div class="score-val" id="total">0.0</div>
+        <div class="score-label">AGGREGATE PERCENTAGE (100%)</div>
+    </div>
+
+    <div class="calc-grid">
+        <div class="input-tile">
+            <div class="tile-header">Test (20%)</div>
+            <div class="input-box">
+                <input type="number" id="v1" value="13" oninput="calculate()">
+                <span class="max-denominator">/20</span>
+            </div>
+        </div>
+        <div class="input-tile">
+            <div class="tile-header">Lab Test 1 (20%)</div>
+            <div class="input-box">
+                <input type="number" id="v2" value="20" oninput="calculate()">
+                <span class="max-denominator">/20</span>
+            </div>
+        </div>
+        <div class="input-tile">
+            <div class="tile-header">Lab Test 2 (20%)</div>
+            <div class="input-box">
+                <input type="number" id="v3" value="20" oninput="calculate()">
+                <span class="max-denominator">/20</span>
+            </div>
+        </div>
+        <div class="input-tile">
+            <div class="tile-header">MP Presentation (15%)</div>
+            <div class="input-box">
+                <input type="number" id="v4" value="15" oninput="calculate()">
+                <span class="max-denominator">/20</span>
+            </div>
+        </div>
+        <div class="input-tile">
+            <div class="tile-header">MP Report (15%)</div>
+            <div class="input-box">
+                <input type="number" id="v5" value="0" placeholder="0" oninput="calculate()">
+                <span class="max-denominator">/15</span>
+            </div>
+        </div>
+        <div class="input-tile">
+            <div class="tile-header">Buku Log (10%)</div>
+            <div class="input-box">
+                <input type="number" id="v6" value="0" placeholder="0" oninput="calculate()">
+                <span class="max-denominator">/10</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const structure = [
+            { id: 'v1', m: 20, w: 20 }, { id: 'v2', m: 20, w: 20 },
+            { id: 'v3', m: 20, w: 20 }, { id: 'v4', m: 20, w: 15 },
+            { id: 'v5', m: 15, w: 15 }, { id: 'v6', m: 10, w: 10 }
+        ];
+
+        function calculate() {
+            let grandTotal = 0;
+            structure.forEach(item => {
+                const el = document.getElementById(item.id);
+                let value = parseFloat(el.value) || 0;
+                grandTotal += (value / item.m) * item.w;
+                localStorage.setItem('student_dash_' + item.id, el.value);
+            });
+            document.getElementById('total').innerText = grandTotal.toFixed(1);
+        }
+
+        function toggleTheme() {
+            const current = document.body.getAttribute('data-theme');
+            const target = current === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', target);
+            localStorage.setItem('dash_pref_theme', target);
+        }
+
+        window.onload = () => {
+            structure.forEach(item => {
+                const saved = localStorage.getItem('student_dash_' + item.id);
+                if (saved !== null) document.getElementById(item.id).value = saved;
+            });
+            const theme = localStorage.getItem('dash_pref_theme');
+            if (theme) document.body.setAttribute('data-theme', theme);
+            calculate();
+        }
+    </script>
+</body>
+</html>
