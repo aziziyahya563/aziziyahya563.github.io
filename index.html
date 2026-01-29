@@ -2,229 +2,684 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Student Dash | NMT21305</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f3f4f6;
-            --card: #ffffff;
-            --accent: #6366f1; /* Modern Indigo */
-            --text: #1f2937;
-            --text-light: #6b7280;
-            --border: #e5e7eb;
+            --bg: #f0f4f8;
+            --glass: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --accent: #4f46e5;
+            --accent-glow: rgba(79, 70, 229, 0.3);
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 25px -6px rgba(0, 0, 0, 0.05);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
         }
 
         [data-theme="dark"] {
-            --bg: #030712;
-            --card: #111827;
+            --bg: #020617;
+            --glass: rgba(15, 23, 42, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.05);
             --accent: #818cf8;
-            --text: #f3f4f6;
-            --text-light: #9ca3af;
-            --border: #1f2937;
+            --accent-glow: rgba(129, 140, 248, 0.2);
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body { 
             background: var(--bg);
+            background-image: 
+                radial-gradient(at 0% 0%, var(--accent-glow) 0, transparent 50%),
+                radial-gradient(at 100% 100%, var(--accent-glow) 0, transparent 50%);
             color: var(--text);
             font-family: 'Plus Jakarta Sans', sans-serif;
-            margin: 0;
-            height: 100vh;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            transition: background 0.5s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Compact mobile-first dashboard */
+        .dashboard {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            min-height: auto;
+            backdrop-filter: blur(12px);
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            padding: 16px;
-            box-sizing: border-box;
-            transition: background 0.3s ease;
+            box-shadow: var(--card-shadow);
         }
 
-        .user-profile {
+        /* Ensure it fits on all screens */
+        @media (max-height: 700px) {
+            .dashboard {
+                padding: 16px;
+                border-radius: 24px;
+            }
+            .header {
+                margin-bottom: 12px !important;
+            }
+            .score-display {
+                padding: 18px !important;
+                margin-bottom: 16px !important;
+            }
+            .current-score {
+                font-size: 3rem !important;
+            }
+            .assessment-tile {
+                padding: 12px !important;
+            }
+            .input-area {
+                padding: 10px !important;
+            }
+        }
+
+        /* Desktop styling */
+        @media (min-width: 768px) {
+            .dashboard {
+                max-height: 780px;
+            }
+        }
+
+        /* Header - Very compact */
+        .header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            align-items: flex-end;
+            margin-bottom: 16px;
         }
 
-        .user-info h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-light); margin: 0; }
-        .user-info p { font-size: 1.1rem; font-weight: 800; margin: 4px 0 0 0; }
+        .brand h2 { 
+            font-size: 0.65rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            color: var(--accent); 
+            margin: 0; 
+            font-weight: 800; 
+        }
+        .brand p { 
+            font-size: 1.1rem; 
+            font-weight: 800; 
+            margin: 2px 0 0 0; 
+        }
 
-        .theme-toggle {
-            background: var(--card);
-            border: 1px solid var(--border);
+        .theme-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
             width: 40px;
             height: 40px;
             border-radius: 12px;
             cursor: pointer;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+            transition: transform 0.2s;
         }
 
-        .main-card {
-            background: var(--card);
-            border-radius: 24px;
+        .theme-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Score Display - Compact */
+        .score-display {
+            background: linear-gradient(135deg, var(--accent) 0%, #312e81 100%);
+            border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
-            margin-bottom: 16px;
             text-align: center;
-            border: 1px solid var(--border);
+            color: white;
+            box-shadow: 0 8px 25px -5px var(--accent-glow);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .course-tag {
-            display: inline-block;
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--accent);
-            padding: 4px 12px;
-            border-radius: 8px;
+        .score-display::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(255,255,255,0.1), transparent);
+            pointer-events: none;
+        }
+
+        .course-code { 
+            font-size: 0.6rem; 
+            font-weight: 700; 
+            opacity: 0.8; 
+            letter-spacing: 0.8px; 
+            margin-bottom: 6px;
+        }
+        
+        .current-score { 
+            font-size: 3.2rem; 
+            font-weight: 800; 
+            margin: 4px 0; 
+            letter-spacing: -2px; 
+            line-height: 1;
+            min-height: 3.2rem;
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+        }
+        
+        /* Target Bar - Compact */
+        .target-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-top: 6px;
             font-size: 0.7rem;
             font-weight: 700;
-            margin-bottom: 10px;
+            backdrop-filter: blur(5px);
         }
 
-        .score-val { font-size: 4rem; font-weight: 800; color: var(--text); line-height: 1; }
-        .score-label { font-size: 0.75rem; color: var(--text-light); font-weight: 600; margin-top: 8px; }
+        .target-box.success {
+            background: rgba(16, 185, 129, 0.3);
+        }
 
+        #target-msg { 
+            color: #fff;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        /* Assessment Grid - Compact spacing */
         .calc-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            flex-grow: 1;
         }
 
-        .input-tile {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 12px;
+        .assessment-tile {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 100px;
         }
 
-        .tile-header { font-size: 0.7rem; color: var(--text-light); font-weight: 700; margin-bottom: 8px; }
+        .assessment-tile:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
 
-        .input-box {
+        .assessment-tile:active {
+            transform: translateY(2px);
+        }
+
+        .assessment-tile::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent);
+            opacity: 0.5;
+        }
+
+        .tile-header {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tile-name {
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .tile-weight {
+            font-size: 0.6rem;
+            color: var(--accent);
+            background: var(--accent-glow);
+            padding: 2px 5px;
+            border-radius: 6px;
+        }
+
+        .input-area {
             display: flex;
             align-items: center;
-            background: var(--bg);
-            border-radius: 12px;
-            padding: 8px 12px;
-            transition: box-shadow 0.2s;
+            background: rgba(0,0,0,0.03);
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
         }
 
-        .input-box:focus-within { box-shadow: 0 0 0 2px var(--accent); }
+        [data-theme="dark"] .input-area { 
+            background: rgba(255,255,255,0.03); 
+        }
+
+        .input-area:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
 
         input {
             background: transparent;
             border: none;
             color: var(--text);
             width: 100%;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 800;
             outline: none;
             text-align: center;
+            padding: 0;
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+            caret-color: var(--accent);
         }
 
-        .max-denominator { font-size: 0.8rem; color: var(--text-light); font-weight: 600; margin-left: 4px; }
+        input:focus {
+            color: var(--accent);
+        }
 
+        input::placeholder {
+            color: var(--text-dim);
+            opacity: 0.3;
+        }
+
+        .den { 
+            font-size: 0.7rem; 
+            font-weight: 700; 
+            color: var(--text-dim);
+            flex-shrink: 0;
+            min-width: 28px;
+            text-align: right;
+        }
+
+        /* Status indicators */
+        .status-good input { color: var(--success) !important; }
+        .status-warning input { color: var(--warning) !important; }
+        .status-danger input { color: var(--danger) !important; }
+
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Fix for iOS input zoom */
+        @supports (-webkit-touch-callout: none) {
+            input {
+                font-size: 16px !important;
+            }
+        }
     </style>
 </head>
 <body data-theme="light">
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <h2>Personal Student Dashboard</h2>
+                <p>Marks Calculator</p>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+        </div>
 
-    <div class="user-profile">
-        <div class="user-info">
-            <h2>Personal Dashboard</h2>
-            <p>Marks Calculator</p>
+        <!-- Score Display -->
+        <div class="score-display">
+            <div class="course-code">NMT21305 EMBEDDED SYSTEM</div>
+            <div class="current-score" id="total">?</div>
+            <div class="target-box" id="targetBox">
+                <div id="target-msg">Enter your marks to begin</div>
+            </div>
         </div>
-        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-    </div>
 
-    <div class="main-card">
-        <div class="course-tag">NMT21305 Embedded System</div>
-        <div class="score-val" id="total">0.0</div>
-        <div class="score-label">AGGREGATE PERCENTAGE (100%)</div>
-    </div>
-
-    <div class="calc-grid">
-        <div class="input-tile">
-            <div class="tile-header">Test (20%)</div>
-            <div class="input-box">
-                <input type="number" id="v1" value="13" oninput="calculate()">
-                <span class="max-denominator">/20</span>
+        <!-- Assessment Grid -->
+        <div class="calc-grid">
+            <div class="assessment-tile" onclick="focusInput('test')">
+                <div class="tile-header">
+                    <span class="tile-name">Test</span>
+                    <span class="tile-weight">20%</span>
+                </div>
+                <div class="input-area">
+                    <input type="number" id="test" placeholder="?" 
+                           oninput="calculateScore()"
+                           onfocus="handleFocus(this, 'test')"
+                           onblur="handleBlur(this, 'test')"
+                           min="1" max="20">
+                    <span class="den">/20</span>
+                </div>
             </div>
-        </div>
-        <div class="input-tile">
-            <div class="tile-header">Lab Test 1 (20%)</div>
-            <div class="input-box">
-                <input type="number" id="v2" value="20" oninput="calculate()">
-                <span class="max-denominator">/20</span>
+            <div class="assessment-tile" onclick="focusInput('lab1')">
+                <div class="tile-header">
+                    <span class="tile-name">Lab Test 1</span>
+                    <span class="tile-weight">20%</span>
+                </div>
+                <div class="input-area">
+                    <input type="number" id="lab1" placeholder="?" 
+                           oninput="calculateScore()"
+                           onfocus="handleFocus(this, 'lab1')"
+                           onblur="handleBlur(this, 'lab1')"
+                           min="1" max="20">
+                    <span class="den">/20</span>
+                </div>
             </div>
-        </div>
-        <div class="input-tile">
-            <div class="tile-header">Lab Test 2 (20%)</div>
-            <div class="input-box">
-                <input type="number" id="v3" value="20" oninput="calculate()">
-                <span class="max-denominator">/20</span>
+            <div class="assessment-tile" onclick="focusInput('lab2')">
+                <div class="tile-header">
+                    <span class="tile-name">Lab Test 2</span>
+                    <span class="tile-weight">20%</span>
+                </div>
+                <div class="input-area">
+                    <input type="number" id="lab2" placeholder="?" 
+                           oninput="calculateScore()"
+                           onfocus="handleFocus(this, 'lab2')"
+                           onblur="handleBlur(this, 'lab2')"
+                           min="1" max="20">
+                    <span class="den">/20</span>
+                </div>
             </div>
-        </div>
-        <div class="input-tile">
-            <div class="tile-header">MP Presentation (15%)</div>
-            <div class="input-box">
-                <input type="number" id="v4" value="15" oninput="calculate()">
-                <span class="max-denominator">/20</span>
+            <div class="assessment-tile" onclick="focusInput('presentation')">
+                <div class="tile-header">
+                    <span class="tile-name">MP Presentation</span>
+                    <span class="tile-weight">15%</span>
+                </div>
+                <div class="input-area">
+                    <input type="number" id="presentation" placeholder="?" 
+                           oninput="calculateScore()"
+                           onfocus="handleFocus(this, 'presentation')"
+                           onblur="handleBlur(this, 'presentation')"
+                           min="1" max="20">
+                    <span class="den">/20</span>
+                </div>
             </div>
-        </div>
-        <div class="input-tile">
-            <div class="tile-header">MP Report (15%)</div>
-            <div class="input-box">
-                <input type="number" id="v5" value="0" placeholder="0" oninput="calculate()">
-                <span class="max-denominator">/15</span>
+            <div class="assessment-tile" onclick="focusInput('report')">
+                <div class="tile-header">
+                    <span class="tile-name">MP Report</span>
+                    <span class="tile-weight">15%</span>
+                </div>
+                <div class="input-area">
+                    <input type="number" id="report" placeholder="?" 
+                           oninput="calculateScore()"
+                           onfocus="handleFocus(this, 'report')"
+                           onblur="handleBlur(this, 'report')"
+                           min="1" max="15">
+                    <span class="den">/15</span>
+                </div>
             </div>
-        </div>
-        <div class="input-tile">
-            <div class="tile-header">Buku Log (10%)</div>
-            <div class="input-box">
-                <input type="number" id="v6" value="0" placeholder="0" oninput="calculate()">
-                <span class="max-denominator">/10</span>
+            <div class="assessment-tile" onclick="focusInput('log')">
+                <div class="tile-header">
+                    <span class="tile-name">Buku Log</span>
+                    <span class="tile-weight">10%</span>
+                </div>
+                <div class="input-area">
+                    <input type="number" id="log" placeholder="?" 
+                           oninput="calculateScore()"
+                           onfocus="handleFocus(this, 'log')"
+                           onblur="handleBlur(this, 'log')"
+                           min="1" max="10">
+                    <span class="den">/10</span>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const structure = [
-            { id: 'v1', m: 20, w: 20 }, { id: 'v2', m: 20, w: 20 },
-            { id: 'v3', m: 20, w: 20 }, { id: 'v4', m: 20, w: 15 },
-            { id: 'v5', m: 15, w: 15 }, { id: 'v6', m: 10, w: 10 }
+        // Configuration
+        const STORAGE_KEY = "STUDENT_DASH_COMPACT";
+        const TARGET_GRADE = 80; // Grade A target
+        
+        const assessments = [
+            { id: 'test', name: 'Test', max: 20, weight: 20 },
+            { id: 'lab1', name: 'Lab Test 1', max: 20, weight: 20 },
+            { id: 'lab2', name: 'Lab Test 2', max: 20, weight: 20 },
+            { id: 'presentation', name: 'MP Presentation', max: 20, weight: 15 },
+            { id: 'report', name: 'MP Report', max: 15, weight: 15 },
+            { id: 'log', name: 'Buku Log', max: 10, weight: 10 }
         ];
 
-        function calculate() {
-            let grandTotal = 0;
-            structure.forEach(item => {
-                const el = document.getElementById(item.id);
-                let value = parseFloat(el.value) || 0;
-                grandTotal += (value / item.m) * item.w;
-                localStorage.setItem('student_dash_' + item.id, el.value);
+        // Helper function to parse score
+        function parseScore(value, max) {
+            if (value === '' || value === '?' || isNaN(parseFloat(value))) {
+                return null; // No data entered yet
+            }
+            
+            const numScore = parseFloat(value);
+            
+            // 0 means "not entered yet" -> treat as null
+            if (numScore === 0) {
+                return null;
+            }
+            
+            // Enforce minimum of 1
+            if (numScore < 1) {
+                return 1; // Minimum realistic mark
+            }
+            
+            // Enforce maximum
+            if (numScore > max) {
+                return max;
+            }
+            
+            return numScore;
+        }
+
+        function handleFocus(input, inputId) {
+            // Only clear if it's exactly "?"
+            if (input.value === '?') {
+                input.value = '';
+            }
+        }
+
+        function handleBlur(input, inputId) {
+            const assess = assessments.find(a => a.id === inputId);
+            const score = parseScore(input.value, assess.max);
+            
+            if (score === null) {
+                input.value = '?'; // Show ? for empty/0
+            } else {
+                input.value = score; // Show actual score
+            }
+            
+            // Recalculate
+            calculateScore();
+        }
+
+        function focusInput(inputId) {
+            const input = document.getElementById(inputId);
+            input.focus();
+            
+            // Select all text for easy replacement
+            setTimeout(() => {
+                if (input.value !== '?') {
+                    input.select();
+                }
+            }, 50);
+        }
+
+        function calculateScore() {
+            let total = 0;
+            let enteredCount = 0;
+            let totalPossibleWeight = 0;
+            const currentData = {};
+
+            // First pass: count entered marks
+            assessments.forEach(assess => {
+                const input = document.getElementById(assess.id);
+                const score = parseScore(input.value, assess.max);
+                
+                // Save data
+                currentData[assess.id] = score === null ? '' : score.toString();
+                
+                if (score !== null) {
+                    enteredCount++;
+                    totalPossibleWeight += assess.weight;
+                    total += (score / assess.max) * assess.weight;
+                }
             });
-            document.getElementById('total').innerText = grandTotal.toFixed(1);
+
+            // Save to localStorage
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(currentData));
+            
+            // Update UI
+            updateDisplay(total, enteredCount, totalPossibleWeight);
+        }
+
+        function updateDisplay(total, enteredCount, totalPossibleWeight) {
+            const totalEl = document.getElementById('total');
+            const targetMsg = document.getElementById('target-msg');
+            const targetBox = document.getElementById('targetBox');
+
+            // Update current score
+            if (enteredCount === 0) {
+                totalEl.textContent = '?';
+                targetMsg.textContent = 'Enter your marks to begin';
+                targetBox.className = 'target-box';
+                updateInputColors();
+                return;
+            }
+
+            // Format score - only show to 1 decimal if needed
+            const displayScore = total % 1 === 0 ? total.toFixed(0) : total.toFixed(1);
+            totalEl.textContent = displayScore;
+            
+            // Calculate what percentage of possible marks this represents
+            const currentPercentage = (total / totalPossibleWeight) * 100;
+            
+            // Calculate difference from target
+            const diff = TARGET_GRADE - total;
+            
+            // Update target message
+            if (diff <= 0) {
+                targetMsg.textContent = "🎉 Goal Reached! You've secured an A!";
+                targetBox.className = 'target-box success';
+            } else {
+                // Calculate potential from remaining items
+                let remainingPotential = 0;
+                assessments.forEach(assess => {
+                    const input = document.getElementById(assess.id);
+                    const score = parseScore(input.value, assess.max);
+                    
+                    if (score === null) {
+                        // Item not entered yet - full potential
+                        remainingPotential += assess.weight;
+                    } else if (score < assess.max) {
+                        // Some marks earned, can still improve
+                        const potentialIncrease = assess.max - score;
+                        remainingPotential += (potentialIncrease / assess.max) * assess.weight;
+                    }
+                });
+                
+                if (remainingPotential >= diff) {
+                    targetMsg.textContent = `Need ${diff.toFixed(1)}% more for an A`;
+                } else {
+                    targetMsg.textContent = `Aim high in remaining items & final exam`;
+                }
+                targetBox.className = 'target-box';
+            }
+            
+            // Update input colors
+            updateInputColors();
+        }
+
+        function updateInputColors() {
+            assessments.forEach(assess => {
+                const input = document.getElementById(assess.id);
+                const tile = input.closest('.assessment-tile');
+                const score = parseScore(input.value, assess.max);
+                
+                // Reset classes
+                tile.classList.remove('status-good', 'status-warning', 'status-danger');
+                
+                if (score === null) return;
+                
+                const percentage = (score / assess.max) * 100;
+                
+                if (percentage >= 80) {
+                    tile.classList.add('status-good');
+                } else if (percentage >= 60) {
+                    tile.classList.add('status-warning');
+                } else {
+                    tile.classList.add('status-danger');
+                }
+            });
         }
 
         function toggleTheme() {
             const current = document.body.getAttribute('data-theme');
             const target = current === 'light' ? 'dark' : 'light';
             document.body.setAttribute('data-theme', target);
-            localStorage.setItem('dash_pref_theme', target);
+            localStorage.setItem('STUDENT_DASH_THEME', target);
         }
 
-        window.onload = () => {
-            structure.forEach(item => {
-                const saved = localStorage.getItem('student_dash_' + item.id);
-                if (saved !== null) document.getElementById(item.id).value = saved;
-            });
-            const theme = localStorage.getItem('dash_pref_theme');
-            if (theme) document.body.setAttribute('data-theme', theme);
-            calculate();
-        }
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load saved data
+            const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            if (savedData) {
+                assessments.forEach(assess => {
+                    const input = document.getElementById(assess.id);
+                    if (savedData[assess.id] !== undefined && savedData[assess.id] !== '') {
+                        // Convert old "0" values to "?"
+                        if (savedData[assess.id] === '0') {
+                            input.value = '?';
+                        } else {
+                            input.value = savedData[assess.id];
+                        }
+                    } else {
+                        input.value = '?';
+                    }
+                });
+            } else {
+                // Set initial values with ?
+                document.getElementById('test').value = '?';
+                document.getElementById('lab1').value = '?';
+                document.getElementById('lab2').value = '?';
+                document.getElementById('presentation').value = '?';
+                document.getElementById('report').value = '?';
+                document.getElementById('log').value = '?';
+            }
+            
+            // Load theme
+            const savedTheme = localStorage.getItem('STUDENT_DASH_THEME');
+            if (savedTheme) {
+                document.body.setAttribute('data-theme', savedTheme);
+            }
+            
+            // Calculate initial score
+            calculateScore();
+        });
     </script>
 </body>
 </html>
