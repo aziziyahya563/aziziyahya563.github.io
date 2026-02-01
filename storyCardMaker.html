@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description"
+        content="Story Card Maker - Create stunning 4K story backgrounds with automatic gradient matching">
+    <title>Story Card Maker</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            /* Subtle Pastel Theme */
+            --primary: #6366f1;
+            /* Indigo 500 */
+            --primary-dark: #4f46e5;
+            --on-primary: #ffffff;
+            --secondary: #64748b;
+            --background: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.85);
+            --surface-variant: rgba(255, 255, 255, 0.6);
+            --outline: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --error: #ef4444;
+            --success: #10b981;
+
+            --shadow-1: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-2: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            --shadow-3: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+
+            --radius-md: 16px;
+            --radius-lg: 32px;
+            --radius-pill: 999px;
+
+            --font-stack: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            font-family: var(--font-stack);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Add a subtle mesh/blob background effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .header {
+            text-align: center;
+            flex-shrink: 0;
+            padding: 32px 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            animation: slideInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.015em;
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .preview-container {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 32px 0 24px;
+            animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .preview-wrapper {
+            width: 100%;
+            max-width: min(95vw, calc(65vh * 9 / 16));
+            max-height: 65vh;
+            aspect-ratio: 9 / 16;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .preview-wrapper.has-image {
+            background: var(--surface);
+            border: none;
+            box-shadow: var(--shadow-2);
+        }
+
+        .preview-wrapper:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: var(--shadow-3);
+            border-color: rgba(0, 122, 255, 0.1);
+        }
+
+        .preview-wrapper.drag-over {
+            border: 2px dashed var(--primary);
+            background: rgba(0, 122, 255, 0.08);
+            transform: scale(1.02);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1), var(--shadow-2);
+        }
+
+        .preview-wrapper:active:not(.drag-over) {
+            transform: scale(0.98);
+        }
+
+        #previewImg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            background: #000;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-tertiary);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .preview-wrapper:hover .empty-state {
+            transform: scale(1.05);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: transparent;
+            background: linear-gradient(135deg, var(--primary) 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            font-weight: 200;
+            opacity: 0.8;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .empty-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            display: none;
+            position: relative;
+        }
+
+        .loader::before,
+        .loader::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .loader::before {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 122, 255, 0.2);
+        }
+
+        .loader::after {
+            width: 50px;
+            height: 50px;
+            border: 3px solid transparent;
+            border-top-color: var(--primary);
+            border-right-color: var(--primary);
+            animation: spinAdvanced 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+
+        @keyframes spinAdvanced {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(180deg) scale(1.1);
+            }
+
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        .controls {
+            flex-shrink: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            width: 100%;
+            margin: 24px auto 20px;
+            animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn {
+            height: 48px;
+            padding: 12px 28px;
+            border: none;
+            border-radius: var(--radius-pill);
+            font-family: var(--font-stack);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: -0.01em;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn i {
+            font-size: 22px;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Primary Action (Upload) */
+        .btn-upload {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Back Button */
+        .btn-back {
+            background-color: #E5E5EA;
+            color: var(--text-primary);
+        }
+
+        .btn-back:hover {
+            background-color: #D1D1D6;
+            transform: translateY(-1px);
+        }
+
+        /* Tertiary (Save) */
+        .btn-download {
+            background-color: #E5E5EA;
+            color: var(--secondary);
+            pointer-events: none;
+            min-width: 140px;
+            opacity: 0.6;
+        }
+
+        .btn-download.active {
+            background: linear-gradient(135deg, var(--text-primary) 0%, #000000 100%);
+            color: white;
+            pointer-events: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 1;
+        }
+
+        .btn-download.active:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .btn-download.active:hover i {
+            animation: bounceDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes bounceDown {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(4px) scale(1.1);
+            }
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .toast {
+            position: fixed;
+            top: 24px;
+            bottom: auto;
+            left: 50%;
+            transform: translate(-50%, -100%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
+            padding: 14px 28px;
+            border-radius: var(--radius-pill);
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: min-content;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            visibility: hidden;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            transform: translate(-50%, 0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .toast-icon {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .toast.success {
+            background: rgba(52, 199, 89, 0.15);
+            color: #1d8348;
+            backdrop-filter: blur(20px);
+        }
+
+        .toast.error {
+            background: rgba(255, 59, 48, 0.15);
+            color: #c0392b;
+            backdrop-filter: blur(20px);
+        }
+
+        @media (max-height: 700px) {
+            .header {
+                padding: 16px 0 12px;
+                gap: 4px;
+            }
+
+            .title {
+                font-size: 22px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+            }
+
+            .btn {
+                height: 44px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-wrapper">
+        <div class="header">
+            <h1 class="title">Story Card Maker</h1>
+            <p class="subtitle">Generate gradient backgrounds for your story card</p>
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-wrapper" id="dropZone">
+                <div class="empty-state" id="emptyState">
+                    <i class="material-icons empty-icon">add_photo_alternate</i>
+                    <div class="empty-text">Tap or drag image here</div>
+                </div>
+                <div class="loader" id="loader"></div>
+                <img id="previewImg" alt="Story Preview" />
+
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-upload" id="openBtn" onclick="document.getElementById('fileInput').click()">
+                <i class="material-icons">folder_open</i> Open
+            </button>
+            <button class="btn btn-back" id="backBtn" onclick="resetApp()" style="display: none;">
+                <i class="material-icons">arrow_back</i> Back
+            </button>
+            <!-- <button class="btn btn-shuffle" id="shuffleBtn" onclick="shuffleSmartGradient()">
+                <i class="material-icons">shuffle</i> Shuffle
+            </button> -->
+            <button class="btn btn-download" id="downloadBtn" onclick="downloadImage()">
+                <i class="material-icons">save_alt</i> Save 4K PNG
+            </button>
+        </div>
+
+        <input type="file" id="fileInput" accept="image/*" onchange="handleImage(this)">
+        <canvas id="storyCanvas" style="display:none;"></canvas>
+
+        <div class="toast" id="toast">
+            <i class="material-icons toast-icon"></i>
+            <span class="toast-message">Error message</span>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('storyCanvas');
+        const ctx = canvas.getContext('2d');
+        const previewImg = document.getElementById('previewImg');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const openBtn = document.getElementById('openBtn');
+        const backBtn = document.getElementById('backBtn');
+
+        const emptyState = document.getElementById('emptyState');
+        const loader = document.getElementById('loader');
+        const dropZone = document.getElementById('dropZone');
+
+        const CANVAS_WIDTH = 2160;
+        const CANVAS_HEIGHT = 3840;
+        canvas.width = CANVAS_WIDTH;
+        canvas.height = CANVAS_HEIGHT;
+
+        const CORNER_RADIUS = 60;
+        const SHADOW_BLUR = 100;
+
+        let currentImgObj = null;
+
+        function showToast(message, duration = 3000, type = 'error') {
+            const toast = document.getElementById('toast');
+            const toastMessage = toast.querySelector('.toast-message');
+            const toastIcon = toast.querySelector('.toast-icon');
+
+            toastMessage.textContent = message;
+
+            // Set icon based on type
+            if (type === 'success') {
+                toastIcon.textContent = 'check_circle';
+                toast.classList.add('success');
+                toast.classList.remove('error');
+            } else {
+                toastIcon.textContent = 'error';
+                toast.classList.add('error');
+                toast.classList.remove('success');
+            }
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        dropZone.addEventListener('dragenter', () => {
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            if (e.target === dropZone) {
+                dropZone.classList.remove('drag-over');
+            }
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            dropZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleImageFile(files[0]);
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 's' || e.key === 'S') && e.ctrlKey && currentImgObj) {
+                e.preventDefault();
+                downloadImage();
+            }
+        });
+
+        dropZone.addEventListener('click', () => {
+            if (!currentImgObj) {
+                document.getElementById('fileInput').click();
+            }
+        });
+
+        function handleImage(input) {
+            const file = input.files[0];
+            if (file) {
+                handleImageFile(file);
+            }
+        }
+
+        function handleImageFile(file) {
+            if (!file) return;
+
+            console.log('File selected:', file.name, 'Type:', file.type, 'Size:', file.size);
+            const fileName = file.name.toLowerCase();
+            const fileExtension = fileName.split('.').pop();
+
+            const validTypes = [
+                'image/jpeg', 'image/jpg', 'image/png', 'image/gif',
+                'image/webp', 'image/bmp', 'image/svg+xml',
+                'image/heic', 'image/heif'
+            ];
+            const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'heic', 'heif'];
+
+            const isValidType = validTypes.includes(file.type);
+            const isValidExtension = validExtensions.includes(fileExtension);
+
+            if (!isValidType && !isValidExtension) {
+                showToast(`Unsupported format. Please use JPG, PNG, GIF, WebP.`, 4000);
+                return;
+            }
+
+            const maxSize = 50 * 1024 * 1024;
+            if (file.size > maxSize) {
+                showToast(`File too large! Max 50MB.`, 4000);
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            previewImg.style.display = 'none';
+
+            loader.style.display = 'block';
+            downloadBtn.classList.remove('active');
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+
+                img.onload = () => {
+                    currentImgObj = img;
+                    render();
+                    loader.style.display = 'none';
+                    previewImg.style.display = 'block';
+                    dropZone.classList.add('has-image'); // Enable solid style
+
+                    downloadBtn.classList.add('active');
+                    openBtn.style.display = 'none';
+                    backBtn.style.display = 'flex';
+
+                    showToast('Image loaded', 2000, 'success');
+                };
+
+                img.onerror = () => {
+                    showToast('Failed to load image.', 4000);
+                    loader.style.display = 'none';
+                    emptyState.style.display = 'flex'; // Changed to flex for centering
+                    dropZone.classList.remove('has-image');
+                };
+
+                img.src = e.target.result;
+            };
+
+            reader.onerror = () => {
+                showToast('Failed to read file.', 3000);
+                loader.style.display = 'none';
+                emptyState.style.display = 'flex';
+                dropZone.classList.remove('has-image');
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function generateSmartGradient(img) {
+            const sampleSize = 5;
+            const sc = document.createElement('canvas');
+            sc.width = sampleSize;
+            sc.height = sampleSize;
+            const sctx = sc.getContext('2d');
+            sctx.drawImage(img, 0, 0, sampleSize, sampleSize);
+
+            const getCol = (x, y) => {
+                const p = sctx.getImageData(x, y, 1, 1).data;
+                return {
+                    rgb: `rgb(${p[0]}, ${p[1]}, ${p[2]})`,
+                    r: p[0], g: p[1], b: p[2]
+                };
+            };
+
+            // Sample all corners and edges
+            const tl = getCol(0, 0);  // top-left
+            const tr = getCol(4, 0);  // top-right
+            const bl = getCol(0, 4);  // bottom-left
+            const br = getCol(4, 4);  // bottom-right
+            const tm = getCol(2, 0);  // top-middle
+            const bm = getCol(2, 4);  // bottom-middle
+            const lm = getCol(0, 2);  // left-middle
+            const rm = getCol(4, 2);  // right-middle
+
+            // Calculate color difference/contrast between two colors
+            const colorDiff = (c1, c2) => {
+                return Math.abs(c1.r - c2.r) + Math.abs(c1.g - c2.g) + Math.abs(c1.b - c2.b);
+            };
+
+            // All possible gradient options
+            const gradients = [
+                { name: "Vertical", colors: [tm.rgb, bm.rgb], direction: [0, 0, 0, CANVAS_HEIGHT] },
+                { name: "Diagonal", colors: [tl.rgb, br.rgb], direction: [0, 0, CANVAS_WIDTH, CANVAS_HEIGHT] },
+                { name: "Cross", colors: [tr.rgb, bl.rgb], direction: [CANVAS_WIDTH, 0, 0, CANVAS_HEIGHT] },
+                { name: "Horizontal", colors: [lm.rgb, rm.rgb], direction: [0, 0, CANVAS_WIDTH, 0] },
+                { name: "Corner Blend", colors: [bl.rgb, tr.rgb], direction: [0, CANVAS_HEIGHT, CANVAS_WIDTH, 0] },
+                { name: "Reverse Vertical", colors: [bm.rgb, tm.rgb], direction: [0, 0, 0, CANVAS_HEIGHT] },
+                { name: "Reverse Horizontal", colors: [rm.rgb, lm.rgb], direction: [0, 0, CANVAS_WIDTH, 0] },
+                { name: "Left Rise", colors: [bl.rgb, tl.rgb], direction: [0, CANVAS_HEIGHT, 0, 0] },
+                { name: "Right Rise", colors: [br.rgb, tr.rgb], direction: [CANVAS_WIDTH, CANVAS_HEIGHT, CANVAS_WIDTH, 0] }
+            ];
+
+            // Randomly pick a gradient from all options
+            const randomIndex = Math.floor(Math.random() * gradients.length);
+            const selectedGradient = gradients[randomIndex];
+
+            return {
+                colors: selectedGradient.colors,
+                direction: selectedGradient.direction
+            };
+        }
+
+        function render() {
+            if (!currentImgObj) return;
+
+            // Generate gradient from image colors
+            const gradient = generateSmartGradient(currentImgObj);
+            const dir = gradient.direction;
+            const grad = ctx.createLinearGradient(dir[0], dir[1], dir[2], dir[3]);
+            grad.addColorStop(0, gradient.colors[0]);
+            grad.addColorStop(1, gradient.colors[1]);
+
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+            const targetWidth = CANVAS_WIDTH * 0.70;
+            const scaleFactor = targetWidth / currentImgObj.width;
+            const targetHeight = currentImgObj.height * scaleFactor;
+
+            let finalWidth = targetWidth;
+            let finalHeight = targetHeight;
+
+            if (targetHeight > (CANVAS_HEIGHT * 0.85)) {
+                const heightScale = (CANVAS_HEIGHT * 0.85) / currentImgObj.height;
+                finalHeight = CANVAS_HEIGHT * 0.85;
+                finalWidth = currentImgObj.width * heightScale;
+            }
+
+            const x = (CANVAS_WIDTH - finalWidth) / 2;
+            const y = (CANVAS_HEIGHT - finalHeight) / 2;
+
+            ctx.save();
+            ctx.shadowColor = "rgba(0,0,0,0.4)";
+            ctx.shadowBlur = SHADOW_BLUR;
+            ctx.shadowOffsetY = 60;
+
+            ctx.beginPath();
+            ctx.roundRect(x, y, finalWidth, finalHeight, CORNER_RADIUS);
+            ctx.fillStyle = "#000";
+            ctx.fill();
+
+            ctx.shadowColor = "transparent";
+            ctx.clip();
+            ctx.drawImage(currentImgObj, x, y, finalWidth, finalHeight);
+            ctx.restore();
+
+            previewImg.src = canvas.toDataURL('image/jpeg', 0.8);
+        }
+
+        function downloadImage() {
+            if (!currentImgObj) return;
+            const link = document.createElement('a');
+            link.download = `smart-story-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function resetApp() {
+            // Clear current image
+            currentImgObj = null;
+
+            // Reset canvas
+            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+            // Reset UI
+            previewImg.style.display = 'none';
+            emptyState.style.display = 'flex';
+            dropZone.classList.remove('has-image');
+            downloadBtn.classList.remove('active');
+            openBtn.style.display = 'flex';
+            backBtn.style.display = 'none';
+
+            // Clear file input
+            document.getElementById('fileInput').value = '';
+        }
+    </script>
+</body>
+
+</html>

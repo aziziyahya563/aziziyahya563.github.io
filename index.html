@@ -1,685 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Student Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Vibe Apps - Your creative toolkit">
+    <title>Vibe Apps</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        :root {
-            --bg: #f0f4f8;
-            --glass: rgba(255, 255, 255, 0.95);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --accent: #4f46e5;
-            --accent-glow: rgba(79, 70, 229, 0.3);
-            --text: #0f172a;
-            --text-dim: #64748b;
-            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 25px -6px rgba(0, 0, 0, 0.05);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-        }
-
-        [data-theme="dark"] {
-            --bg: #020617;
-            --glass: rgba(15, 23, 42, 0.95);
-            --glass-border: rgba(255, 255, 255, 0.05);
-            --accent: #818cf8;
-            --accent-glow: rgba(129, 140, 248, 0.2);
-            --text: #f8fafc;
-            --text-dim: #94a3b8;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        body { 
-            background: var(--bg);
-            background-image: 
-                radial-gradient(at 0% 0%, var(--accent-glow) 0, transparent 50%),
-                radial-gradient(at 100% 100%, var(--accent-glow) 0, transparent 50%);
-            color: var(--text);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 16px;
-            transition: background 0.5s ease;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Compact mobile-first dashboard */
-        .dashboard {
-            width: 100%;
-            max-width: 400px;
-            height: auto;
-            min-height: auto;
-            backdrop-filter: blur(12px);
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 28px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--card-shadow);
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --text-main: #1e293b;
+            --text-sec: #64748b;
+            --bg-body: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.85);
+            --surface-glass: rgba(255, 255, 255, 0.6);
+            --border: rgba(255, 255, 255, 0.5);
+
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 16px;
         }
 
-        /* Ensure it fits on all screens */
-        @media (max-height: 700px) {
-            .dashboard {
-                padding: 16px;
-                border-radius: 24px;
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 20px;
+            /* Space for bottom nav */
+        }
+
+        /* Ambient Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 10%, rgba(236, 72, 153, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+            z-index: -1;
+            animation: pulseBackground 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseBackground {
+            0% {
+                transform: scale(1);
             }
-            .header {
-                margin-bottom: 12px !important;
-            }
-            .score-display {
-                padding: 18px !important;
-                margin-bottom: 16px !important;
-            }
-            .current-score {
-                font-size: 3rem !important;
-            }
-            .assessment-tile {
-                padding: 12px !important;
-            }
-            .input-area {
-                padding: 10px !important;
+
+            100% {
+                transform: scale(1.05);
             }
         }
 
-        /* Desktop styling */
-        @media (min-width: 768px) {
-            .dashboard {
-                max-height: 780px;
-            }
+        /* Container */
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 24px 20px;
         }
 
-        /* Header - Very compact */
+        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-top: 12px;
+        }
+
+        .header-text h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-text p {
+            font-size: 14px;
+            color: var(--text-sec);
+            font-weight: 500;
+        }
+
+
+        /* Section Title */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
             margin-bottom: 16px;
-        }
-
-        .brand h2 { 
-            font-size: 0.65rem; 
-            text-transform: uppercase; 
-            letter-spacing: 1.5px; 
-            color: var(--accent); 
-            margin: 0; 
-            font-weight: 800; 
-        }
-        .brand p { 
-            font-size: 1.1rem; 
-            font-weight: 800; 
-            margin: 2px 0 0 0; 
-        }
-
-        .theme-btn {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.1rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: transform 0.2s;
+            gap: 8px;
         }
 
-        .theme-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Score Display - Compact */
-        .score-display {
-            background: linear-gradient(135deg, var(--accent) 0%, #312e81 100%);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
+        .section-title span {
+            font-size: 12px;
+            background: var(--primary);
             color: white;
-            box-shadow: 0 8px 25px -5px var(--accent-glow);
-            margin-bottom: 20px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Featured Card */
+        .featured-card {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            margin-bottom: 40px;
             position: relative;
             overflow: hidden;
-        }
-
-        .score-display::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(rgba(255,255,255,0.1), transparent);
-            pointer-events: none;
-        }
-
-        .course-code { 
-            font-size: 0.6rem; 
-            font-weight: 700; 
-            opacity: 0.8; 
-            letter-spacing: 0.8px; 
-            margin-bottom: 6px;
-        }
-        
-        .current-score { 
-            font-size: 3.2rem; 
-            font-weight: 800; 
-            margin: 4px 0; 
-            letter-spacing: -2px; 
-            line-height: 1;
-            min-height: 3.2rem;
-            font-feature-settings: "tnum";
-            font-variant-numeric: tabular-nums;
-        }
-        
-        /* Target Bar - Compact */
-        .target-box {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
-            padding: 8px 12px;
-            margin-top: 6px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            backdrop-filter: blur(5px);
-        }
-
-        .target-box.success {
-            background: rgba(16, 185, 129, 0.3);
-        }
-
-        #target-msg { 
-            color: #fff;
-            font-weight: 700;
-            word-break: break-word;
-        }
-
-        /* Assessment Grid - Compact spacing */
-        .calc-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .assessment-tile {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 14px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            text-decoration: none;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-            -webkit-tap-highlight-color: transparent;
-            min-height: 100px;
+            gap: 20px;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .assessment-tile:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px var(--accent-glow);
+        .featured-card:active {
+            transform: scale(0.98);
         }
 
-        .assessment-tile:active {
-            transform: translateY(2px);
+        .featured-content {
+            z-index: 2;
         }
 
-        .assessment-tile::after {
+        .featured-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        .featured-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+            line-height: 1.1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .featured-desc {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+            line-height: 1.4;
+            max-width: 80%;
+        }
+
+        .featured-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+            transition: transform 0.5s;
+        }
+
+        /* Subtle pattern overlay */
+        .featured-bg::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent);
-            opacity: 0.5;
-        }
-
-        .tile-header {
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: var(--text-dim);
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .tile-name {
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .tile-weight {
-            font-size: 0.6rem;
-            color: var(--accent);
-            background: var(--accent-glow);
-            padding: 2px 5px;
-            border-radius: 6px;
-        }
-
-        .input-area {
-            display: flex;
-            align-items: center;
-            background: rgba(0,0,0,0.03);
-            border-radius: 10px;
-            padding: 10px;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-        }
-
-        [data-theme="dark"] .input-area { 
-            background: rgba(255,255,255,0.03); 
-        }
-
-        .input-area:focus-within {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px var(--accent-glow);
-        }
-
-        input {
-            background: transparent;
-            border: none;
-            color: var(--text);
-            width: 100%;
-            font-size: 1.3rem;
-            font-weight: 800;
-            outline: none;
-            text-align: center;
-            padding: 0;
-            font-feature-settings: "tnum";
-            font-variant-numeric: tabular-nums;
-            caret-color: var(--accent);
-        }
-
-        input:focus {
-            color: var(--accent);
-        }
-
-        input::placeholder {
-            color: var(--text-dim);
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+            background-size: 20px 20px;
             opacity: 0.3;
         }
 
-        .den { 
-            font-size: 0.7rem; 
-            font-weight: 700; 
-            color: var(--text-dim);
-            flex-shrink: 0;
-            min-width: 28px;
-            text-align: right;
+        /* App Grid */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
         }
 
-        /* Status indicators */
-        .status-good input { color: var(--success) !important; }
-        .status-warning input { color: var(--warning) !important; }
-        .status-danger input { color: var(--danger) !important; }
-
-        /* Hide number input spinners */
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        .app-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            text-decoration: none;
+            color: var(--text-main);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        input[type=number] {
-            -moz-appearance: textfield;
+        .app-card:active {
+            transform: scale(0.96);
         }
 
-        /* Fix for iOS input zoom */
-        @supports (-webkit-touch-callout: none) {
-            input {
-                font-size: 16px !important;
-            }
+        .app-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 12px;
+            font-size: 28px;
+            color: white;
+            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .app-category {
+            font-size: 12px;
+            color: var(--text-sec);
+            font-weight: 500;
         }
     </style>
 </head>
-<body data-theme="light">
-    <div class="dashboard">
+
+<body>
+
+    <div class="app-container">
         <!-- Header -->
-        <div class="header">
-            <div class="brand">
-                <h2>Personal Student Dashboard</h2>
-                <p>Marks Calculator</p>
+        <header class="header">
+            <div class="header-text">
+                <p>Welcome back</p>
+                <h1>My Apps</h1>
             </div>
-            <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+        </header>
+
+        <!-- Featured Section -->
+        <div class="section-title">
+            What's New
         </div>
 
-        <!-- Score Display -->
-        <div class="score-display">
-            <div class="course-code">NMT21305 EMBEDDED SYSTEM</div>
-            <div class="current-score" id="total">?</div>
-            <div class="target-box" id="targetBox">
-                <div id="target-msg">Enter your marks to begin</div>
+        <a href="storyCardMaker.html" class="featured-card">
+            <div class="featured-bg"></div>
+            <div class="featured-content">
+                <span class="featured-tag">New Tool</span>
+                <h2 class="featured-title">Story Card Maker</h2>
+                <p class="featured-desc">Create stunning, gradient-matched backgrounds for your social stories
+                    instantly.</p>
             </div>
+        </a>
+
+        <!-- All Apps -->
+        <div class="section-title">
+            All Tools
         </div>
 
-        <!-- Assessment Grid -->
-        <div class="calc-grid">
-            <div class="assessment-tile" onclick="focusInput('test')">
-                <div class="tile-header">
-                    <span class="tile-name">Test</span>
-                    <span class="tile-weight">20%</span>
+        <div class="app-grid">
+            <!-- Marks Calculator -->
+            <a href="marksCalc.html" class="app-card">
+                <div class="app-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <i class="material-icons">calculate</i>
                 </div>
-                <div class="input-area">
-                    <input type="number" id="test" placeholder="?" 
-                           oninput="calculateScore()"
-                           onfocus="handleFocus(this, 'test')"
-                           onblur="handleBlur(this, 'test')"
-                           min="1" max="20">
-                    <span class="den">/20</span>
+                <h3 class="app-title">Personal Student Dashboard</h3>
+                <span class="app-category">Education</span>
+            </a>
+
+            <!-- Story Card Maker (Quick Access) -->
+            <a href="storyCardMaker.html" class="app-card">
+                <div class="app-icon" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);">
+                    <i class="material-icons">palette</i>
                 </div>
-            </div>
-            <div class="assessment-tile" onclick="focusInput('lab1')">
-                <div class="tile-header">
-                    <span class="tile-name">Lab Test 1</span>
-                    <span class="tile-weight">20%</span>
+                <h3 class="app-title">Story Card Maker</h3>
+                <span class="app-category">Design</span>
+            </a>
+
+            <!-- Placeholder 1 -->
+            <!-- <div class="app-card" style="opacity: 0.6; pointer-events: none;">
+                <div class="app-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <i class="material-icons">timer</i>
                 </div>
-                <div class="input-area">
-                    <input type="number" id="lab1" placeholder="?" 
-                           oninput="calculateScore()"
-                           onfocus="handleFocus(this, 'lab1')"
-                           onblur="handleBlur(this, 'lab1')"
-                           min="1" max="20">
-                    <span class="den">/20</span>
+                <h3 class="app-title">Focus Timer</h3>
+                <span class="app-category">Coming Soon</span>
+            </div> -->
+
+            <!-- Placeholder 2 -->
+            <!-- <div class="app-card" style="opacity: 0.6; pointer-events: none;">
+                <div class="app-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                    <i class="material-icons">note_add</i>
                 </div>
-            </div>
-            <div class="assessment-tile" onclick="focusInput('lab2')">
-                <div class="tile-header">
-                    <span class="tile-name">Lab Test 2</span>
-                    <span class="tile-weight">20%</span>
-                </div>
-                <div class="input-area">
-                    <input type="number" id="lab2" placeholder="?" 
-                           oninput="calculateScore()"
-                           onfocus="handleFocus(this, 'lab2')"
-                           onblur="handleBlur(this, 'lab2')"
-                           min="1" max="20">
-                    <span class="den">/20</span>
-                </div>
-            </div>
-            <div class="assessment-tile" onclick="focusInput('presentation')">
-                <div class="tile-header">
-                    <span class="tile-name">MP Presentation</span>
-                    <span class="tile-weight">15%</span>
-                </div>
-                <div class="input-area">
-                    <input type="number" id="presentation" placeholder="?" 
-                           oninput="calculateScore()"
-                           onfocus="handleFocus(this, 'presentation')"
-                           onblur="handleBlur(this, 'presentation')"
-                           min="1" max="20">
-                    <span class="den">/20</span>
-                </div>
-            </div>
-            <div class="assessment-tile" onclick="focusInput('report')">
-                <div class="tile-header">
-                    <span class="tile-name">MP Report</span>
-                    <span class="tile-weight">15%</span>
-                </div>
-                <div class="input-area">
-                    <input type="number" id="report" placeholder="?" 
-                           oninput="calculateScore()"
-                           onfocus="handleFocus(this, 'report')"
-                           onblur="handleBlur(this, 'report')"
-                           min="1" max="15">
-                    <span class="den">/15</span>
-                </div>
-            </div>
-            <div class="assessment-tile" onclick="focusInput('log')">
-                <div class="tile-header">
-                    <span class="tile-name">Buku Log</span>
-                    <span class="tile-weight">10%</span>
-                </div>
-                <div class="input-area">
-                    <input type="number" id="log" placeholder="?" 
-                           oninput="calculateScore()"
-                           onfocus="handleFocus(this, 'log')"
-                           onblur="handleBlur(this, 'log')"
-                           min="1" max="10">
-                    <span class="den">/10</span>
-                </div>
-            </div>
+                <h3 class="app-title">Quick Notes</h3>
+                <span class="app-category">Coming Soon</span>
+            </div> -->
         </div>
     </div>
 
-    <script>
-        // Configuration
-        const STORAGE_KEY = "STUDENT_DASH_COMPACT";
-        const TARGET_GRADE = 80; // Grade A target
-        
-        const assessments = [
-            { id: 'test', name: 'Test', max: 20, weight: 20 },
-            { id: 'lab1', name: 'Lab Test 1', max: 20, weight: 20 },
-            { id: 'lab2', name: 'Lab Test 2', max: 20, weight: 20 },
-            { id: 'presentation', name: 'MP Presentation', max: 20, weight: 15 },
-            { id: 'report', name: 'MP Report', max: 15, weight: 15 },
-            { id: 'log', name: 'Buku Log', max: 10, weight: 10 }
-        ];
+    <!-- Bottom Navigation -->
 
-        // Helper function to parse score
-        function parseScore(value, max) {
-            if (value === '' || value === '?' || isNaN(parseFloat(value))) {
-                return null; // No data entered yet
-            }
-            
-            const numScore = parseFloat(value);
-            
-            // 0 means "not entered yet" -> treat as null
-            if (numScore === 0) {
-                return null;
-            }
-            
-            // Enforce minimum of 1
-            if (numScore < 1) {
-                return 1; // Minimum realistic mark
-            }
-            
-            // Enforce maximum
-            if (numScore > max) {
-                return max;
-            }
-            
-            return numScore;
-        }
 
-        function handleFocus(input, inputId) {
-            // Only clear if it's exactly "?"
-            if (input.value === '?') {
-                input.value = '';
-            }
-        }
-
-        function handleBlur(input, inputId) {
-            const assess = assessments.find(a => a.id === inputId);
-            const score = parseScore(input.value, assess.max);
-            
-            if (score === null) {
-                input.value = '?'; // Show ? for empty/0
-            } else {
-                input.value = score; // Show actual score
-            }
-            
-            // Recalculate
-            calculateScore();
-        }
-
-        function focusInput(inputId) {
-            const input = document.getElementById(inputId);
-            input.focus();
-            
-            // Select all text for easy replacement
-            setTimeout(() => {
-                if (input.value !== '?') {
-                    input.select();
-                }
-            }, 50);
-        }
-
-        function calculateScore() {
-            let total = 0;
-            let enteredCount = 0;
-            let totalPossibleWeight = 0;
-            const currentData = {};
-
-            // First pass: count entered marks
-            assessments.forEach(assess => {
-                const input = document.getElementById(assess.id);
-                const score = parseScore(input.value, assess.max);
-                
-                // Save data
-                currentData[assess.id] = score === null ? '' : score.toString();
-                
-                if (score !== null) {
-                    enteredCount++;
-                    totalPossibleWeight += assess.weight;
-                    total += (score / assess.max) * assess.weight;
-                }
-            });
-
-            // Save to localStorage
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(currentData));
-            
-            // Update UI
-            updateDisplay(total, enteredCount, totalPossibleWeight);
-        }
-
-        function updateDisplay(total, enteredCount, totalPossibleWeight) {
-            const totalEl = document.getElementById('total');
-            const targetMsg = document.getElementById('target-msg');
-            const targetBox = document.getElementById('targetBox');
-
-            // Update current score
-            if (enteredCount === 0) {
-                totalEl.textContent = '?';
-                targetMsg.textContent = 'Enter your marks to begin';
-                targetBox.className = 'target-box';
-                updateInputColors();
-                return;
-            }
-
-            // Format score - only show to 1 decimal if needed
-            const displayScore = total % 1 === 0 ? total.toFixed(0) : total.toFixed(1);
-            totalEl.textContent = displayScore;
-            
-            // Calculate what percentage of possible marks this represents
-            const currentPercentage = (total / totalPossibleWeight) * 100;
-            
-            // Calculate difference from target
-            const diff = TARGET_GRADE - total;
-            
-            // Update target message
-            if (diff <= 0) {
-                targetMsg.textContent = "🎉 Goal Reached! You've secured an A!";
-                targetBox.className = 'target-box success';
-            } else {
-                // Calculate potential from remaining items
-                let remainingPotential = 0;
-                assessments.forEach(assess => {
-                    const input = document.getElementById(assess.id);
-                    const score = parseScore(input.value, assess.max);
-                    
-                    if (score === null) {
-                        // Item not entered yet - full potential
-                        remainingPotential += assess.weight;
-                    } else if (score < assess.max) {
-                        // Some marks earned, can still improve
-                        const potentialIncrease = assess.max - score;
-                        remainingPotential += (potentialIncrease / assess.max) * assess.weight;
-                    }
-                });
-                
-                if (remainingPotential >= diff) {
-                    targetMsg.textContent = `Need ${diff.toFixed(1)}% more for an A`;
-                } else {
-                    targetMsg.textContent = `Aim high in remaining items & final exam`;
-                }
-                targetBox.className = 'target-box';
-            }
-            
-            // Update input colors
-            updateInputColors();
-        }
-
-        function updateInputColors() {
-            assessments.forEach(assess => {
-                const input = document.getElementById(assess.id);
-                const tile = input.closest('.assessment-tile');
-                const score = parseScore(input.value, assess.max);
-                
-                // Reset classes
-                tile.classList.remove('status-good', 'status-warning', 'status-danger');
-                
-                if (score === null) return;
-                
-                const percentage = (score / assess.max) * 100;
-                
-                if (percentage >= 80) {
-                    tile.classList.add('status-good');
-                } else if (percentage >= 60) {
-                    tile.classList.add('status-warning');
-                } else {
-                    tile.classList.add('status-danger');
-                }
-            });
-        }
-
-        function toggleTheme() {
-            const current = document.body.getAttribute('data-theme');
-            const target = current === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', target);
-            localStorage.setItem('STUDENT_DASH_THEME', target);
-        }
-
-        // Initialize on load
-        document.addEventListener('DOMContentLoaded', () => {
-            // Load saved data
-            const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
-            if (savedData) {
-                assessments.forEach(assess => {
-                    const input = document.getElementById(assess.id);
-                    if (savedData[assess.id] !== undefined && savedData[assess.id] !== '') {
-                        // Convert old "0" values to "?"
-                        if (savedData[assess.id] === '0') {
-                            input.value = '?';
-                        } else {
-                            input.value = savedData[assess.id];
-                        }
-                    } else {
-                        input.value = '?';
-                    }
-                });
-            } else {
-                // Set initial values with ?
-                document.getElementById('test').value = '?';
-                document.getElementById('lab1').value = '?';
-                document.getElementById('lab2').value = '?';
-                document.getElementById('presentation').value = '?';
-                document.getElementById('report').value = '?';
-                document.getElementById('log').value = '?';
-            }
-            
-            // Load theme
-            const savedTheme = localStorage.getItem('STUDENT_DASH_THEME');
-            if (savedTheme) {
-                document.body.setAttribute('data-theme', savedTheme);
-            }
-            
-            // Calculate initial score
-            calculateScore();
-        });
-    </script>
 </body>
+
 </html>
