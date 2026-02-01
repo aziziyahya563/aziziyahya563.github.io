@@ -485,6 +485,19 @@
                 font-size: 15px;
             }
         }
+
+        /* Icon Button Style */
+        .btn-icon {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            min-width: 48px;
+        }
+
+        .btn-icon i {
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -511,12 +524,9 @@
             <button class="btn btn-upload" id="openBtn" onclick="document.getElementById('fileInput').click()">
                 <i class="material-icons">folder_open</i> Open
             </button>
-            <button class="btn btn-back" id="backBtn" onclick="resetApp()" style="display: none;">
-                <i class="material-icons">arrow_back</i> Back
+            <button class="btn btn-back btn-icon" id="shuffleBtn" onclick="render()" style="display: none;">
+                <i class="material-icons">shuffle</i>
             </button>
-            <!-- <button class="btn btn-shuffle" id="shuffleBtn" onclick="shuffleSmartGradient()">
-                <i class="material-icons">shuffle</i> Shuffle
-            </button> -->
             <button class="btn btn-download" id="downloadBtn" onclick="handleShareOrDownload()">
                 <i class="material-icons">ios_share</i> Share Image
             </button>
@@ -537,7 +547,7 @@
         const previewImg = document.getElementById('previewImg');
         const downloadBtn = document.getElementById('downloadBtn');
         const openBtn = document.getElementById('openBtn');
-        const backBtn = document.getElementById('backBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
 
         const emptyState = document.getElementById('emptyState');
         const loader = document.getElementById('loader');
@@ -673,8 +683,13 @@
                     dropZone.classList.add('has-image'); // Enable solid style
 
                     downloadBtn.classList.add('active');
-                    openBtn.style.display = 'none';
-                    backBtn.style.display = 'flex';
+                    // Transform Open button to Icon
+                    openBtn.innerHTML = '<i class="material-icons">folder_open</i>';
+                    openBtn.classList.add('btn-icon');
+                    openBtn.classList.add('btn-back'); // Use white style
+                    openBtn.classList.remove('btn-upload'); // Remove primary style
+
+                    shuffleBtn.style.display = 'flex';
 
                     showToast('Image loaded', 2000, 'success');
                 };
@@ -875,8 +890,14 @@
             emptyState.style.display = 'flex';
             dropZone.classList.remove('has-image');
             downloadBtn.classList.remove('active');
-            openBtn.style.display = 'flex';
-            backBtn.style.display = 'none';
+
+            // Restore Open Button
+            openBtn.innerHTML = '<i class="material-icons">folder_open</i> Open';
+            openBtn.classList.remove('btn-icon');
+            openBtn.classList.remove('btn-back');
+            openBtn.classList.add('btn-upload');
+
+            shuffleBtn.style.display = 'none';
 
             // Clear file input
             document.getElementById('fileInput').value = '';
