@@ -96,33 +96,7 @@
         }
 
         /* Desktop enhancements */
-        @media (min-width: 800px) {
-            body {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: linear-gradient(135deg, #e0e7ff 0%, #fae8ff 100%);
-                padding: 40px 0;
-            }
 
-            .dashboard {
-                border-radius: 40px;
-                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-                height: 850px;
-                /* Fixed height phone simulation */
-                min-height: auto;
-                overflow-y: auto;
-                /* Scroll inside the phone frame */
-                /* Hide scrollbar for cleaner look */
-                scrollbar-width: none;
-                border: 1px solid rgba(255, 255, 255, 0.4);
-                max-height: 90vh;
-            }
-
-            .dashboard::-webkit-scrollbar {
-                display: none;
-            }
-        }
 
         /* Animations */
         @keyframes slideInDown {

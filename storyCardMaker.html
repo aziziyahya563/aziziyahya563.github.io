@@ -127,25 +127,7 @@
         }
 
         /* Desktop Simulation */
-        @media (min-width: 800px) {
-            body {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: linear-gradient(135deg, #e0e7ff 0%, #fae8ff 100%);
-            }
 
-            .app-wrapper {
-                max-width: 480px;
-                height: 850px;
-                max-height: 90vh;
-                background: #f8fafc;
-                border-radius: 40px;
-                border: 1px solid rgba(255, 255, 255, 0.4);
-                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-                overflow: hidden;
-            }
-        }
 
         .preview-container {
             flex: 1;
@@ -818,12 +800,43 @@
             previewImg.src = canvas.toDataURL('image/jpeg', 0.8);
         }
 
-        function downloadImage() {
+        async function downloadImage() {
             if (!currentImgObj) return;
-            const link = document.createElement('a');
-            link.download = `smart-story-${Date.now()}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
+
+            // Show feedback
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<i class="material-icons">hourglass_empty</i> Saving...';
+
+            try {
+                // Use toBlob (async) to avoid freezing UI
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        showToast('Failed to generate image.', 3000, 'error');
+                        downloadBtn.innerHTML = originalText;
+                        return;
+                    }
+
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = `story-card-${Date.now()}.png`;
+                    link.href = url;
+
+                    // Essential for Firefox/Mobile
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                    // Cleanup
+                    setTimeout(() => URL.revokeObjectURL(url), 100);
+
+                    showToast('Image saved to Photos!', 3000, 'success');
+                    downloadBtn.innerHTML = originalText;
+                }, 'image/png', 1.0);
+            } catch (error) {
+                console.error('Download failed:', error);
+                showToast('Save failed. Long-press image to save.', 4000, 'error');
+                downloadBtn.innerHTML = originalText;
+            }
         }
 
         function resetApp() {
