@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desk Setup Gallery - Workspace Inspiration</title>
+    <meta name="description"
+        content="Discover hundreds of stunning desk setups with curated affiliate links to build your dream workspace. From minimalist to gaming setups, find inspiration for your perfect desk.">
+    <meta name="keywords" content="desk setup, workspace, office setup, gaming setup, minimalist desk, affiliate links">
+    <link rel="stylesheet" href="gallery-theme.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <div class="background-pattern"></div>
+
+        <header class="header">
+            <a href="index.html" class="back-button" aria-label="Back to home">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+            </a>
+            <div class="header-content">
+                <h1>Desk Setup Gallery</h1>
+                <p>Discover hundreds of stunning desk setups and get all the gear to build your dream workspace</p>
+            </div>
+        </header>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search setups..." aria-label="Search desk setups">
+            </div>
+
+            <div class="filter-group">
+                <button class="filter-btn active" data-category="all">All</button>
+                <button class="filter-btn" data-category="minimal">Minimal</button>
+                <button class="filter-btn" data-category="gaming">Gaming</button>
+                <button class="filter-btn" data-category="creative">Creative</button>
+                <button class="filter-btn" data-category="tech">Tech</button>
+                <button class="filter-btn" data-category="home-office">Home Office</button>
+            </div>
+        </div>
+
+        <div id="setupGrid" class="setup-grid">
+            <!-- Setups will be dynamically inserted here -->
+        </div>
+
+        <!-- Search Modal -->
+        <div id="searchModal" class="search-modal">
+            <div class="search-modal-content">
+                <div class="search-modal-header">
+                    <h2 class="search-modal-title">Search Setups</h2>
+                    <button class="search-modal-close" onclick="closeSearchModal()">✕</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search setups..." aria-label="Search desk setups">
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Modal -->
+        <div id="filterModal" class="filter-modal">
+            <div class="filter-modal-content">
+                <div class="filter-modal-header">
+                    <h2 class="filter-modal-title">Filter by Category</h2>
+                    <button class="filter-modal-close" onclick="closeFilterModal()">✕</button>
+                </div>
+                <div class="filter-group">
+                    <button class="filter-btn active" data-category="all">All</button>
+                    <button class="filter-btn" data-category="minimal">Minimal</button>
+                    <button class="filter-btn" data-category="gaming">Gaming</button>
+                    <button class="filter-btn" data-category="creative">Creative</button>
+                    <button class="filter-btn" data-category="tech">Tech</button>
+                    <button class="filter-btn" data-category="home-office">Home Office</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail Modal -->
+        <div id="detailModal" class="modal">
+            <div class="modal-backdrop" onclick="closeModal()"></div>
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+                <div id="modalBody" class="modal-body">
+                    <!-- Setup details will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" onclick="scrollToTop()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span class="nav-btn-label">Home</span>
+            </button>
+            <a href="arduino-projects.html" class="nav-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="nav-btn-label">Arduino</span>
+            </a>
+            <button class="nav-btn" onclick="openSearchModal()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <span class="nav-btn-label">Search</span>
+            </button>
+            <button class="nav-btn" onclick="openFilterModal()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+                <span class="nav-btn-label">Filter</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        // ========================================
+        // SCROLL BEHAVIOR
+        // ========================================
+
+        let lastScrollTop = 0;
+        const header = document.querySelector('.header');
+
+        window.addEventListener('scroll', function () {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrolling down
+                header.classList.add('hidden');
+            } else {
+                // Scrolling up
+                header.classList.remove('hidden');
+            }
+
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, false);
+
+        // ========================================
+        // MODAL FUNCTIONS
+        // ========================================
+
+        function openSearchModal() {
+            document.getElementById('searchModal').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('searchInput').focus();
+            }, 300);
+        }
+
+        function closeSearchModal() {
+            document.getElementById('searchModal').classList.remove('active');
+        }
+
+        function openFilterModal() {
+            document.getElementById('filterModal').classList.add('active');
+        }
+
+        function closeFilterModal() {
+            document.getElementById('filterModal').classList.remove('active');
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Close modals when clicking backdrop
+        document.getElementById('searchModal').addEventListener('click', function (e) {
+            if (e.target === this) closeSearchModal();
+        });
+
+        document.getElementById('filterModal').addEventListener('click', function (e) {
+            if (e.target === this) closeFilterModal();
+        });
+
+        // ========================================
+        // DESK SETUP DATABASE
+        // ========================================
+
+        // Desk Setup Database
+        // This array can easily be expanded to hundreds of setups
+        const deskSetups = [
+            {
+                id: 1,
+                title: "My Budget Desk Setup (2024)",
+                category: "minimal",
+                description: "Limit my creativity with my wallet size. A glimpse inside my mid spec PC and the gadgets that live on my desk.",
+                image: "assets/img/deskSetup/001.jpg",
+                products: [
+                    { name: "[Monitor] Acer VG270P", url: "https://s.shopee.com.my/6KlP81lnSc" },
+                    { name: "[Headphone] Cooler Master CH630", url: "https://s.shopee.com.my/3LL640XAA4" },
+                    { name: "[Mouse] Logitech G304", url: "https://s.shopee.com.my/5KsrwBpbUS" },
+                    { name: "[Keyboard] Royal Kludge RK H81", url: "https://s.shopee.com.my/6V4pKKlA7f" },
+                    { name: "[Controller] DS4 OEM", url: "https://s.shopee.com.my/5VCI8Uoy9V" },
+                    { name: "[CPU Cooler] Thermalright P.A 120 SE", url: "https://s.shopee.com.my/3AoNMUqEln" },
+                    { name: "[RAM] Corsair Vengeance RGB Pro SL White ", url: "https://s.shopee.com.my/9f1r6UvYl3" },
+                    { name: "[SSD] Adata XPG SX8200 Pro", url: "https://s.shopee.com.my/608YjbzTQh" },
+                    { name: "[PC Case] InWin 101 PC Case", url: "https://s.shopee.com.my/AKHXtbUpfL" },
+                    { name: "[Desk] Computer/ Study Desk", url: "https://s.shopee.com.my/8AD3IxcWbR" },
+                    { name: "[Desk Add-on] Storage Shelf", url: "https://s.shopee.com.my/8KWTVGbtGU" }
+                ]
+            },
+            // {
+            //     id: 2,
+            //     title: "RGB Gaming Paradise",
+            //     category: "gaming",
+            //     description: "An immersive gaming setup with dual 27\" monitors, custom RGB lighting, and high-performance peripherals for competitive gaming.",
+            //     image: "https://images.unsplash.com/photo-1593640495253-23196b27a87f?w=800&auto=format&fit=crop",
+            //     products: [
+            //         { name: "ASUS ROG Swift 27\" 240Hz Monitor (x2)", icon: "🖥️", url: "#" },
+            //         { name: "Razer BlackWidow V3 Pro", icon: "⌨️", url: "#" },
+            //         { name: "Razer DeathAdder V3 Pro", icon: "🖱️", url: "#" },
+            //         { name: "HyperX Cloud Alpha Headset", icon: "🎧", url: "#" },
+            //         { name: "Nanoleaf RGB Light Panels", icon: "🌈", url: "#" }
+            //     ]
+            // },
+            // {
+            //     id: 3,
+            //     title: "Scandinavian Minimal",
+            //     category: "minimal",
+            //     description: "Bright and airy workspace inspired by Scandinavian design principles with white aesthetics and minimal clutter.",
+            //     image: "https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?w=800&auto=format&fit=crop",
+            //     products: [
+            //         { name: "MacBook Pro 16\"", icon: "💻", url: "#" },
+            //         { name: "Magic Keyboard", icon: "⌨️", url: "#" },
+            //         { name: "Magic Trackpad", icon: "🖱️", url: "#" },
+            //         { name: "iPad Pro 12.9\"", icon: "📱", url: "#" },
+            //         { name: "IKEA BEKANT Desk White", icon: "🪑", url: "#" }
+            //     ]
+            // },
+            // {
+            //     id: 4,
+            //     title: "Creative Studio Pro",
+            //     category: "creative",
+            //     description: "Professional creative setup optimized for video editing and graphic design with color-accurate displays.",
+            //     image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&auto=format&fit=crop",
+            //     products: [
+            //         { name: "Dell UltraSharp 32\" 4K Monitor", icon: "🖥️", url: "#" },
+            //         { name: "Wacom Cintiq Pro 24", icon: "🎨", url: "#" },
+            //         { name: "MacBook Pro M2 Max", icon: "💻", url: "#" },
+            //         { name: "Elgato Stream Deck", icon: "🎛️", url: "#" },
+            //         { name: "Herman Miller Aeron Chair", icon: "🪑", url: "#" }
+            //     ]
+            // },
+            // {
+            //     id: 5,
+            //     title: "Tech Enthusiast's Dream",
+            //     category: "tech",
+            //     description: "Multi-monitor setup for developers and tech professionals with premium mechanical keyboard and ergonomic accessories.",
+            //     image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&auto=format&fit=crop",
+            //     products: [
+            //         { name: "Samsung Odyssey G7 27\" (x3)", icon: "🖥️", url: "#" },
+            //         { name: "ZSA Moonlander Keyboard", icon: "⌨️", url: "#" },
+            //         { name: "Logitech G502 X", icon: "🖱️", url: "#" },
+            //         { name: "Elgato Key Light", icon: "💡", url: "#" },
+            //         { name: "ErgoChair Pro", icon: "🪑", url: "#" }
+            //     ]
+            // },
+            // {
+            //     id: 6,
+            //     title: "Modern Home Office",
+            //     category: "home-office",
+            //     description: "Professional home office setup balancing productivity and comfort with standing desk and premium accessories.",
+            //     image: "https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?w=800&auto=format&fit=crop",
+            //     products: [
+            //         { name: "Jarvis Bamboo Standing Desk", icon: "🪵", url: "#" },
+            //         { name: "Dell P2723DE Monitor", icon: "🖥️", url: "#" },
+            //         { name: "Steelcase Series 2 Chair", icon: "🪑", url: "#" },
+            //         { name: "Logitech Brio 4K Webcam", icon: "📹", url: "#" },
+            //         { name: "Blue Yeti X Microphone", icon: "🎤", url: "#" }
+            //     ]
+            // },
+            // // Additional setups can be added here easily
+            // {
+            //     id: 7,
+            //     title: "Dual Monitor Productivity",
+            //     category: "tech",
+            //     description: "Efficient dual-monitor setup for maximum productivity with cable management and aesthetic appeal.",
+            //     image: "https://images.unsplash.com/photo-1593640495253-23196b27a87f?w=800&auto=format&fit=crop",
+            //     products: [
+            //         { name: "BenQ PD2700U 27\" 4K (x2)", icon: "🖥️", url: "#" },
+            //         { name: "Varmilo VA87M Keyboard", icon: "⌨️", url: "#" },
+            //         { name: "Cable Management Kit", icon: "🔌", url: "#" }
+            //     ]
+            // },
+            // {
+            //     id: 8,
+            //     title: "Budget Gaming Setup",
+            //     category: "gaming",
+            //     description: "Affordable gaming setup that doesn't compromise on performance or style.",
+            //     image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&auto=format&fit=crop",
+            //     products: [
+            //         { name: "AOC 24G2 24\" 144Hz", icon: "🖥️", url: "#" },
+            //         { name: "Redragon K552 Keyboard", icon: "⌨️", url: "#" },
+            //         { name: "Logitech G203", icon: "🖱️", url: "#" },
+            //         { name: "RGB LED Strips", icon: "🌈", url: "#" }
+            //     ]
+            // }
+        ];
+
+        // ========================================
+        // MOBILE-FIRST STATE & CONFIGURATION
+        // ========================================
+
+        let currentCategory = 'all';
+        let searchQuery = '';
+        let currentPage = 1;
+        const SETUPS_PER_PAGE = 12; // Load 12 setups at a time
+
+        // Detect mobile device
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        // DOM elements
+        const setupGrid = document.getElementById('setupGrid');
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        // ========================================
+        // MOBILE HAPTIC FEEDBACK (if supported)
+        // ========================================
+        function triggerHaptic(style = 'light') {
+            if ('vibrate' in navigator && isMobile) {
+                const patterns = {
+                    light: 10,
+                    medium: 20,
+                    heavy: 30
+                };
+                navigator.vibrate(patterns[style] || 10);
+            }
+        }
+
+        // ========================================
+        // GET FILTERED SETUPS
+        // ========================================
+        function getFilteredSetups() {
+            return deskSetups.filter(setup => {
+                const matchesCategory = currentCategory === 'all' || setup.category === currentCategory;
+                const matchesSearch = setup.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    setup.description.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+        }
+
+        // ========================================
+        // RENDER PREVIEW CARD
+        // ========================================
+        function createSetupCard(setup, index) {
+            return `
+                <article class="setup-card" data-id="${setup.id}" style="animation-delay: ${index * 50}ms" onclick="openModal(${setup.id})">
+                    <img 
+                        src="${setup.image}" 
+                        alt="${setup.title}" 
+                        class="setup-image" 
+                        loading="lazy"
+                        onerror="this.src='https://via.placeholder.com/800x500/f5f5f7/262626?text=${encodeURIComponent(setup.title)}'"
+                    >
+                    
+                    <div class="card-caption">
+                        <h2 class="caption-title">${setup.title}</h2>
+                        <p class="caption-text">${setup.description}</p>
+                        <div class="caption-footer">
+                            <span class="caption-category">${setup.category.replace('-', ' ')}</span>
+                            <button class="icon-btn" onclick="event.stopPropagation(); shareSetup(${setup.id})" aria-label="Share" title="Share">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="18" cy="5" r="3"></circle>
+                                    <circle cx="6" cy="12" r="3"></circle>
+                                    <circle cx="18" cy="19" r="3"></circle>
+                                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="tap-to-view">
+                        View Setup <span style="font-size: 16px; line-height: 1">→</span>
+                    </div>
+                </article>
+            `;
+        }
+
+        // ========================================
+        // SHARE SETUP
+        // ========================================
+        window.shareSetup = async function (setupId) {
+            triggerHaptic('light');
+            const setup = deskSetups.find(s => s.id === setupId);
+            if (!setup) return;
+
+            const shareData = {
+                title: setup.title,
+                text: `Check out this ${setup.category} setup: ${setup.description}`,
+                url: window.location.href + `?setup=${setupId}`
+            };
+
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                } else {
+                    // Fallback: Copy to clipboard
+                    await navigator.clipboard.writeText(window.location.href + `?setup=${setupId}`);
+                    alert('Link copied to clipboard!');
+                }
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.log('Share failed:', err);
+                }
+            }
+        };
+
+        // ========================================
+        // OPEN MODAL WITH FULL DETAILS
+        // ========================================
+        window.openModal = function (setupId) {
+            triggerHaptic('medium');
+            const setup = deskSetups.find(s => s.id === setupId);
+            if (!setup) return;
+
+            const modal = document.getElementById('detailModal');
+            const modalBody = document.getElementById('modalBody');
+
+            // Populate modal with full details
+            // Populate modal with full details
+            modalBody.innerHTML = `
+                <img 
+                    src="${setup.image}" 
+                    alt="${setup.title}" 
+                    class="modal-image"
+                >
+                <div class="modal-header">
+                    <h1 class="modal-title">${setup.title}</h1>
+                    <span class="setup-category">${setup.category.replace('-', ' ')}</span>
+                </div>
+                
+                <p class="modal-description">${setup.description}</p>
+                
+                <div class="modal-products">
+                    <h3 class="products-title">🛒 Get the Gear</h3>
+                    ${setup.products.map(product => `
+                        <a 
+                            href="${product.url}" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            class="product-link"
+                            onclick="event.stopPropagation(); triggerHaptic('light');"
+                        >
+                            <span class="product-name">${product.name}</span>
+                            <span class="product-action">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </span>
+                        </a>
+                    `).join('')}
+                </div>
+                
+                <div class="affiliate-disclosure">
+                    🔗 <strong>Affiliate Links:</strong> This page contains affiliate links. If you purchase through these links, I may earn a small commission at no extra cost to you.
+                </div>
+            `;
+
+            // Show modal with animation
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+
+            // Add touch feedback to product links
+            if (isTouch) {
+                setTimeout(() => {
+                    modalBody.querySelectorAll('.product-link').forEach(link => {
+                        link.addEventListener('touchstart', function () {
+                            triggerHaptic('light');
+                        }, { passive: true });
+                    });
+                }, 100);
+            }
+        };
+
+        // ========================================
+        // CLOSE MODAL
+        // ========================================
+        window.closeModal = function () {
+            triggerHaptic('light');
+            const modal = document.getElementById('detailModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scroll
+        };
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Close modal on swipe down (mobile)
+        let modalStartY = 0;
+        let modalCurrentY = 0;
+        const modalContent = document.querySelector('.modal-content');
+
+        if (modalContent && isMobile) {
+            modalContent.addEventListener('touchstart', (e) => {
+                modalStartY = e.touches[0].clientY;
+            }, { passive: true });
+
+            modalContent.addEventListener('touchmove', (e) => {
+                modalCurrentY = e.touches[0].clientY;
+                const diff = modalCurrentY - modalStartY;
+
+                // Only allow dragging down
+                if (diff > 0) {
+                    modalContent.style.transform = `translateY(${diff}px)`;
+                }
+            }, { passive: true });
+
+            modalContent.addEventListener('touchend', () => {
+                const diff = modalCurrentY - modalStartY;
+
+                // If dragged down more than 100px, close
+                if (diff > 100) {
+                    closeModal();
+                }
+
+                // Reset transform
+                modalContent.style.transform = '';
+                modalStartY = 0;
+                modalCurrentY = 0;
+            }, { passive: true });
+        }
+
+        // ========================================
+        // RENDER SETUPS WITH PAGINATION
+        // ========================================
+        function renderSetups(append = false) {
+            const filteredSetups = getFilteredSetups();
+            const totalSetups = filteredSetups.length;
+
+            // Remove existing load more button if any
+            const existingButton = document.getElementById('loadMoreBtn');
+            if (existingButton) existingButton.remove();
+
+            if (totalSetups === 0) {
+                setupGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <h3>No setups found</h3>
+                        <p>Try adjusting your filters or search terms</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate which setups to show
+            const setupsToShow = filteredSetups.slice(0, currentPage * SETUPS_PER_PAGE);
+            const hasMore = totalSetups > setupsToShow.length;
+
+            // Render cards
+            if (!append) {
+                setupGrid.innerHTML = setupsToShow.map((setup, index) => createSetupCard(setup, index)).join('');
+            } else {
+                // Append new cards (for "Load More")
+                const startIndex = (currentPage - 1) * SETUPS_PER_PAGE;
+                const newCards = filteredSetups.slice(startIndex, currentPage * SETUPS_PER_PAGE);
+                setupGrid.insertAdjacentHTML('beforeend', newCards.map((setup, index) => createSetupCard(setup, index)).join(''));
+            }
+
+            // Add Load More button if there are more setups
+            if (hasMore) {
+                const remaining = totalSetups - setupsToShow.length;
+                const loadMoreBtn = document.createElement('div');
+                loadMoreBtn.id = 'loadMoreBtn';
+                loadMoreBtn.className = 'load-more-container';
+                loadMoreBtn.innerHTML = `
+                    <button class="load-more-btn" onclick="loadMore()">
+                        <span class="load-more-icon">⬇️</span>
+                        <span class="load-more-text">Load More Setups</span>
+                        <span class="load-more-count">(${remaining} remaining)</span>
+                    </button>
+                    <div class="showing-count">Showing ${setupsToShow.length} of ${totalSetups} setups</div>
+                `;
+                setupGrid.parentElement.insertBefore(loadMoreBtn, setupGrid.nextSibling);
+            }
+
+            // Add touch feedback to product links (mobile only)
+            if (isTouch) {
+                addTouchFeedback();
+            }
+
+            // Observe new cards
+            if ('IntersectionObserver' in window) {
+                setTimeout(() => observeNewCards(), 50);
+            }
+        }
+
+        // ========================================
+        // LOAD MORE FUNCTION
+        // ========================================
+        window.loadMore = function () {
+            triggerHaptic('medium');
+            currentPage++;
+            renderSetups(true);
+
+            // Smooth scroll to first new card
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.setup-card');
+                const firstNewCard = cards[cards.length - Math.min(SETUPS_PER_PAGE, cards.length)];
+                if (firstNewCard) {
+                    firstNewCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        };
+
+        // ========================================
+        // MOBILE TOUCH FEEDBACK
+        // ========================================
+        function addTouchFeedback() {
+            document.querySelectorAll('.product-link').forEach(link => {
+                link.addEventListener('touchstart', function () {
+                    triggerHaptic('light');
+                }, { passive: true });
+            });
+        }
+
+        // ========================================
+        // SEARCH INPUT - Mobile optimized
+        // ========================================
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchQuery = e.target.value;
+                currentPage = 1; // Reset to first page
+                renderSetups(false);
+            }, 150);
+        });
+
+        searchInput.addEventListener('search', (e) => {
+            if (e.target.value === '') {
+                searchQuery = '';
+                currentPage = 1;
+                renderSetups(false);
+            }
+        });
+
+        // ========================================
+        // FILTER BUTTONS - With haptic feedback
+        // ========================================
+        // Get filter buttons from both locations (desktop controls and modal)
+        const allFilterButtons = document.querySelectorAll('.filter-btn');
+
+        allFilterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                triggerHaptic('light');
+
+                // Update all filter buttons (in case there are multiple sets)
+                allFilterButtons.forEach(btn => {
+                    if (btn.dataset.category === button.dataset.category) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                currentCategory = button.dataset.category;
+                currentPage = 1; // Reset to first page
+                renderSetups(false);
+
+                // Close filter modal if it's open
+                closeFilterModal();
+
+                if (isMobile) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // ========================================
+        // INITIAL RENDER
+        // ========================================
+        renderSetups();
+
+        // ========================================
+        // SCROLL REVEAL ANIMATION (Intersection Observer)
+        // ========================================
+        let observer;
+        if ('IntersectionObserver' in window) {
+            const observerOptions = {
+                threshold: 0.05,
+                rootMargin: '0px 0px -30px 0px'
+            };
+
+            observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            const observeCards = () => {
+                document.querySelectorAll('.setup-card').forEach(card => {
+                    if (!card.dataset.observed) {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(16px)';
+                        observer.observe(card);
+                        card.dataset.observed = 'true';
+                    }
+                });
+            };
+
+            setTimeout(observeCards, 50);
+
+            // Function to observe new cards when loading more
+            window.observeNewCards = observeCards;
+        }
+
+        // ========================================
+        // MOBILE PULL-TO-REFRESH HINT
+        // ========================================
+        if (isMobile) {
+            let touchStartY = 0;
+            let touchEndY = 0;
+
+            document.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+
+            document.addEventListener('touchend', (e) => {
+                touchEndY = e.changedTouches[0].clientY;
+                // If pulled down significantly at top of page, could add refresh hint
+                if (touchEndY - touchStartY > 100 && window.scrollY === 0) {
+                    // Optional: Add visual feedback for pull-to-refresh
+                    console.log('Pull to refresh detected');
+                }
+            }, { passive: true });
+        }
+
+        // ========================================
+        // PERFORMANCE: Lazy load images
+        // ========================================
+        if ('loading' in HTMLImageElement.prototype) {
+            // Browser supports native lazy loading (already added in HTML)
+            console.log('✓ Native lazy loading supported');
+        }
+
+        // ========================================
+        // ACCESSIBILITY: Announce filter changes
+        // ========================================
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 1000);
+        }
+
+        // Add screen reader announcement styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .sr-only {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                margin: -1px;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+                white-space: nowrap;
+                border-width: 0;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+
+</html>
