@@ -14,7 +14,11 @@
     <script>
         (function () {
             const t = localStorage.getItem('APP_THEME');
-            if (t) document.documentElement.setAttribute('data-theme', t);
+            if (t) {
+                document.documentElement.setAttribute('data-theme', t);
+                const meta = document.querySelector('meta[name="theme-color"]');
+                if (meta) meta.content = t === 'dark' ? '#000000' : '#ffffff';
+            }
         })();
     </script>
 </head>
@@ -178,7 +182,7 @@
             <p class="info-text">
                 <strong>Arduino Projects Gallery</strong><br>
                 v1.0<br><br>
-                Discover creative Arduino projects with step-by-step guides and component links.
+                Explore creative Arduino projects complete with code, schematics, and component lists.
                 <br><br>
                 <span style="font-size: 0.8rem; opacity: 0.7;">© 2026 Azizi Yahya</span>
             </p>
@@ -201,6 +205,10 @@
             const target = checkbox.checked ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', target);
             localStorage.setItem('APP_THEME', target);
+
+            // Update meta theme color
+            const meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.content = target === 'dark' ? '#000000' : '#ffffff';
         }
 
         // Init Theme UI

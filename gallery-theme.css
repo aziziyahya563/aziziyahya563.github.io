@@ -649,7 +649,7 @@ body {
 .products-title {
   font-size: 13px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-secondary);
   margin-bottom: var(--s4);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -731,13 +731,17 @@ body {
 }
 
 .affiliate-btn.disabled {
-  opacity: 0.4;
+  opacity: 1;
+  /* Reset opacity for better visibility */
   cursor: not-allowed;
-  filter: grayscale(100%);
+  /* filter: grayscale(100%);  Removed to avoid washing out too much */
   pointer-events: none;
-  background: rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, 0.3);
-  border-color: transparent;
+  background: var(--bg);
+  /* Theme aware background */
+  color: var(--text-muted);
+  /* Theme aware muted text */
+  border: 1px dashed var(--border);
+  /* Dashed border to indicate inactive */
   box-shadow: none;
 }
 
@@ -760,21 +764,21 @@ body {
 }
 
 .tiktok-btn {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.04) 0%, rgba(26, 26, 26, 0.06) 100%);
-  color: rgba(0, 0, 0, 0.85);
-  border-color: rgba(0, 0, 0, 0.12);
+  background: var(--bg);
+  color: var(--text-primary);
+  border-color: var(--border);
 }
 
 .tiktok-btn:hover {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.06) 0%, rgba(26, 26, 26, 0.08) 100%);
-  border-color: rgba(0, 0, 0, 0.18);
+  background: var(--surface);
+  border-color: var(--text-secondary);
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .tiktok-btn:active {
   transform: translateY(0);
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.08) 0%, rgba(26, 26, 26, 0.1) 100%);
+  background: var(--border-light);
 }
 
 .btn-icon {
@@ -1166,6 +1170,24 @@ body {
     /* Ensure they cover the full height of the viewport or container? */
     /* Using fixed positioning, they cover the viewport slice. */
   }
+
+  /* Fix Popover Menu Alignment on Desktop */
+  .popover-menu {
+    right: auto;
+    left: 50%;
+    /*
+       Calculation:
+       Center line = 50%
+       Container Half Width = 240px
+       Padding/Offset = 20px
+       Menu Width = 240px
+       Target Right Edge = Center + 240 - 20 = Center + 220px
+       Target Left Edge = (Center + 220) - 240 = Center - 20px
+    */
+    margin-left: -20px;
+    transform: none;
+    /* Reset any transforms */
+  }
 }
 
 /* Card Actions (Share & Details buttons) */
@@ -1325,6 +1347,7 @@ body {
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
+  color: var(--text-primary);
 }
 
 .icon-btn:active {

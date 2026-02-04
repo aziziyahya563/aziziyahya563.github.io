@@ -13,7 +13,11 @@
     <script>
         (function () {
             const t = localStorage.getItem('APP_THEME');
-            if (t) document.documentElement.setAttribute('data-theme', t);
+            if (t) {
+                document.documentElement.setAttribute('data-theme', t);
+                const meta = document.querySelector('meta[name="theme-color"]');
+                if (meta) meta.content = t === 'dark' ? '#000000' : '#ffffff';
+            }
         })();
     </script>
 </head>
@@ -170,7 +174,7 @@
             <p class="info-text">
                 <strong>Desk Setups Gallery</strong><br>
                 v1.0<br><br>
-                Browse curated desk setups. Find the perfect gear with direct affiliate links.
+                Curated workspace inspiration for your next upgrade. Shop the look with direct product links.
                 <br><br>
                 <span style="font-size: 0.8rem; opacity: 0.7;">© 2026 Azizi Yahya</span>
             </p>
@@ -230,6 +234,10 @@
             const target = checkbox.checked ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', target);
             localStorage.setItem('APP_THEME', target);
+
+            // Update meta theme color
+            const meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.content = target === 'dark' ? '#000000' : '#ffffff';
         }
 
         // Init Theme UI
