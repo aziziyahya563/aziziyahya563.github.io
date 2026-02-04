@@ -36,6 +36,8 @@
 
             --shadow-soft: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
             --shadow-hover: 0 10px 25px -5px rgba(16, 185, 129, 0.15);
+
+            --btn-bg: rgba(255, 255, 255, 0.9);
         }
 
         [data-theme="dark"] {
@@ -53,6 +55,8 @@
             --text-main: #fafafa;
             --text-sec: #a1a1aa;
             --border: #27272a;
+
+            --btn-bg: rgba(58, 58, 60, 0.9);
         }
 
         /* =========================================
@@ -434,12 +438,215 @@
                 .calc-grid {
                     grid-template-columns: repeat(2, 1fr);
                 }
+
+                .calc-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
             }
+        }
+
+        /* =========================================
+           5. POPOVER & MENUS
+           ========================================= */
+        .menu-btn {
+            position: absolute;
+            right: 0px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--text-main);
+            background: var(--btn-bg);
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            z-index: 1002;
+        }
+
+        .menu-btn:hover,
+        .menu-btn.active {
+            background: var(--bg-input);
+            color: var(--text-main);
+        }
+
+        .popover-menu {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            width: 220px;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 100;
+            animation: fadeIn 0.2s ease forwards;
+            transform-origin: top right;
+        }
+
+        .popover-menu.active {
+            display: flex;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .menu-item:hover {
+            background: var(--bg-input);
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-input);
+            border: 2px solid var(--border);
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: var(--text-sec);
+            transition: .3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+            background-color: white;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            transform: translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .modal-text {
+            color: var(--text-sec);
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+        }
+
+        .modal-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Backdrop link click overlay to close menu */
+        .click-outside {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            display: none;
         }
     </style>
 </head>
 
 <body data-theme="light">
+    <div class="click-outside" id="clickOutside" onclick="toggleMenu()"></div>
     <div class="dashboard">
         <!-- Header -->
         <div class="header">
@@ -453,7 +660,34 @@
                 <h2>Personal Student Dashboard</h2>
                 <p>Marks Calculator</p>
             </div>
-            <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+            <button class="menu-btn" onclick="toggleMenu()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="19" cy="12" r="1"></circle>
+                    <circle cx="5" cy="12" r="1"></circle>
+                </svg>
+            </button>
+
+            <!-- Popover Menu -->
+            <div class="popover-menu" id="popoverMenu">
+                <div class="menu-item" onclick="toggleThemeSwitch(event)">
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="themeSwitch" onchange="toggleTheme()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <button class="menu-item" onclick="openInfoModal()">
+                    <span>Info</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                </button>
+            </div>
         </div>
 
         <!-- Score Display -->
@@ -534,6 +768,21 @@
                     <span class="den">/10</span>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div class="modal-overlay" id="infoModal" onclick="closeInfoModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <h3 class="modal-title">About</h3>
+            <p class="modal-text">
+                <strong>Personal Student Dashboard</strong><br>
+                Marks Calculator<br><br>
+                Track your continuous assessments and calculate exactly what you need to achieve your target grade.
+                <br><br>
+                <span style="font-size: 0.8rem; opacity: 0.7;">© 2026 Azizi Yahya</span>
+            </p>
+            <button class="modal-btn" onclick="closeInfoModal(event)">Got it</button>
         </div>
     </div>
 
@@ -751,11 +1000,44 @@
             });
         }
 
+        // =========================================
+        // UI INTERACTIONS
+        // =========================================
+        function toggleMenu() {
+            const menu = document.getElementById('popoverMenu');
+            const overlay = document.getElementById('clickOutside');
+            const btn = document.querySelector('.menu-btn');
+
+            menu.classList.toggle('active');
+            overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
+            btn.classList.toggle('active');
+        }
+
+        function openInfoModal() {
+            toggleMenu(); // Close menu
+            document.getElementById('infoModal').classList.add('active');
+        }
+
+        function closeInfoModal(e) {
+            if (e) e.stopPropagation();
+            document.getElementById('infoModal').classList.remove('active');
+        }
+
+        function toggleThemeSwitch(event) {
+            // If click isn't on the switch itself, toggle it manually
+            if (!event.target.closest('.switch')) {
+                const checkbox = document.getElementById('themeSwitch');
+                checkbox.checked = !checkbox.checked;
+                toggleTheme(); // Manually trigger theme change
+            }
+        }
+
         function toggleTheme() {
-            const current = document.body.getAttribute('data-theme');
-            const target = current === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', target);
-            localStorage.setItem('STUDENT_DASH_THEME', target);
+            const checkbox = document.getElementById('themeSwitch');
+            const target = checkbox.checked ? 'dark' : 'light';
+
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('APP_THEME', target);
         }
 
         // Initialize on load
@@ -793,9 +1075,18 @@
             }
 
             // Load theme
-            const savedTheme = localStorage.getItem('STUDENT_DASH_THEME');
+            const savedTheme = localStorage.getItem('APP_THEME');
+            const themeSwitch = document.getElementById('themeSwitch');
+
             if (savedTheme) {
-                document.body.setAttribute('data-theme', savedTheme);
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                if (savedTheme === 'dark') {
+                    themeSwitch.checked = true;
+                }
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                // Default to system preference ?? or just default light
+                // document.body.setAttribute('data-theme', 'dark');
+                // themeSwitch.checked = true;
             }
 
             // Calculate initial score

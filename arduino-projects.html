@@ -11,9 +11,37 @@
         content="arduino projects, DIY electronics, microcontroller, IoT, smart home, arduino tutorial, affiliate links">
     <link rel="stylesheet" href="gallery-theme.css">
     <script src="products-db.js"></script> <!-- Link Product Database -->
+    <script>
+        (function () {
+            const t = localStorage.getItem('APP_THEME');
+            if (t) document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 </head>
 
 <body>
+    <div class="click-outside" id="clickOutside" onclick="toggleMenu()"></div>
+
+    <!-- Menu moved outside app-layout to avoid z-index trapping -->
+    <div class="popover-menu" id="popoverMenu">
+        <div class="menu-item" onclick="toggleThemeSwitch(event)">
+            <span>Dark Mode</span>
+            <label class="switch">
+                <input type="checkbox" id="themeSwitch" onchange="toggleTheme()">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <button class="menu-item" onclick="openInfoModal()">
+            <span>Info</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+        </button>
+    </div>
+
     <div class="app-layout">
         <div class="background-pattern"></div>
 
@@ -27,6 +55,15 @@
             <div class="header-content">
                 <h1>Arduino Projects</h1>
                 <p>Explore creative Arduino projects and get all the components to build your own</p>
+                <button class="menu-btn" onclick="toggleMenu()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="19" cy="12" r="1"></circle>
+                        <circle cx="5" cy="12" r="1"></circle>
+                    </svg>
+                </button>
+
             </div>
         </header>
 
@@ -96,6 +133,7 @@
     </div>
 
     <!-- Bottom Navigation -->
+    <!-- Bottom Navigation (Commented out temporarily)
     <nav class="bottom-nav">
         <button class="nav-btn active" onclick="scrollToTop()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -130,9 +168,85 @@
             <span class="nav-btn-label">Filter</span>
         </button>
     </nav>
+    -->
+    </div>
+
+    <!-- Info Modal -->
+    <div class="modal-overlay" id="infoModal" onclick="closeInfoModal(event)">
+        <div class="modal-card-info" onclick="event.stopPropagation()">
+            <h3 class="info-title">About</h3>
+            <p class="info-text">
+                <strong>Arduino Projects Gallery</strong><br>
+                v1.0<br><br>
+                Discover creative Arduino projects with step-by-step guides and component links.
+                <br><br>
+                <span style="font-size: 0.8rem; opacity: 0.7;">© 2026 Azizi Yahya</span>
+            </p>
+            <button class="info-btn" onclick="closeInfoModal(event)">Got it</button>
+        </div>
     </div>
 
     <script>
+        // Theme Functions
+        function toggleThemeSwitch(event) {
+            if (!event.target.closest('.switch')) {
+                const checkbox = document.getElementById('themeSwitch');
+                checkbox.checked = !checkbox.checked;
+                toggleTheme();
+            }
+        }
+
+        function toggleTheme() {
+            const checkbox = document.getElementById('themeSwitch');
+            const target = checkbox.checked ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('APP_THEME', target);
+        }
+
+        // Init Theme UI
+        const currentTheme = localStorage.getItem('APP_THEME');
+        if (currentTheme === 'dark') {
+            const ts = document.getElementById('themeSwitch');
+            if (ts) ts.checked = true;
+        }
+
+        // Menu Functions
+        function toggleMenu() {
+            const menu = document.getElementById('popoverMenu');
+            const overlay = document.getElementById('clickOutside');
+            if (menu && overlay) {
+                menu.classList.toggle('active');
+                overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
+            }
+        }
+
+        function openInfoModal() {
+            // Close menu if it's open
+            const menu = document.getElementById('popoverMenu');
+            if (menu && menu.classList.contains('active')) {
+                toggleMenu();
+            }
+
+            const modal = document.getElementById('infoModal');
+            if (modal) {
+                modal.classList.add('active');
+                // Lock scroll when modal is open
+                document.body.style.overflow = 'hidden';
+            } else {
+                console.error('Info Modal not found!');
+            }
+        }
+
+        function closeInfoModal(e) {
+            if (e) e.stopPropagation();
+            const modal = document.getElementById('infoModal');
+            if (modal) {
+                modal.classList.remove('active');
+                // Restore scroll
+                document.body.style.overflow = '';
+            }
+        }
+
         // ========================================
         // SCROLL BEHAVIOR
         // ========================================
@@ -202,7 +316,7 @@
                 title: "Robot Vacuum Cleaner",
                 category: "beginner",
                 description: "Build your own autonomous robot vacuum cleaner using Arduino! This smart bot navigates obstacles with ultrasonic sensors while cleaning your floor with a custom suction system.",
-                image: "assets/img/arduinoProjects/001.jpg",
+                image: "assets/arduinoProjects/img/001.jpg",
                 products: [
                     PRODUCTS.arduino_uno,
                     PRODUCTS.motor_driver_l293d,
@@ -213,9 +327,13 @@
                     PRODUCTS.sensor_ultrasonic,
                     PRODUCTS.switch_power,
                     PRODUCTS.battery_holder,
+                    PRODUCTS.battery_holder,
                     PRODUCTS.dust_container,
                     PRODUCTS.wires_jumper
-                ]
+                ],
+                schematic: "assets/arduinoProjects/schematics/001_schematic.jpg",
+                code: "assets/arduinoProjects/code/vacuumRobot_with_antiCollision.ino",
+                flowchart: "assets/arduinoProjects/flowcharts/001_flowchart.png"
             }
             // {
             //     id: 2,
@@ -489,6 +607,64 @@
                             </svg>
                         </button>
                     ` : ''}
+                    
+                    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-light);">
+                         <h3 class="products-title">📂 Project Resources</h3>
+
+                          <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+                             
+                             <!-- Schematic Button -->
+                             <a 
+                                 href="${setup.schematic || '#'}" 
+                                 target="_blank"
+                                 class="affiliate-btn shopee-btn" 
+                                 style="width: auto; flex: 1; min-width: 100px; justify-content: center; background: var(--btn-bg); color: var(--text-primary); border: 1px solid var(--border); ${!setup.schematic ? 'opacity: 0.5;' : ''}" 
+                                 onclick="triggerHaptic('light'); ${!setup.schematic ? "alert('Schematic coming soon!'); return false;" : ''}"
+                             >
+                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                     <polyline points="14 2 14 8 20 8"></polyline>
+                                     <line x1="16" y1="13" x2="8" y2="13"></line>
+                                     <line x1="16" y1="17" x2="8" y2="17"></line>
+                                     <polyline points="10 9 9 9 8 9"></polyline>
+                                 </svg>
+                                 <span>Schematic</span>
+                             </a>
+ 
+                             <!-- Code Button -->
+                             <a 
+                                 href="${setup.code || '#'}" 
+                                 target="_blank"
+                                 class="affiliate-btn tiktok-btn" 
+                                 style="width: auto; flex: 1; min-width: 100px; justify-content: center; background: var(--btn-bg); color: var(--text-primary); border: 1px solid var(--border); ${!setup.code ? 'opacity: 0.5;' : ''}" 
+                                 onclick="triggerHaptic('light'); ${!setup.code ? "alert('Code coming soon!'); return false;" : ''}"
+                             >
+                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                                     <polyline points="16 18 22 12 16 6"></polyline>
+                                     <polyline points="8 6 2 12 8 18"></polyline>
+                                 </svg>
+                                 <span>Code</span>
+                             </a>
+ 
+                             <!-- Flowchart Button -->
+                             <a 
+                                 href="${setup.flowchart || '#'}" 
+                                 target="_blank"
+                                 class="affiliate-btn" 
+                                 style="width: auto; flex: 1; min-width: 100px; justify-content: center; background: var(--btn-bg); color: var(--text-primary); border: 1px solid var(--border); ${!setup.flowchart ? 'opacity: 0.5;' : ''}" 
+                                 onclick="triggerHaptic('light'); ${!setup.flowchart ? "alert('Flowchart coming soon!'); return false;" : ''}"
+                             >
+                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                                     <rect x="3" y="3" width="7" height="7"></rect>
+                                     <rect x="14" y="3" width="7" height="7"></rect>
+                                     <rect x="14" y="14" width="7" height="7"></rect>
+                                     <rect x="3" y="14" width="7" height="7"></rect>
+                                 </svg>
+                                 <span>Flowchart</span>
+                             </a>
+                          </div>
+                    </div>
+
                 </div>
                 
                 <div class="affiliate-disclosure">
@@ -570,41 +746,6 @@
                 closeModal();
             }
         });
-
-        // Close modal on swipe down (mobile)
-        let modalStartY = 0;
-        let modalCurrentY = 0;
-        const modalContent = document.querySelector('.modal-content');
-
-        if (modalContent && isMobile) {
-            modalContent.addEventListener('touchstart', (e) => {
-                modalStartY = e.touches[0].clientY;
-            }, { passive: true });
-
-            modalContent.addEventListener('touchmove', (e) => {
-                modalCurrentY = e.touches[0].clientY;
-                const diff = modalCurrentY - modalStartY;
-
-                // Only allow dragging down
-                if (diff > 0) {
-                    modalContent.style.transform = `translateY(${diff}px)`;
-                }
-            }, { passive: true });
-
-            modalContent.addEventListener('touchend', () => {
-                const diff = modalCurrentY - modalStartY;
-
-                // If dragged down more than 100px, close
-                if (diff > 100) {
-                    closeModal();
-                }
-
-                // Reset transform
-                modalContent.style.transform = '';
-                modalStartY = 0;
-                modalCurrentY = 0;
-            }, { passive: true });
-        }
 
         // ========================================
         // RENDER SETUPS WITH PAGINATION

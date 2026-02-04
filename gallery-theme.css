@@ -48,6 +48,35 @@
 
   /* Font - System Stack */
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+  /* New Theme Variables */
+  --nav-bg: rgba(255, 255, 255, 0.82);
+  --btn-bg: rgba(255, 255, 255, 0.9);
+  --product-bg: rgba(255, 255, 255, 0.7);
+  --btn-bg: rgba(255, 255, 255, 0.9);
+  --product-bg: rgba(255, 255, 255, 0.7);
+  --modal-bg: #FFFFFF;
+
+  --app-max-width: 600px;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  --bg: #000000;
+  --surface: rgba(28, 28, 30, 0.95);
+  --border: rgba(255, 255, 255, 0.15);
+  --border-light: rgba(255, 255, 255, 0.1);
+  --text-primary: #FFFFFF;
+  --text-secondary: #98989D;
+  --text-muted: #636366;
+  --accent: #0A84FF;
+  --accent-hover: #409CFF;
+
+  /* Dark Mode specific overrides */
+  --nav-bg: rgba(28, 28, 30, 0.85);
+  --btn-bg: rgba(58, 58, 60, 0.9);
+  --product-bg: rgba(44, 44, 46, 0.6);
+  --modal-bg: #1C1C1E;
 }
 
 * {
@@ -86,6 +115,10 @@ body {
   z-index: 0;
   overflow: hidden;
   /* Ensure gradient doesn't spill */
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+  /* subtle edge definition */
 }
 
 /* Vivid Background Blobs */
@@ -123,12 +156,12 @@ body {
 .header {
   position: sticky;
   top: 0;
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--nav-bg);
   /* Translucent */
   backdrop-filter: blur(20px) saturate(180%);
   /* Glassmorphism */
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border-light);
   /* Hairline */
   padding: var(--s3) var(--s4);
   display: flex;
@@ -341,10 +374,10 @@ body {
   left: 0;
   right: 0;
   height: var(--bottom-nav-height);
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--nav-bg);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: 1px solid var(--border-light);
   /* Hairline separator */
   display: flex;
   justify-content: space-around;
@@ -353,6 +386,10 @@ body {
   padding-top: 12px;
   z-index: 100;
   /* padding: 0 var(--s6); Old padding */
+  max-width: var(--app-max-width);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
 }
 
 .nav-btn {
@@ -508,25 +545,24 @@ body {
 }
 
 .modal-content {
-  position: absolute;
+  position: fixed;
+  top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   width: 100%;
-  height: 90vh;
-  max-height: 90vh;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border-radius: 24px 24px 0 0;
+  height: 100%;
+  max-height: 100vh;
+  background: var(--modal-bg);
+  /* Solid white for readablity */
+  border-radius: 0;
   transform: translateY(100%);
-  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  box-shadow:
-    0 -2px 40px rgba(0, 0, 0, 0.08),
-    0 -1px 2px rgba(0, 0, 0, 0.04);
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: none;
+  z-index: 1001;
+  /* Ensure above everything */
 }
 
 .modal.active .modal-content {
@@ -630,7 +666,7 @@ body {
 
 /* Product Item with Dual Affiliate Links */
 .product-item {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--product-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -1360,7 +1396,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--btn-bg);
   border: 1px solid var(--border);
   border-radius: 50%;
   color: var(--text-primary);
@@ -1383,4 +1419,209 @@ body {
   padding-left: 0;
   text-align: center;
   width: 100%;
+}
+
+/* ========================================
+   POPOVER & MENU SYSTEM
+   ======================================== */
+
+.click-outside {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: none;
+}
+
+.header .menu-btn {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--text-primary);
+  background: var(--btn-bg);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 1002;
+}
+
+.header .menu-btn:hover,
+.header .menu-btn.active {
+  background: var(--bg);
+}
+
+.header .menu-btn:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+.popover-menu {
+  position: fixed;
+  top: 70px;
+  /* Adjust based on header height */
+  right: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  width: 240px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 2001;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: fadeIn 0.2s ease forwards;
+  transform-origin: top right;
+  pointer-events: auto;
+}
+
+.popover-menu.active {
+  display: flex;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: background 0.2s;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font);
+}
+
+.menu-item:hover {
+  background: rgba(120, 120, 128, 0.08);
+}
+
+/* Switch */
+.switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(120, 120, 128, 0.16);
+  transition: .3s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input:checked+.slider {
+  background-color: var(--accent);
+}
+
+input:checked+.slider:before {
+  transform: translateX(20px);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 3000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.modal-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-card-info {
+  background: var(--surface);
+  padding: 32px;
+  border-radius: var(--r-lg);
+  max-width: 360px;
+  width: 100%;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  transform: translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid var(--border);
+}
+
+.modal-overlay.active .modal-card-info {
+  transform: translateY(0);
+}
+
+.info-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.info-text {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  line-height: 1.5;
+  font-size: 15px;
+}
+
+.info-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: var(--r-md);
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+
+.info-btn:active {
+  transform: scale(0.98);
 }
