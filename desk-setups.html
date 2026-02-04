@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desk Setup Gallery - Workspace Inspiration</title>
+    <title>Desk Setups - Workspace Inspiration</title>
     <meta name="description"
         content="Discover hundreds of stunning desk setups with curated affiliate links to build your dream workspace. From minimalist to gaming setups, find inspiration for your perfect desk.">
     <meta name="keywords" content="desk setup, workspace, office setup, gaming setup, minimalist desk, affiliate links">
     <link rel="stylesheet" href="gallery-theme.css">
+    <script src="products-db.js"></script> <!-- Link Product Database -->
 </head>
 
 <body>
@@ -23,7 +24,7 @@
                 </svg>
             </a>
             <div class="header-content">
-                <h1>Desk Setup Gallery</h1>
+                <h1>Desk Setups</h1>
                 <p>Discover hundreds of stunning desk setups and get all the gear to build your dream workspace</p>
             </div>
         </header>
@@ -197,17 +198,17 @@
                 description: "Limit my creativity with my wallet size. A glimpse inside my mid spec PC and the gadgets that live on my desk.",
                 image: "assets/img/deskSetup/001.jpg",
                 products: [
-                    { name: "[Monitor] Acer VG270P", url: "https://s.shopee.com.my/qdlujKFDx" },
-                    { name: "[Headphone] Cooler Master CH630", url: "https://s.shopee.com.my/3LL640XAA4" },
-                    { name: "[Mouse] Logitech G304", url: "https://s.shopee.com.my/60Ls4FvR82" },
-                    { name: "[Keyboard] Royal Kludge RK H81", url: "https://s.shopee.com.my/5VPbTLsOn8" },
-                    { name: "[Controller] DS4 OEM", url: "https://s.shopee.com.my/8fMdFPILFi" },
-                    { name: "[CPU Cooler] Thermalright P.A 120 SE", url: "https://s.shopee.com.my/6KyiSuNsn8" },
-                    { name: "[RAM] Corsair Vengeance RGB Pro SL White ", url: "https://s.shopee.com.my/6VI8fE9maI" },
-                    { name: "[SSD] Adata XPG SX8200 Pro", url: "https://s.shopee.com.my/3B1gh74XRK" },
-                    { name: "[PC Case] InWin 101 PC Case", url: "https://s.shopee.com.my/5fj1fljzGU" },
-                    { name: "[Desk] Computer/ Study Desk", url: "https://s.shopee.com.my/5VPbTgwhdl" },
-                    { name: "[Desk Add-on] Storage Shelf", url: "https://s.shopee.com.my/4fqUU4xdHk" }
+                    PRODUCTS.monitor_acer_vg270p,
+                    PRODUCTS.headphone_cm_ch630,
+                    PRODUCTS.mouse_logitech_g304,
+                    PRODUCTS.keyboard_rk_h81,
+                    PRODUCTS.controller_ds4,
+                    PRODUCTS.cooler_thermalright_pa120,
+                    PRODUCTS.ram_corsair_rgb,
+                    PRODUCTS.ssd_adata_sx8200,
+                    PRODUCTS.case_inwin_101,
+                    PRODUCTS.desk_study,
+                    PRODUCTS.shelf_storage
                 ]
             },
             // {
@@ -447,20 +448,42 @@
                 
                 <div class="modal-products">
                     <h3 class="products-title">🛒 Get the Gear</h3>
-                    ${setup.products.map(product => `
-                        <a 
-                            href="${product.url}" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            class="product-link"
-                            onclick="event.stopPropagation(); triggerHaptic('light');"
-                        >
-                            <span class="product-name">${product.name}</span>
-                            <span class="product-action">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                            </span>
-                        </a>
-                    `).join('')}
+                    <div class="products-list" id="products-list-${setup.id}">
+                        ${setup.products.map((product, index) => {
+                const isShopeeValid = product.shopeeUrl && product.shopeeUrl !== '#';
+                const isTiktokValid = product.tiktokUrl && product.tiktokUrl !== '#';
+
+                return `
+                            <div class="product-item ${index >= 3 ? 'hidden-item' : ''}" data-index="${index}">
+                                <div class="product-name">${product.name}</div>
+                                <div class="product-links">
+                                    <a 
+                                        ${isShopeeValid ? `href="${product.shopeeUrl}" target="_blank" rel="noopener noreferrer"` : ''}
+                                        class="affiliate-btn shopee-btn ${!isShopeeValid ? 'disabled' : ''}"
+                                        onclick="event.stopPropagation(); ${isShopeeValid ? "triggerHaptic('light');" : 'return false;'}"
+                                    >
+                                        <span class="btn-label">Shopee</span>
+                                    </a>
+                                    <a 
+                                        ${isTiktokValid ? `href="${product.tiktokUrl}" target="_blank" rel="noopener noreferrer"` : ''}
+                                        class="affiliate-btn tiktok-btn ${!isTiktokValid ? 'disabled' : ''}"
+                                        onclick="event.stopPropagation(); ${isTiktokValid ? "triggerHaptic('light');" : 'return false;'}"
+                                    >
+                                        <span class="btn-label">TikTok</span>
+                                    </a>
+                                </div>
+                            </div>
+                        `}).join('')}
+                    </div>
+                    ${setup.products.length > 3 ? `
+                        <button class="show-more-btn-simple" onclick="toggleProducts(${setup.id}); event.stopPropagation();" data-setup-id="${setup.id}">
+                            <span class="show-more-icon">•••</span>
+                            <span class="show-more-text">Show ${setup.products.length - 3} More</span>
+                            <svg class="chevron-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    ` : ''}
                 </div>
                 
                 <div class="affiliate-disclosure">
@@ -481,6 +504,48 @@
                         }, { passive: true });
                     });
                 }, 100);
+            }
+        };
+
+        // ========================================
+        // TOGGLE PRODUCTS VISIBILITY
+        // ========================================
+        window.toggleProducts = function (setupId) {
+            triggerHaptic('light');
+            const productsList = document.getElementById(`products-list-${setupId}`);
+            const btn = document.querySelector(`[data-setup-id="${setupId}"]`);
+            const hiddenItems = productsList.querySelectorAll('.hidden-item');
+            const isExpanded = productsList.classList.contains('expanded');
+            const totalProducts = productsList.querySelectorAll('.product-item').length;
+
+            if (isExpanded) {
+                // Collapse
+                hiddenItems.forEach(item => {
+                    item.style.maxHeight = item.scrollHeight + 'px';
+                    setTimeout(() => {
+                        item.style.maxHeight = '0';
+                    }, 10);
+                });
+                productsList.classList.remove('expanded');
+                btn.querySelector('.show-more-text').textContent = `Show ${totalProducts - 3} More`;
+                btn.classList.remove('expanded');
+            } else {
+                // Expand
+                productsList.classList.add('expanded'); // Add class first to restore padding/border
+                hiddenItems.forEach(item => {
+                    // Add buffer to ensure we clear borders and avoid clipping
+                    item.style.maxHeight = (item.scrollHeight + 20) + 'px';
+                });
+
+                // Clear fixed height after animation to allow responsiveness
+                setTimeout(() => {
+                    hiddenItems.forEach(item => {
+                        item.style.maxHeight = null;
+                    });
+                }, 310);
+
+                btn.querySelector('.show-more-text').textContent = 'Show Less';
+                btn.classList.add('expanded');
             }
         };
 

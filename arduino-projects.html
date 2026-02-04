@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arduino Projects Gallery - DIY Electronics</title>
+    <title>Arduino Projects - DIY Electronics</title>
     <meta name="description"
         content="Discover creative Arduino projects with step-by-step guides and curated component affiliate links. From beginner to advanced projects, find inspiration for your next build.">
     <meta name="keywords"
         content="arduino projects, DIY electronics, microcontroller, IoT, smart home, arduino tutorial, affiliate links">
     <link rel="stylesheet" href="gallery-theme.css">
+    <script src="products-db.js"></script> <!-- Link Product Database -->
 </head>
 
 <body>
@@ -24,7 +25,7 @@
                 </svg>
             </a>
             <div class="header-content">
-                <h1>Arduino Projects Gallery</h1>
+                <h1>Arduino Projects</h1>
                 <p>Explore creative Arduino projects and get all the components to build your own</p>
             </div>
         </header>
@@ -203,17 +204,17 @@
                 description: "Build your own autonomous robot vacuum cleaner using Arduino! This smart bot navigates obstacles with ultrasonic sensors while cleaning your floor with a custom suction system.",
                 image: "assets/img/arduinoProjects/001.jpg",
                 products: [
-                    { name: "Arduino Uno (x1)", icon: "♾️", url: "https://s.shopee.com.my/8Kjm2fu9SG" },
-                    { name: "L293D Motor Driver Shield (x1)", icon: "🛡️", url: "https://s.shopee.com.my/20piVMSC73" },
-                    { name: "6V DC Motor Set Smart Robot Car Chassis Kit (x1)", icon: "⚙️", url: "https://s.shopee.com.my/4VX3Tz8nKy" },
-                    { name: "Standard DC Motor (3-6V) (x1)", icon: "", url: "https://s.shopee.com.my/3VeWIFZGoL" },
-                    { name: "Servo Motor (SG90) (x1)", icon: "🦾", url: "https://s.shopee.com.my/2qOpUrhI8F" },
-                    { name: "18650 Li-ion Batteries (x2)", icon: "", url: "https://s.shopee.com.my/5VPafhCkzH" },
-                    { name: "HC-SR04 Ultrasonic Sensor (x1)", icon: "🦇", url: "https://s.shopee.com.my/6VI7rZ84ap" },
-                    { name: "Power Switch (x1)", icon: "", url: "https://s.shopee.com.my/2qOpVChoX7" },
-                    { name: "Battery Holder (x1)", icon: "🔋", url: "https://s.shopee.com.my/1BGbW2luLi" },
-                    { name: "Dust Container (x1)", icon: "🗑️", url: "#" },
-                    { name: "Jumper Wires & Connectors", icon: "", url: "https://s.shopee.com.my/AKUqQqncwa" }
+                    PRODUCTS.arduino_uno,
+                    PRODUCTS.motor_driver_l293d,
+                    PRODUCTS.chassis_kit_2wd,
+                    PRODUCTS.dc_motor_standard,
+                    PRODUCTS.servo_sg90,
+                    PRODUCTS.battery_18650_x2,
+                    PRODUCTS.sensor_ultrasonic,
+                    PRODUCTS.switch_power,
+                    PRODUCTS.battery_holder,
+                    PRODUCTS.dust_container,
+                    PRODUCTS.wires_jumper
                 ]
             }
             // {
@@ -452,20 +453,42 @@
                 
                 <div class="modal-products">
                     <h3 class="products-title">🛒 Get the Components</h3>
-                    ${setup.products.map(product => `
-                        <a 
-                            href="${product.url}" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            class="product-link"
-                            onclick="event.stopPropagation(); triggerHaptic('light');"
-                        >
-                            <span class="product-name">${product.name}</span>
-                            <span class="product-action">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                            </span>
-                        </a>
-                    `).join('')}
+                    <div class="products-list" id="products-list-${setup.id}">
+                        ${setup.products.map((product, index) => {
+                const isShopeeValid = product.shopeeUrl && product.shopeeUrl !== '#';
+                const isTiktokValid = product.tiktokUrl && product.tiktokUrl !== '#';
+
+                return `
+                            <div class="product-item ${index >= 3 ? 'hidden-item' : ''}" data-index="${index}">
+                                <div class="product-name">${product.name}</div>
+                                <div class="product-links">
+                                    <a 
+                                        ${isShopeeValid ? `href="${product.shopeeUrl}" target="_blank" rel="noopener noreferrer"` : ''}
+                                        class="affiliate-btn shopee-btn ${!isShopeeValid ? 'disabled' : ''}"
+                                        onclick="event.stopPropagation(); ${isShopeeValid ? "triggerHaptic('light');" : 'return false;'}"
+                                    >
+                                        <span class="btn-label">Shopee</span>
+                                    </a>
+                                    <a 
+                                        ${isTiktokValid ? `href="${product.tiktokUrl}" target="_blank" rel="noopener noreferrer"` : ''}
+                                        class="affiliate-btn tiktok-btn ${!isTiktokValid ? 'disabled' : ''}"
+                                        onclick="event.stopPropagation(); ${isTiktokValid ? "triggerHaptic('light');" : 'return false;'}"
+                                    >
+                                        <span class="btn-label">TikTok</span>
+                                    </a>
+                                </div>
+                            </div>
+                        `}).join('')}
+                    </div>
+                    ${setup.products.length > 3 ? `
+                        <button class="show-more-btn-simple" onclick="toggleProducts(${setup.id}); event.stopPropagation();" data-setup-id="${setup.id}">
+                            <span class="show-more-icon">•••</span>
+                            <span class="show-more-text">Show ${setup.products.length - 3} More</span>
+                            <svg class="chevron-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    ` : ''}
                 </div>
                 
                 <div class="affiliate-disclosure">
@@ -486,6 +509,48 @@
                         }, { passive: true });
                     });
                 }, 100);
+            }
+        };
+
+        // ========================================
+        // TOGGLE PRODUCTS VISIBILITY
+        // ========================================
+        window.toggleProducts = function (setupId) {
+            triggerHaptic('light');
+            const productsList = document.getElementById(`products-list-${setupId}`);
+            const btn = document.querySelector(`[data-setup-id="${setupId}"]`);
+            const hiddenItems = productsList.querySelectorAll('.hidden-item');
+            const isExpanded = productsList.classList.contains('expanded');
+            const totalProducts = productsList.querySelectorAll('.product-item').length;
+
+            if (isExpanded) {
+                // Collapse
+                hiddenItems.forEach(item => {
+                    item.style.maxHeight = item.scrollHeight + 'px';
+                    setTimeout(() => {
+                        item.style.maxHeight = '0';
+                    }, 10);
+                });
+                productsList.classList.remove('expanded');
+                btn.querySelector('.show-more-text').textContent = `Show ${totalProducts - 3} More`;
+                btn.classList.remove('expanded');
+            } else {
+                // Expand
+                productsList.classList.add('expanded'); // Add class first to restore padding/border
+                hiddenItems.forEach(item => {
+                    // Add buffer to ensure we clear borders and avoid clipping
+                    item.style.maxHeight = (item.scrollHeight + 20) + 'px';
+                });
+
+                // Clear fixed height after animation to allow responsiveness
+                setTimeout(() => {
+                    hiddenItems.forEach(item => {
+                        item.style.maxHeight = null;
+                    });
+                }, 310);
+
+                btn.querySelector('.show-more-text').textContent = 'Show Less';
+                btn.classList.add('expanded');
             }
         };
 
