@@ -62,7 +62,7 @@ A showcase for DIY electronics and coding projects.
 - **Vanilla JavaScript**: Lightweight, fast, and no heavy framework dependencies.
 - **LocalStorage API**: For persisting user preferences (Dark Mode) and data (Grades) across sessions.
 - **Responsive Design**: Mobile-first approach ensuring perfect rendering on all devices.
-- **Glassmorphism**: Heavy use of `backdrop-filter` for a modern, premium iOS-like aesthetic.
+- **Glassmorphism**: Heavy use of `backdrop-filter` for a modern, premium aesthetic.
 
 ## ✨ Key Features Across All Apps
 

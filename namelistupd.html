@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Name List Updater</title>
+    <link rel="stylesheet" href="css/updater.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn-absolute" title="Home">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+        </a>
+        <div class="brand">
+            Name List Updater
+        </div>
+
+        <!-- Menu Button -->
+        <button class="menu-btn" onclick="toggleMenu()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="19" cy="12" r="1"></circle>
+                <circle cx="5" cy="12" r="1"></circle>
+            </svg>
+        </button>
+    </header>
+
+    <div class="click-outside" id="clickOutside" onclick="toggleMenu()"></div>
+
+    <!-- Popover Menu -->
+    <div class="popover-menu" id="popoverMenu">
+        <div class="menu-item" onclick="toggleThemeMode()">
+            <span>Dark Mode</span>
+            <div class="switch" style="pointer-events: none;">
+                <input type="checkbox" id="themeSwitch">
+                <span class="slider"></span>
+            </div>
+        </div>
+        <button class="menu-item" onclick="openInfoModal()">
+            <span>Info</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+        </button>
+    </div>
+
+    <main>
+        <div class="editor-wrapper">
+            <div class="status-bar">
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    <span id="statusText">Ready</span>
+                </div>
+                <span id="lineCount">0 lines</span>
+            </div>
+            <textarea id="mainEditor" placeholder="// Paste a namelist here..."></textarea>
+        </div>
+
+        <!-- Floating Action Pills -->
+        <div class="action-pills">
+            <button class="pill-btn danger" onclick="updater.clearText()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    <line x1="10" y1="11" x2="10" y2="17" />
+                    <line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+                Clear
+            </button>
+        </div>
+
+        <!-- Bottom Control Bar -->
+        <div class="bottom-bar">
+            <button id="settingsBtn" class="control-btn secondary" title="Edit My Profile">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.39a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                    <circle cx="12" cy="12" r="3" />
+                </svg>
+            </button>
+            <button id="addMeBtn" class="control-btn primary">
+                <span class="btn-text">Add Me & Copy</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="8.5" cy="7" r="4" />
+                    <line x1="20" y1="8" x2="20" y2="14" />
+                    <line x1="23" y1="11" x2="17" y2="11" />
+                </svg>
+            </button>
+        </div>
+    </main>
+
+    <!-- Profile Setup Modal -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Your Profile</h2>
+                <button class="close-modal" onclick="updater.closeSettings()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Set this once. We'll match the format automatically.</p>
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="myFullName" placeholder="e.g. Ahmad bin Alhabshee">
+                </div>
+
+                <div class="form-group row">
+                    <div class="col">
+                        <label>Nickname</label>
+                        <input type="text" id="myNickName" placeholder="e.g. Ahmad">
+                    </div>
+                    <div class="col">
+                        <label>Matric No.</label>
+                        <input type="text" id="myMatric" placeholder="123456" inputmode="numeric">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="pill-btn primary full-width" onclick="updater.saveSettings()">Save Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="infoModalApp" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>About</h2>
+                <button class="close-modal" onclick="closeInfoModal()">✕</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <h4 style="margin: 0; font-size: 18px; margin-bottom: 2px;">Name List Updater</h4>
+                <div style="font-size: 13px; opacity: 0.6; margin-bottom: 12px;">v1.0</div>
+                <p class="modal-desc">
+                    Effortlessly transform raw text into organized, formatted lists.
+                    <br><br>
+                    <span style="font-size: 12px; opacity: 0.7;">© 2026 Azizi Yahya</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="pill-btn primary full-width" onclick="closeInfoModal()">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Processing...</div>
+    </div>
+
+    <div id="toast">Copied to clipboard</div>
+
+    <script>
+        // Menu & Theme Logic (Shared with Namelist)
+        function toggleMenu() {
+            const menu = document.getElementById('popoverMenu');
+            const overlay = document.getElementById('clickOutside');
+            menu.classList.toggle('active');
+            overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
+        }
+
+        function toggleThemeMode() {
+            const body = document.body;
+            const isDark = body.classList.toggle('dark-mode');
+            const toggle = document.getElementById('themeSwitch');
+            if (toggle) toggle.checked = isDark;
+
+            const theme = isDark ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('APP_THEME', theme);
+        }
+
+        // Info Modal
+        function openInfoModal() {
+            const menu = document.getElementById('popoverMenu');
+            if (menu.classList.contains('active')) toggleMenu(); // Close menu
+
+            // Allow small delay for menu close animation if any
+            setTimeout(() => {
+                document.getElementById('infoModalApp').classList.add('show');
+            }, 50);
+        }
+
+        function closeInfoModal() {
+            document.getElementById('infoModalApp').classList.remove('show');
+        }
+
+        // Initialize Theme
+        (function () {
+            const savedTheme = localStorage.getItem('APP_THEME');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                document.documentElement.setAttribute('data-theme', 'dark');
+                const t = document.getElementById('themeSwitch');
+                if (t) t.checked = true;
+            }
+        })();
+    </script>
+    <script src="js/updater.js"></script>
+
+</body>
+
+</html>
