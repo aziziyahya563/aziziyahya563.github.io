@@ -266,7 +266,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
         --bg-color: #0f172a;
         --bg-gradient: linear-gradient(to bottom, #0f172a, #020617);
 
@@ -282,6 +282,7 @@
 }
 
 /* Manual Dark Mode Override */
+:root[data-theme="dark"],
 body.dark-mode {
     --bg-color: #0f172a;
     --bg-gradient: linear-gradient(to bottom, #0f172a, #020617);

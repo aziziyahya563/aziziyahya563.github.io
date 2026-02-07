@@ -14,6 +14,17 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
 </head>
+<script>
+    (function () {
+        const t = localStorage.getItem('APP_THEME');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (t) {
+            document.documentElement.setAttribute('data-theme', t);
+        } else if (prefersDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    })();
+</script>
 
 <body>
 
@@ -151,7 +162,7 @@
             </div>
             <div class="modal-body" style="text-align: center;">
                 <h4 style="margin: 0; font-size: 18px; margin-bottom: 2px;">Name List Updater</h4>
-                <div style="font-size: 13px; opacity: 0.6; margin-bottom: 12px;">v1.0</div>
+                <div style="font-size: 13px; opacity: 0.6; margin-bottom: 12px;">v1.1</div>
                 <p class="modal-desc">
                     Effortlessly transform raw text into organized, formatted lists.
                     <br><br>
@@ -182,14 +193,24 @@
         }
 
         function toggleThemeMode() {
-            const body = document.body;
-            const isDark = body.classList.toggle('dark-mode');
-            const toggle = document.getElementById('themeSwitch');
-            if (toggle) toggle.checked = isDark;
+            const checkbox = document.getElementById('themeSwitch');
+            const isDark = !document.body.classList.contains('dark-mode'); // Toggle based on current state
+            applyTheme(isDark);
+        }
 
-            const theme = isDark ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('APP_THEME', theme);
+        function applyTheme(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('APP_THEME', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('APP_THEME', 'light');
+            }
+
+            const mb = document.getElementById('themeSwitch');
+            if (mb) mb.checked = isDark;
         }
 
         // Info Modal
@@ -207,19 +228,29 @@
             document.getElementById('infoModalApp').classList.remove('show');
         }
 
-        // Initialize Theme
-        (function () {
+        // Sync with other tabs
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'APP_THEME') {
+                const isDark = e.newValue === 'dark';
+                applyTheme(isDark);
+            }
+        });
+
+        // Initialize Theme UI (Checkbox state)
+        document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('APP_THEME');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
 
-            if (isDark) {
-                document.body.classList.add('dark-mode');
-                document.documentElement.setAttribute('data-theme', 'dark');
-                const t = document.getElementById('themeSwitch');
-                if (t) t.checked = true;
-            }
-        })();
+            // Body class might already be set by head script if we used class-based approach there, 
+            // but we only set attribute. namelistupd relies on .dark-mode class for some overrides?
+            // checking css... yes body.dark-mode is used.
+            // So we need to ensure class is added if it's dark.
+            if (isDark) document.body.classList.add('dark-mode');
+
+            const t = document.getElementById('themeSwitch');
+            if (t) t.checked = isDark;
+        });
     </script>
     <script src="js/updater.js"></script>
 

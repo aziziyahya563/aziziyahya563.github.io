@@ -9,6 +9,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+<script>
+  (function () {
+    const t = localStorage.getItem('APP_THEME');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (t) {
+      document.documentElement.setAttribute('data-theme', t);
+    } else if (prefersDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
 
 <body>
 
@@ -314,7 +325,7 @@
       </div>
       <div class="modal-body" style="text-align: center;">
         <h4 style="margin: 0; font-size: 18px; margin-bottom: 2px;">Name List Generator</h4>
-        <div style="font-size: 13px; opacity: 0.6; margin-bottom: 12px;">v1.0</div>
+        <div style="font-size: 13px; opacity: 0.6; margin-bottom: 12px;">v1.1</div>
         <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5;">
           The complete solution for generating and managing professional class lists.
           <br><br>
@@ -357,29 +368,44 @@
     function toggleTheme() {
       const checkbox = document.getElementById('themeSwitch');
       const isDark = checkbox.checked;
+      applyTheme(isDark);
+    }
 
+    function applyTheme(isDark) {
       if (isDark) {
         document.body.classList.add('dark-mode');
         document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('APP_THEME', 'dark');
       } else {
         document.body.classList.remove('dark-mode');
         document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('APP_THEME', 'light');
       }
-      localStorage.setItem('APP_THEME', isDark ? 'dark' : 'light');
+
+      const cb = document.getElementById('themeSwitch');
+      if (cb && cb.checked !== isDark) cb.checked = isDark;
     }
 
-    // Init Theme
-    (function () {
+    // Sync with other tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'APP_THEME') {
+        const isDark = e.newValue === 'dark';
+        applyTheme(isDark);
+      }
+    });
+
+    // Init Theme UI (Checkbox & Body Class)
+    document.addEventListener('DOMContentLoaded', () => {
       const savedTheme = localStorage.getItem('APP_THEME');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
 
-      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      if (isDark) {
         document.body.classList.add('dark-mode');
-        document.documentElement.setAttribute('data-theme', 'dark');
         const t = document.getElementById('themeSwitch');
         if (t) t.checked = true;
       }
-    })();
+    });
 
     // Main Tab Switcher
     function switchTab(tabName) {

@@ -39,9 +39,8 @@ A creative tool designed for social media content creators.
     - **New:** "Connected" dark mode support.
 
 ### 4. 🖥️ **Desk Setups Gallery (`desk-setups.html`)**
-A curated gallery of inspiring workspace setups (in progress).
+A curated gallery of inspiring workspace setups.
 - **Key Features:**
-    - Mobile-first "feed" layout.
     - Filter by category (Minimal, Gaming, etc.).
     - Affiliate product links integration.
     - Native "Pull to refresh" feel.

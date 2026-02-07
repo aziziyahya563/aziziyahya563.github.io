@@ -40,7 +40,7 @@
 
 
 @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
         --bg-color: #000000;
         --surface: #1C1C1E;
         --surface-glass: rgba(30, 30, 30, 0.8);
@@ -53,6 +53,7 @@
 }
 
 /* Manual Dark Mode Override */
+:root[data-theme="dark"],
 body.dark-mode {
     --bg-color: #000000;
     --surface: #1C1C1E;

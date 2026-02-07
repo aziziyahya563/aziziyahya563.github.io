@@ -712,6 +712,16 @@
             if (ts) ts.checked = true;
         }
 
+        // Sync with other tabs
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'APP_THEME') {
+                const isDark = e.newValue === 'dark';
+                document.documentElement.setAttribute('data-theme', e.newValue);
+                const ts = document.getElementById('themeSwitch');
+                if (ts) ts.checked = isDark;
+            }
+        });
+
         // Pulse Animation for Background
         // (Existing background animation works via CSS)
     </script>
