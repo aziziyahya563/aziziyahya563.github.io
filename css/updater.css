@@ -705,109 +705,147 @@ textarea::-webkit-scrollbar-thumb:hover {
     }
 }
 
-/* --- Desktop Enhancements --- */
-@media (min-width: 1024px) {
+/* --- Desktop Centered Card (Mobile App Look) --- */
+@media (min-width: 800px) {
     body {
-        justify-content: center;
-        overflow: hidden;
-        /* Prevent body scroll if content fits */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 40px 20px;
+        overflow-y: auto;
+        height: auto;
+        min-height: 100vh;
     }
 
-    /* Override header to be more subtle on desktop */
+    /* Header becomes part of the centered card */
     header {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: transparent;
-        border-bottom: none;
-        padding: 20px 40px;
-        justify-content: center;
-        /* Centered Title */
-    }
-
-    .brand {
-        font-size: 1.5rem;
-        font-weight: 700;
+        position: relative;
+        width: 480px;
+        max-width: 100%;
+        background: var(--surface-solid);
+        backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
+        border-bottom: 0.5px solid var(--border);
+        border-radius: 32px 32px 0 0;
+        padding: 0 16px;
+        height: 52px;
+        margin: 0;
+        margin-bottom: 0;
+        border: 1px solid var(--border);
+        border-bottom: 0.5px solid var(--border);
+        box-shadow: none;
+        flex-shrink: 0;
     }
 
     .back-btn-absolute {
-        left: 40px;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
+        left: 16px;
+        width: 40px;
+        height: 40px;
+        background: var(--surface-solid);
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .back-btn-absolute:hover {
+        transform: translateY(-50%) scale(1.1);
+        background: var(--bg-color);
+        border-color: var(--primary);
+    }
+
+    .back-btn-absolute:active {
+        transform: translateY(-50%) scale(0.95);
     }
 
     .menu-btn {
-        right: 40px;
+        right: 16px;
         width: 40px;
         height: 40px;
-        /* Ensure it stays absolute if mobile styles set it so, 
-           checking file content... yes .menu-btn has pos absolute in base styles. 
-           We just adjust right position here. */
-    }
-
-    main {
-        padding: 0;
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .editor-wrapper {
-        width: 800px;
-        height: 70vh;
-        max-width: 90%;
-        border-radius: 20px;
-        /* Fully rounded */
-        border: 1px solid var(--border);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
         background: var(--surface-solid);
-        /* Ensure it's above other elements if needed */
-        position: relative;
-        overflow: hidden;
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
-    /* Position Action Pills (Clear) inside the status bar area or to the side */
+    .menu-btn:hover {
+        background: var(--bg-color);
+    }
+
+    .brand {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    /* Main container becomes bottom part of the card */
+    main {
+        width: 480px;
+        max-width: 100%;
+        background: var(--surface-solid);
+        border-radius: 0 0 32px 32px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        border: 1px solid var(--border);
+        border-top: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        max-height: calc(90vh - 52px);
+        height: auto;
+        overflow: hidden;
+        position: relative;
+        margin-top: 0;
+    }
+
+    /* Editor wrapper adjustments */
+    .editor-wrapper {
+        border-radius: 0 0 32px 32px;
+        border: none;
+        border-top: none;
+        box-shadow: none;
+        flex: 1;
+        height: auto;
+        min-height: 500px;
+        max-height: calc(90vh - 52px);
+        animation: none;
+        background: var(--surface-solid);
+    }
+
+    .status-bar {
+        background: var(--surface-solid);
+    }
+
+    /* Position Action Pills inside the card context */
     .action-pills {
         position: absolute;
-        top: 20px;
-        /* Match padding of editor text area */
+        top: auto;
+        bottom: 100px;
         right: 20px;
-        bottom: auto;
         animation: none;
-        /* Reset mobile animation */
         opacity: 1;
         transform: none;
         z-index: 10;
     }
 
-    /* Make the clear button smaller and less intrusive on desktop */
     .pill-btn.danger {
-        background: transparent;
-        border: 1px solid transparent;
-        box-shadow: none;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
         color: var(--text-muted);
-        opacity: 0.6;
-        padding: 6px 12px;
+        opacity: 1;
+        padding: 8px 16px;
     }
 
     .pill-btn.danger:hover {
-        background: rgba(239, 68, 68, 0.1);
+        background: var(--surface-solid);
         color: #ef4444;
         opacity: 1;
-        transform: none;
+        transform: translateX(-4px);
+        border-color: rgba(239, 68, 68, 0.2);
     }
 
-    /* Move Bottom Bar (Add Me) inside the editor wrapper at the bottom? 
-       Or keep it floating but centered relative to editor.
-       Let's put it inside the editor wrapper to make it a self-contained card.
-    */
+    /* Bottom bar stays inside card */
     .bottom-bar {
         position: absolute;
-        bottom: 20px;
+        bottom: 24px;
         left: 50%;
         transform: translateX(-50%);
         width: calc(100% - 40px);
@@ -815,8 +853,17 @@ textarea::-webkit-scrollbar-thumb:hover {
         animation: none;
     }
 
-    /* Adjust text area padding to not overlap with bottom bar */
+    /* Adjust text area padding */
     textarea#mainEditor {
-        padding-bottom: 90px;
+        padding: 20px;
+        padding-bottom: 120px;
+    }
+
+    /* Popover menu positioning - positioned relative to centered card */
+    .popover-menu {
+        position: fixed;
+        top: 100px; /* Below the header (40px body padding + 52px header + some gap) */
+        right: calc(50vw - 240px + 16px); /* Align with menu button in centered 480px card */
+        /* Calculation: 50vw centers at viewport, -240px (half card width) + 16px (button offset) */
     }
 }

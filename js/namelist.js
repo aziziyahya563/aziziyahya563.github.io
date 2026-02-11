@@ -400,9 +400,40 @@ const namelist = {
     const text = this.generateFormattedText();
     if (!text) return this.showToast("Select users first!", "error");
 
-    navigator.clipboard.writeText(text).then(() => {
-      this.showToast("Copied to Clipboard!", "success");
-    }).catch(err => this.showToast("Failed to copy", "error"));
+    // Mobile-friendly clipboard copy using textarea fallback
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.top = '-9999px';
+    textarea.style.left = '-9999px';
+    textarea.setAttribute('readonly', '');
+    document.body.appendChild(textarea);
+    
+    // Handle iOS specifically
+    if (navigator.userAgent.match(/ipad|iphone/i)) {
+      const range = document.createRange();
+      range.selectNodeContents(textarea);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      textarea.setSelectionRange(0, text.length);
+    } else {
+      textarea.select();
+    }
+    
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        this.showToast("Copied to Clipboard!", "success");
+      } else {
+        this.showToast("Failed to copy", "error");
+      }
+    } catch (err) {
+      console.error('Copy failed:', err);
+      this.showToast("Failed to copy", "error");
+    } finally {
+      document.body.removeChild(textarea);
+    }
   },
 
   exportToExcel() {

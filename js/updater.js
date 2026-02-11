@@ -119,20 +119,36 @@ const updater = {
         try {
             if (isEmpty) {
                 // Magic Paste Mode
-                const clipboardText = await navigator.clipboard.readText();
-                if (!clipboardText || !clipboardText.trim()) {
-                    this.showToast("Clipboard is empty!");
+                // Check if Clipboard API is available (requires HTTPS on most browsers)
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    try {
+                        const clipboardText = await navigator.clipboard.readText();
+                        if (!clipboardText || !clipboardText.trim()) {
+                            overlay.classList.remove("show");
+                            this.showToast("Clipboard is empty!");
+                            return;
+                        }
+
+                        // Simulate interaction delay for feel (optional but nice)
+                        await new Promise(r => setTimeout(r, 600));
+
+                        this.elements.editor.value = clipboardText;
+                        this.saveList();
+                        this.analyzeList();
+
+                        this.autoAddMe();
+                    } catch (clipboardErr) {
+                        // Clipboard read permission denied or not supported
+                        overlay.classList.remove("show");
+                        this.showManualPastePrompt();
+                        return;
+                    }
+                } else {
+                    // Clipboard API not available (HTTP or older browser)
+                    overlay.classList.remove("show");
+                    this.showManualPastePrompt();
                     return;
                 }
-
-                // Simulate interaction delay for feel (optional but nice)
-                await new Promise(r => setTimeout(r, 600));
-
-                this.elements.editor.value = clipboardText;
-                this.saveList();
-                this.analyzeList();
-
-                this.autoAddMe();
             } else {
                 // Normal Add Mode
                 await new Promise(r => setTimeout(r, 400)); // Tiny delay for UI feel
@@ -372,12 +388,37 @@ const updater = {
         const text = this.elements.editor.value;
         if (!text) return;
 
-        navigator.clipboard.writeText(text).then(() => {
-            // Toast handled by caller usually, but duplicate is fine
-        }).catch(() => {
-            this.elements.editor.select();
-            document.execCommand("copy");
-        });
+        // Mobile-friendly clipboard copy using textarea fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.top = '-9999px';
+        textarea.style.left = '-9999px';
+        textarea.setAttribute('readonly', '');
+        document.body.appendChild(textarea);
+        
+        // Handle iOS specifically
+        if (navigator.userAgent.match(/ipad|iphone/i)) {
+            const range = document.createRange();
+            range.selectNodeContents(textarea);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            textarea.setSelectionRange(0, text.length);
+        } else {
+            textarea.select();
+        }
+        
+        try {
+            const successful = document.execCommand('copy');
+            if (!successful) {
+                console.warn('Copy command was unsuccessful');
+            }
+        } catch (err) {
+            console.error('Failed to copy text:', err);
+        } finally {
+            document.body.removeChild(textarea);
+        }
     },
 
     loadSample() {
@@ -396,6 +437,32 @@ const updater = {
         t.innerText = msg;
         t.classList.add("show");
         setTimeout(() => t.classList.remove("show"), 2500);
+    },
+
+    showManualPastePrompt() {
+        const overlay = document.getElementById("loadingOverlay");
+        
+        this.showToast("📋 Tap the text area and paste (long-press)");
+        this.elements.editor.focus();
+        
+        // Wait for user to paste
+        const handlePaste = () => {
+            this.elements.editor.removeEventListener('input', handlePaste);
+            // Give them a moment to finish pasting
+            setTimeout(() => {
+                const newText = this.elements.editor.value.trim();
+                if (newText) {
+                    this.showToast("Got it! Adding you now...");
+                    overlay.classList.add("show");
+                    setTimeout(() => {
+                        this.autoAddMe();
+                        overlay.classList.remove("show");
+                    }, 400);
+                }
+            }, 500);
+        };
+        
+        this.elements.editor.addEventListener('input', handlePaste, { once: true });
     }
 };
 
