@@ -735,9 +735,7 @@
       }
 
       .popover-menu {
-        position: absolute;
-        top: 60px;
-        right: 20px;
+        position: fixed;
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
@@ -747,7 +745,7 @@
         display: none;
         flex-direction: column;
         gap: 4px;
-        z-index: 100;
+        z-index: 1001;
         animation: fadeIn 0.2s ease forwards;
         transform-origin: top right;
       }
@@ -1602,9 +1600,24 @@
       function toggleMenu() {
         const menu = document.getElementById("popoverMenu");
         const overlay = document.getElementById("clickOutside");
-        document
-          .querySelectorAll(".menu-btn")
-          .forEach((b) => b.classList.toggle("active"));
+        const menuButtons = document.querySelectorAll(".menu-btn");
+
+        menuButtons.forEach((b) => b.classList.toggle("active"));
+
+        const isOpening = !menu.classList.contains("active");
+
+        if (isOpening) {
+          // Calculate position based on the first visible menu button
+          const activeButton = Array.from(menuButtons).find(
+            (btn) => btn.offsetParent !== null,
+          );
+
+          if (activeButton) {
+            const rect = activeButton.getBoundingClientRect();
+            menu.style.top = `${rect.bottom + 8}px`;
+            menu.style.right = `${window.innerWidth - rect.right}px`;
+          }
+        }
 
         menu.classList.toggle("active");
         overlay.style.display = menu.classList.contains("active")
