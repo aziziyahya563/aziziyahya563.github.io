@@ -1355,114 +1355,6 @@
       // =========================================
       // CALCULATOR LOGIC
       // =========================================
-      function renderCalculatorTiles() {
-        const grid = document.getElementById("assessmentsGrid");
-        grid.innerHTML = "";
-
-        const savedMarks = allMarksData[currentCourseId] || {};
-        const assessments = getAssessments(currentCourseId);
-
-        assessments.forEach((assess, index) => {
-          const val =
-            savedMarks[assess.id] !== undefined ? savedMarks[assess.id] : "?";
-
-          const tile = document.createElement("div");
-          tile.className = "assessment-tile";
-          tile.style.animationDelay = index * 0.05 + "s";
-          tile.onclick = () => focusInput(assess.id);
-
-          tile.innerHTML = `
-                    <div class="tile-header">
-                        <span class="tile-name">${assess.name}</span>
-                        <span class="tile-weight">${assess.weight}%</span>
-                    </div>
-                    <div class="input-area">
-                        <input type="number" id="${assess.id}" placeholder="?" 
-                            value="${val === "?" ? "" : val}"
-                            oninput="validateAndCalculate(this, '${assess.id}', ${assess.max})"
-                            onfocus="handleFocus(this)" 
-                            onblur="handleBlur(this, ${assess.max})">
-                        <span class="den">/${assess.max}</span>
-                    </div>
-                `;
-          grid.appendChild(tile);
-
-          // Initialize blur state (restore ? if empty)
-          if (val === "?" || val === "") {
-            tile.querySelector("input").value = "?"; // Visual only
-          }
-        });
-      }
-
-      function validateAndCalculate(input, assessId, max) {
-        let value = input.value;
-
-        // If empty or ?, skip validation but recalc
-        if (value === "" || value === "?") {
-          saveAndRecalc(assessId, "?");
-          return;
-        }
-
-        let numValue = parseFloat(value);
-        if (isNaN(numValue)) {
-          input.value = "";
-          saveAndRecalc(assessId, "?");
-          return;
-        }
-        if (numValue < 0) {
-          input.value = "";
-          saveAndRecalc(assessId, "?");
-          return;
-        }
-        if (numValue > max) {
-          input.value = max;
-          numValue = max;
-          // Note: we don't update input.value here to let user type freely, capped on blur/re-render
-        }
-
-        saveAndRecalc(assessId, numValue);
-      }
-
-      function saveAndRecalc(assessId, value) {
-        // Update State
-        if (!allMarksData[currentCourseId]) {
-          allMarksData[currentCourseId] = {};
-        }
-        allMarksData[currentCourseId][assessId] = value;
-
-        // Save to LocalStorage
-        localStorage.setItem(STORAGE_KEY_MULTI, JSON.stringify(allMarksData));
-
-        calculateScore();
-      }
-
-      function handleFocus(input) {
-        if (input.value === "?") {
-          input.value = "";
-        }
-      }
-
-      function handleBlur(input, max) {
-        let value = input.value;
-        if (value === "" || isNaN(parseFloat(value))) {
-          input.value = "?";
-          saveAndRecalc(input.id, "?");
-        } else if (parseFloat(value) > max) {
-          input.value = max;
-          saveAndRecalc(input.id, max);
-        }
-        calculateScore();
-      }
-
-      function focusInput(id) {
-        const input = document.getElementById(id);
-        if (input) {
-          input.focus();
-          setTimeout(() => {
-            if (input.value !== "?") input.select();
-          }, 50);
-        }
-      }
 
       function renderCalculatorTiles() {
         const grid = document.getElementById("assessmentsGrid");
@@ -1494,6 +1386,7 @@
                             placeholder="?" 
                             value="${val}" 
                             oninput="updateMark('${item.id}', this.value, ${item.max});"
+                            onblur="validateMark('${item.id}', ${item.max});"
                         >
                         <span class="den">/${item.max}</span>
                     </div>
@@ -1501,6 +1394,83 @@
           grid.appendChild(tile);
         });
         updateInputColors(); // Ensure colors correct on load
+      }
+
+      function updateMark(assessId, value, max) {
+        // Real-time validation: cap at max value
+        let numValue = parseFloat(value);
+        
+        if (value === "" || value === "?") {
+          saveAndRecalc(assessId, "");
+          return;
+        }
+        
+        if (isNaN(numValue)) {
+          return; // Don't save invalid input
+        }
+        
+        if (numValue < 0) {
+          const input = document.getElementById(`input-${assessId}`);
+          input.value = "";
+          saveAndRecalc(assessId, "");
+          return;
+        }
+        
+        // Cap at max value
+        if (numValue > max) {
+          const input = document.getElementById(`input-${assessId}`);
+          input.value = max;
+          saveAndRecalc(assessId, max);
+          return;
+        }
+        
+        saveAndRecalc(assessId, numValue);
+      }
+
+      function validateMark(assessId, max) {
+        // On blur validation
+        const input = document.getElementById(`input-${assessId}`);
+        const value = input.value;
+        
+        if (value === "") {
+          // Keep empty, will show as ? via placeholder
+          saveAndRecalc(assessId, "");
+          return;
+        }
+        
+        let numValue = parseFloat(value);
+        if (isNaN(numValue)) {
+          input.value = "";
+          saveAndRecalc(assessId, "");
+          return;
+        }
+        
+        if (numValue < 0) {
+          input.value = "";
+          saveAndRecalc(assessId, "");
+          return;
+        }
+        
+        if (numValue > max) {
+          input.value = max;
+          saveAndRecalc(assessId, max);
+          return;
+        }
+        
+        saveAndRecalc(assessId, numValue);
+      }
+
+      function saveAndRecalc(assessId, value) {
+        // Update State
+        if (!allMarksData[currentCourseId]) {
+          allMarksData[currentCourseId] = {};
+        }
+        allMarksData[currentCourseId][assessId] = value;
+
+        // Save to LocalStorage
+        localStorage.setItem(STORAGE_KEY_MULTI, JSON.stringify(allMarksData));
+
+        calculateScore();
       }
 
       function calculateScore() {
