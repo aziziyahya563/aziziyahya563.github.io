@@ -400,28 +400,44 @@ const namelist = {
     const text = this.generateFormattedText();
     if (!text) return this.showToast("Select users first!", "error");
 
-    // Mobile-friendly clipboard copy using textarea fallback
+    // Prefer modern Clipboard API (works on recent iOS Safari over HTTPS)
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      navigator.clipboard.writeText(text).then(() => {
+        this.showToast("Copied to Clipboard!", "success");
+      }).catch((err) => {
+        console.warn('navigator.clipboard failed, falling back:', err);
+        this._fallbackCopy(text);
+      });
+      return;
+    }
+
+    // Fallback for older browsers / Safari
+    this._fallbackCopy(text);
+  },
+
+  // Internal fallback that tries to reliably copy using a hidden textarea.
+  _fallbackCopy(text) {
     const textarea = document.createElement('textarea');
     textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.top = '-9999px';
+
+    // Place off-screen but focusable. Absolute + opacity works better on iOS than fixed offsets.
+    textarea.style.position = 'absolute';
     textarea.style.left = '-9999px';
+    textarea.style.top = '0';
+    textarea.style.width = '1px';
+    textarea.style.height = '1px';
+    textarea.style.opacity = '0';
     textarea.setAttribute('readonly', '');
     document.body.appendChild(textarea);
-    
-    // Handle iOS specifically
-    if (navigator.userAgent.match(/ipad|iphone/i)) {
-      const range = document.createRange();
-      range.selectNodeContents(textarea);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-      textarea.setSelectionRange(0, text.length);
-    } else {
-      textarea.select();
-    }
-    
+
+    // Focus then select. iOS needs the element focused for setSelectionRange/select to work.
+    textarea.focus();
+
     try {
+      // Try the straightforward select first. On iOS this usually works when focused.
+      textarea.select();
+      textarea.setSelectionRange(0, text.length);
+
       const successful = document.execCommand('copy');
       if (successful) {
         this.showToast("Copied to Clipboard!", "success");
@@ -429,9 +445,11 @@ const namelist = {
         this.showToast("Failed to copy", "error");
       }
     } catch (err) {
-      console.error('Copy failed:', err);
+      console.error('Fallback copy failed:', err);
       this.showToast("Failed to copy", "error");
     } finally {
+      // Clean up
+      textarea.blur();
       document.body.removeChild(textarea);
     }
   },
