@@ -6,6 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
+    <meta name="theme-color" content="#0a0a0f" id="themeColorMeta" />
     <title>Name List Updater</title>
     <link rel="stylesheet" href="css/updater.css" />
 
@@ -13,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -23,20 +24,130 @@
       const prefersDark = window.matchMedia(
         "(prefers-color-scheme: dark)",
       ).matches;
-      if (t) {
-        document.documentElement.setAttribute("data-theme", t);
-      } else if (prefersDark) {
+      const isDark = t ? t === "dark" : prefersDark;
+      if (isDark) {
         document.documentElement.setAttribute("data-theme", "dark");
+      } else if (t) {
+        document.documentElement.setAttribute("data-theme", t);
       }
+      const m = document.getElementById("themeColorMeta");
+      if (m) m.content = isDark ? "#0a0a0f" : "#f0f2f8";
     })();
   </script>
 
   <body>
-    <header>
-      <a href="index.html" class="back-btn-absolute" title="Home">
+    <!-- Mesh background -->
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <div class="click-outside" id="clickOutside" onclick="toggleMenu()"></div>
+
+    <!-- Popover Menu -->
+    <div class="popover-menu" id="popoverMenu" role="menu">
+      <div
+        style="
+          padding: 10px 14px 6px;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.8px;
+          text-transform: uppercase;
+          color: var(--text-muted);
+        "
+      >
+        Settings
+      </div>
+      <div style="height: 1px; background: var(--border); margin: 4px 0"></div>
+      <div class="menu-item" onclick="toggleThemeMode()" role="menuitem">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <div
+            style="
+              width: 28px;
+              height: 28px;
+              border-radius: 8px;
+              background: color-mix(in srgb, var(--accent) 12%, transparent);
+              color: var(--accent);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </div>
+          <span>Dark Mode</span>
+        </div>
+        <div class="switch" style="pointer-events: none">
+          <input type="checkbox" id="themeSwitch" />
+          <span class="slider"></span>
+        </div>
+      </div>
+      <div style="height: 1px; background: var(--border); margin: 4px 0"></div>
+      <button class="menu-item" onclick="openInfoModal()" role="menuitem">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <div
+            style="
+              width: 28px;
+              height: 28px;
+              border-radius: 8px;
+              background: rgba(6, 182, 212, 0.12);
+              color: #06b6d4;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+          </div>
+          <span>About</span>
+        </div>
         <svg
-          width="20"
-          height="20"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="color: var(--text-muted)"
+        >
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </div>
+
+    <header>
+      <a
+        href="index.html"
+        class="back-btn-absolute"
+        title="Home"
+        aria-label="Back to home"
+      >
+        <svg
+          width="16"
+          height="16"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -49,54 +160,68 @@
       </a>
       <div class="brand">Name List Updater</div>
 
-      <!-- Menu Button -->
-      <button class="menu-btn" onclick="toggleMenu()">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+      <!-- Header right: theme toggle + menu -->
+      <div class="header-extras">
+        <button
+          class="icon-btn"
+          onclick="quickToggleTheme()"
+          aria-label="Toggle dark mode"
         >
-          <circle cx="12" cy="12" r="1"></circle>
-          <circle cx="19" cy="12" r="1"></circle>
-          <circle cx="5" cy="12" r="1"></circle>
-        </svg>
-      </button>
-    </header>
-
-    <div class="click-outside" id="clickOutside" onclick="toggleMenu()"></div>
-
-    <!-- Popover Menu -->
-    <div class="popover-menu" id="popoverMenu">
-      <div class="menu-item" onclick="toggleThemeMode()">
-        <span>Dark Mode</span>
-        <div class="switch" style="pointer-events: none">
-          <input type="checkbox" id="themeSwitch" />
-          <span class="slider"></span>
-        </div>
+          <svg
+            id="themeIconSun"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+            />
+          </svg>
+          <svg
+            id="themeIconMoon"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="display: none"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+        <button
+          class="menu-btn"
+          id="menuBtn"
+          onclick="toggleMenu()"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="5" r="1" fill="currentColor" />
+            <circle cx="12" cy="12" r="1" fill="currentColor" />
+            <circle cx="12" cy="19" r="1" fill="currentColor" />
+          </svg>
+        </button>
       </div>
-      <button class="menu-item" onclick="openInfoModal()">
-        <span>Info</span>
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="16" x2="12" y2="12"></line>
-          <line x1="12" y1="8" x2="12.01" y2="8"></line>
-        </svg>
-      </button>
-    </div>
+    </header>
 
     <main>
       <div class="editor-wrapper">
@@ -109,7 +234,7 @@
         </div>
         <textarea
           id="mainEditor"
-          placeholder="// Paste a namelist here..."
+          placeholder=" // Paste a namelist here..."
         ></textarea>
       </div>
 
@@ -144,11 +269,12 @@
           id="settingsBtn"
           class="control-btn secondary"
           title="Edit My Profile"
+          aria-label="Edit profile"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="22"
+            height="22"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -163,7 +289,7 @@
           </svg>
         </button>
         <button id="addMeBtn" class="control-btn primary">
-          <span class="btn-text">Add Me & Copy</span>
+          <span class="btn-text">Add Me &amp; Copy</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -186,10 +312,19 @@
 
     <!-- Profile Setup Modal -->
     <div id="modalOverlay" class="modal-overlay">
-      <div class="modal">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="profileModalTitle"
+      >
         <div class="modal-header">
-          <h2>Your Profile</h2>
-          <button class="close-modal" onclick="updater.closeSettings()">
+          <h2 id="profileModalTitle">Your Profile</h2>
+          <button
+            class="close-modal"
+            onclick="updater.closeSettings()"
+            aria-label="Close"
+          >
             ✕
           </button>
         </div>
@@ -236,22 +371,71 @@
 
     <!-- Info Modal -->
     <div id="infoModalApp" class="modal-overlay">
-      <div class="modal">
-        <div class="modal-header">
-          <h2>About</h2>
-          <button class="close-modal" onclick="closeInfoModal()">✕</button>
-        </div>
-        <div class="modal-body" style="text-align: center">
-          <h4 style="margin: 0; font-size: 18px; margin-bottom: 2px">
+      <div class="modal" role="dialog" aria-modal="true">
+        <div
+          class="modal-body"
+          style="text-align: center; padding: 36px 32px 28px"
+        >
+          <div
+            style="
+              width: 60px;
+              height: 60px;
+              border-radius: 18px;
+              background: linear-gradient(135deg, #6366f1, #8b5cf6);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 20px;
+              box-shadow: 0 12px 30px rgba(99, 102, 241, 0.3);
+            "
+          >
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          </div>
+          <div
+            style="
+              display: inline-block;
+              font-size: 11px;
+              font-weight: 700;
+              letter-spacing: 0.5px;
+              padding: 4px 12px;
+              border-radius: 99px;
+              background: rgba(99, 102, 241, 0.1);
+              color: #6366f1;
+              margin-bottom: 12px;
+            "
+          >
+            v1.2
+          </div>
+          <h4
+            style="
+              margin: 0 0 12px;
+              font-size: 20px;
+              font-weight: 800;
+              letter-spacing: -0.4px;
+              color: var(--text-h);
+            "
+          >
             Name List Updater
           </h4>
-          <div style="font-size: 13px; opacity: 0.6; margin-bottom: 12px">
-            v1.1
-          </div>
-          <p class="modal-desc">
-            Effortlessly transform raw text into organized, formatted lists.
-            <br /><br />
-            <span style="font-size: 12px; opacity: 0.7"
+          <p class="modal-desc" style="margin-bottom: 0">
+            Effortlessly transform raw text into
+            <strong>organized, formatted lists</strong> — paste, add your name,
+            and copy in seconds.<br /><br />
+            <span style="font-size: 12px; color: var(--text-muted)"
               >© 2026 Azizi Yahya</span
             >
           </p>
@@ -276,20 +460,14 @@
     <div id="toast">Copied to clipboard</div>
 
     <script>
-      // Menu & Theme Logic (Shared with Namelist)
-      function toggleMenu() {
-        const menu = document.getElementById("popoverMenu");
-        const overlay = document.getElementById("clickOutside");
-        menu.classList.toggle("active");
-        overlay.style.display = menu.classList.contains("active")
-          ? "block"
-          : "none";
-      }
-
-      function toggleThemeMode() {
-        const checkbox = document.getElementById("themeSwitch");
-        const isDark = !document.body.classList.contains("dark-mode"); // Toggle based on current state
-        applyTheme(isDark);
+      /* ── Theme helpers ─────────────────────────── */
+      function applyThemeIcons(isDark) {
+        const sun = document.getElementById("themeIconSun");
+        const moon = document.getElementById("themeIconMoon");
+        const meta = document.getElementById("themeColorMeta");
+        if (sun) sun.style.display = isDark ? "none" : "";
+        if (moon) moon.style.display = isDark ? "" : "none";
+        if (meta) meta.content = isDark ? "#0a0a0f" : "#f0f2f8";
       }
 
       function applyTheme(isDark) {
@@ -302,17 +480,44 @@
           document.documentElement.setAttribute("data-theme", "light");
           localStorage.setItem("APP_THEME", "light");
         }
-
-        const mb = document.getElementById("themeSwitch");
-        if (mb) mb.checked = isDark;
+        const cb = document.getElementById("themeSwitch");
+        if (cb) cb.checked = isDark;
+        applyThemeIcons(isDark);
       }
 
-      // Info Modal
+      function toggleThemeMode() {
+        const isDark =
+          document.documentElement.getAttribute("data-theme") === "dark";
+        applyTheme(!isDark);
+      }
+
+      function quickToggleTheme() {
+        const isDark =
+          document.documentElement.getAttribute("data-theme") === "dark";
+        applyTheme(!isDark);
+      }
+
+      /* ── Menu helpers ──────────────────────────── */
+      function toggleMenu() {
+        const menu = document.getElementById("popoverMenu");
+        const overlay = document.getElementById("clickOutside");
+        const btn = document.getElementById("menuBtn");
+        if (!menu || !overlay) return;
+        const isOpen = menu.classList.toggle("active");
+        overlay.style.display = isOpen ? "block" : "none";
+        if (btn) btn.setAttribute("aria-expanded", isOpen);
+
+        if (isOpen && btn) {
+          const rect = btn.getBoundingClientRect();
+          menu.style.top = rect.bottom + 8 + "px";
+          menu.style.right = window.innerWidth - rect.right + "px";
+        }
+      }
+
+      /* ── Info Modal ────────────────────────────── */
       function openInfoModal() {
         const menu = document.getElementById("popoverMenu");
-        if (menu.classList.contains("active")) toggleMenu(); // Close menu
-
-        // Allow small delay for menu close animation if any
+        if (menu && menu.classList.contains("active")) toggleMenu();
         setTimeout(() => {
           document.getElementById("infoModalApp").classList.add("show");
         }, 50);
@@ -322,30 +527,26 @@
         document.getElementById("infoModalApp").classList.remove("show");
       }
 
-      // Sync with other tabs
-      window.addEventListener("storage", (e) => {
-        if (e.key === "APP_THEME") {
-          const isDark = e.newValue === "dark";
-          applyTheme(isDark);
-        }
-      });
-
-      // Initialize Theme UI (Checkbox state)
-      document.addEventListener("DOMContentLoaded", () => {
-        const savedTheme = localStorage.getItem("APP_THEME");
+      /* ── Init theme on load ────────────────────── */
+      (function () {
+        const saved = localStorage.getItem("APP_THEME");
         const prefersDark = window.matchMedia(
           "(prefers-color-scheme: dark)",
         ).matches;
-        const isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
+        const isDark = saved === "dark" || (!saved && prefersDark);
 
-        // Body class might already be set by head script if we used class-based approach there,
-        // but we only set attribute. namelistupd relies on .dark-mode class for some overrides?
-        // checking css... yes body.dark-mode is used.
-        // So we need to ensure class is added if it's dark.
         if (isDark) document.body.classList.add("dark-mode");
 
-        const t = document.getElementById("themeSwitch");
-        if (t) t.checked = isDark;
+        const cb = document.getElementById("themeSwitch");
+        if (cb) cb.checked = isDark;
+        applyThemeIcons(isDark);
+      })();
+
+      /* ── Cross-tab theme sync ──────────────────── */
+      window.addEventListener("storage", (e) => {
+        if (e.key === "APP_THEME") {
+          applyTheme(e.newValue === "dark");
+        }
       });
     </script>
     <script src="js/updater.js"></script>

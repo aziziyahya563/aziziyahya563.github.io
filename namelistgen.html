@@ -1,443 +1,902 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#0a0a0f" id="themeColorMeta" />
+    <title>Name List Generator</title>
+    <link rel="stylesheet" href="css/namelist.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Name List Generator</title>
-  <link rel="stylesheet" href="css/namelist.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<script>
-  (function () {
-    const t = localStorage.getItem('APP_THEME');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (t) {
-      document.documentElement.setAttribute('data-theme', t);
-    } else if (prefersDark) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
-  })();
-</script>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <script>
+    (function () {
+      const t = localStorage.getItem("APP_THEME");
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
+      const isDark = t ? t === "dark" : prefersDark;
+      if (isDark) document.documentElement.setAttribute("data-theme", "dark");
+      else if (t) document.documentElement.setAttribute("data-theme", t);
+      const m = document.getElementById("themeColorMeta");
+      if (m) m.content = isDark ? "#0a0a0f" : "#f0f2f8";
+    })();
+  </script>
 
-<body>
+  <body>
+    <!-- Mesh background -->
+    <div class="bg-mesh" aria-hidden="true"></div>
 
-  <header>
-    <a href="index.html" class="back-btn-absolute" title="Home">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M19 12H5M12 19l-7-7 7-7" />
-      </svg>
-    </a>
-    <div class="brand">
-      Name List Generator
-    </div>
+    <div class="click-outside" id="clickOutside" onclick="toggleMenu()"></div>
 
-
-    <!-- Menu Button -->
-    <button class="menu-btn" onclick="toggleMenu()">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="1"></circle>
-        <circle cx="19" cy="12" r="1"></circle>
-        <circle cx="5" cy="12" r="1"></circle>
-      </svg>
-    </button>
-  </header>
-
-  <div class="click-outside" id="clickOutside" onclick="toggleMenu()"></div>
-
-  <!-- Popover Menu -->
-  <div class="popover-menu" id="popoverMenu">
-    <div class="menu-item" onclick="toggleThemeMode()">
-      <span>Dark Mode</span>
-      <div class="switch" style="pointer-events: none;">
-        <input type="checkbox" id="themeSwitch">
-        <span class="slider"></span>
+    <!-- Popover Menu -->
+    <div class="popover-menu" id="popoverMenu" role="menu">
+      <div
+        style="
+          padding: 10px 14px 6px;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.8px;
+          text-transform: uppercase;
+          color: var(--text-muted);
+        "
+      >
+        Settings
       </div>
-    </div>
-    <button class="menu-item" onclick="openInfoModal()">
-      <span>Info</span>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="12" y1="16" x2="12" y2="12"></line>
-        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-      </svg>
-    </button>
-  </div>
-
-  <!-- Mobile Tab Switcher -->
-  <div class="mobile-tabs">
-    <div class="segment-control">
-      <button class="tab-btn active" onclick="switchTab('source')">Source List</button>
-      <button class="tab-btn" onclick="switchTab('selected')">Export List</button>
-    </div>
-  </div>
-
-  <!-- Hidden file input triggered by JS -->
-  <input type="file" id="file-input" accept=".json, .xlsx" style="display:none">
-
-  <main>
-    <!-- LEFT PANEL: Source List -->
-    <div id="source-panel" class="panel active">
-      <div class="panel-header">
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="search-input" placeholder="Search name, matric...">
+      <div style="height: 1px; background: var(--border); margin: 4px 0"></div>
+      <div class="menu-item" onclick="toggleThemeMode()" role="menuitem">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <div
+            style="
+              width: 28px;
+              height: 28px;
+              border-radius: 8px;
+              background: color-mix(in srgb, var(--accent) 12%, transparent);
+              color: var(--accent);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </div>
+          <span>Dark Mode</span>
+        </div>
+        <div class="switch" style="pointer-events: none">
+          <input type="checkbox" id="themeSwitch" />
+          <span class="slider"></span>
         </div>
       </div>
+      <div style="height: 1px; background: var(--border); margin: 4px 0"></div>
+      <button class="menu-item" onclick="openInfoModal()" role="menuitem">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <div
+            style="
+              width: 28px;
+              height: 28px;
+              border-radius: 8px;
+              background: rgba(6, 182, 212, 0.12);
+              color: #06b6d4;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+          </div>
+          <span>About</span>
+        </div>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="color: var(--text-muted)"
+        >
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </div>
 
-      <div class="scroll-area">
-        <table id="namelist-table">
-          <thead>
-            <tr>
-              <th class="sortable" data-sort="select" style="width: 40px; text-align:center; cursor:pointer;"
-                title="Select All">✔</th>
-              <th class="sortable" data-sort="name" style="cursor:pointer;">Name ↕</th>
-              <th class="sortable" data-sort="nomatric" style="cursor:pointer;">Matric ↕</th>
-            </tr>
-          </thead>
-          <tbody id="namelist-body">
-            <!-- JS Populates this -->
-          </tbody>
-        </table>
-        <!-- Empty State -->
-        <div id="empty-msg" class="empty-state" style="display:none">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" opacity="0.2" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="12" y1="18" x2="12" y2="12" />
-            <line x1="9" y1="15" x2="15" y2="15" />
+    <header>
+      <a
+        href="index.html"
+        class="back-btn-absolute"
+        title="Home"
+        aria-label="Back to home"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </a>
+      <div class="brand">Name List Generator</div>
+
+      <!-- Header right: theme toggle + menu -->
+      <div class="header-extras">
+        <button
+          class="icon-btn"
+          onclick="quickToggleTheme()"
+          aria-label="Toggle dark mode"
+        >
+          <svg
+            id="themeIconSun"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+            />
           </svg>
-          <p>No data. Import a file!</p>
-          <button class="btn-link" onclick="namelist.fetchDefaultData()">Try Demo Data</button>
-        </div>
+          <svg
+            id="themeIconMoon"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="display: none"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+        <button
+          class="menu-btn"
+          id="menuBtn"
+          onclick="toggleMenu()"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="5" r="1" fill="currentColor" />
+            <circle cx="12" cy="12" r="1" fill="currentColor" />
+            <circle cx="12" cy="19" r="1" fill="currentColor" />
+          </svg>
+        </button>
       </div>
+    </header>
 
-      <div class="panel-footer">
-        <div class="action-group">
-          <button class="btn btn-secondary icon-only"
-            onclick="document.getElementById('source-settings-modal').style.display='flex'" title="Source Settings">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path
-                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-              </path>
-            </svg>
-          </button>
-
-          <button id="invert-selection" class="btn btn-secondary" title="Invert Selection">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <polyline points="17 1 21 5 17 9"></polyline>
-              <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-              <polyline points="7 23 3 19 7 15"></polyline>
-              <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-            </svg>
-            Invert
-          </button>
-          <button id="generate-table" class="btn btn-primary flex-grow">Generate ➔</button>
-        </div>
+    <!-- Mobile Tab Switcher -->
+    <div class="mobile-tabs">
+      <div class="segment-control">
+        <button class="tab-btn active" onclick="switchTab('source')">
+          Source List
+        </button>
+        <button class="tab-btn" onclick="switchTab('selected')">
+          Export List
+        </button>
       </div>
     </div>
 
-    <!-- RIGHT PANEL: Selected List -->
-    <div id="selected-panel" class="panel">
-      <div class="panel-header">
-        <!-- Section 1: Visibility -->
-        <div>
-          <span class="label-sm">Visible Columns</span>
-          <div class="toggles-row">
-            <label class="toggle-pill"><input type="checkbox" id="include-index" checked /> #</label>
-            <label class="toggle-pill"><input type="checkbox" id="include-name" checked /> Name</label>
-            <label class="toggle-pill"><input type="checkbox" id="include-nomatric" checked /> Matric</label>
+    <!-- Hidden file input triggered by JS -->
+    <input
+      type="file"
+      id="file-input"
+      accept=".json, .xlsx"
+      style="display: none"
+    />
+
+    <main>
+      <!-- LEFT PANEL: Source List -->
+      <div id="source-panel" class="panel active">
+        <div class="panel-header">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search name, matric..."
+            />
           </div>
         </div>
 
-
-      </div>
-
-      <div class="scroll-area">
-        <table id="selected-table">
-          <thead>
-            <tr>
-              <th style="width: 40px">#</th>
-              <th class="sortable" data-sort="name">Name</th>
-              <th class="sortable" data-sort="nomatric">Matric</th>
-            </tr>
-          </thead>
-          <tbody id="selected-body">
-            <!-- JS Populates this -->
-          </tbody>
-        </table>
-        <div id="selected-empty-msg" class="empty-state">
-          <p>Select names and click Generate</p>
-        </div>
-      </div>
-
-      <div class="panel-footer" style="flex-direction: column; align-items: stretch; gap:12px;">
-        <!-- Preview moved to footer -->
-        <div id="format-preview-box" class="format-preview-box"
-          style="margin:0; text-align:center; font-size:12px; opacity:0.8;"></div>
-
-        <!-- Format selection moved to footer -->
-        <div class="options-grid-scroll" id="format-selection" style="justify-content: center; padding-bottom: 0;">
-          <label class="toggle-pill"><input type="radio" name="copy-format" value="format1" checked> 1</label>
-          <label class="toggle-pill"><input type="radio" name="copy-format" value="format3"> 2</label>
-          <label class="toggle-pill"><input type="radio" name="copy-format" value="format4"> 3</label>
-          <label class="toggle-pill"><input type="radio" name="copy-format" value="format5"> 4</label>
-          <label class="toggle-pill"><input type="radio" name="copy-format" value="format2"> 5</label>
-        </div>
-
-        <div class="action-group">
-          <button class="btn btn-secondary icon-only"
-            onclick="document.getElementById('export-settings-modal').style.display='flex'" title="Export Settings">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="3"></circle>
+        <div class="scroll-area">
+          <table id="namelist-table">
+            <thead>
+              <tr>
+                <th
+                  class="sortable"
+                  data-sort="select"
+                  style="width: 40px; text-align: center; cursor: pointer"
+                  title="Select All"
+                >
+                  ✔
+                </th>
+                <th class="sortable" data-sort="name" style="cursor: pointer">
+                  Name ↕
+                </th>
+                <th
+                  class="sortable"
+                  data-sort="nomatric"
+                  style="cursor: pointer"
+                >
+                  Matric ↕
+                </th>
+              </tr>
+            </thead>
+            <tbody id="namelist-body">
+              <!-- JS Populates this -->
+            </tbody>
+          </table>
+          <!-- Empty State -->
+          <div id="empty-msg" class="empty-state" style="display: none">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="48"
+              height="48"
+              opacity="0.3"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <path
-                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-              </path>
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="12" y1="18" x2="12" y2="12" />
+              <line x1="9" y1="15" x2="15" y2="15" />
             </svg>
-          </button>
+            <p>No data. Import a file!</p>
+            <button class="btn-link" onclick="namelist.fetchDefaultData()">
+              Try Demo Data
+            </button>
+          </div>
+        </div>
 
-          <button id="copy-to-clipboard" class="btn btn-primary flex-grow">Copy Text</button>
+        <div class="panel-footer">
+          <div class="action-group">
+            <button
+              class="btn btn-secondary icon-only"
+              onclick="
+                document.getElementById('source-settings-modal').style.display =
+                  'flex'
+              "
+              title="Source Settings"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                ></path>
+              </svg>
+            </button>
+
+            <button
+              id="invert-selection"
+              class="btn btn-secondary"
+              title="Invert Selection"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="17 1 21 5 17 9"></polyline>
+                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                <polyline points="7 23 3 19 7 15"></polyline>
+                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+              </svg>
+              Invert
+            </button>
+            <button id="generate-table" class="btn btn-primary flex-grow">
+              Generate ➔
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL: Selected List -->
+      <div id="selected-panel" class="panel">
+        <div class="panel-header">
+          <!-- Section 1: Visibility -->
+          <div>
+            <span class="label-sm">Visible Columns</span>
+            <div class="toggles-row">
+              <label class="toggle-pill"
+                ><input type="checkbox" id="include-index" checked /> #</label
+              >
+              <label class="toggle-pill"
+                ><input type="checkbox" id="include-name" checked /> Name</label
+              >
+              <label class="toggle-pill"
+                ><input type="checkbox" id="include-nomatric" checked />
+                Matric</label
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="scroll-area">
+          <table id="selected-table">
+            <thead>
+              <tr>
+                <th style="width: 40px">#</th>
+                <th class="sortable" data-sort="name">Name</th>
+                <th class="sortable" data-sort="nomatric">Matric</th>
+              </tr>
+            </thead>
+            <tbody id="selected-body">
+              <!-- JS Populates this -->
+            </tbody>
+          </table>
+          <div id="selected-empty-msg" class="empty-state">
+            <p>Select names and click Generate</p>
+          </div>
+        </div>
+
+        <div
+          class="panel-footer"
+          style="flex-direction: column; align-items: stretch; gap: 12px"
+        >
+          <!-- Preview moved to footer -->
+          <div
+            id="format-preview-box"
+            class="format-preview-box"
+            style="margin: 0; text-align: center; font-size: 12px; opacity: 0.8"
+          ></div>
+
+          <!-- Format selection moved to footer -->
+          <div
+            class="options-grid-scroll"
+            id="format-selection"
+            style="justify-content: center; padding-bottom: 0"
+          >
+            <label class="toggle-pill"
+              ><input type="radio" name="copy-format" value="format1" checked />
+              1</label
+            >
+            <label class="toggle-pill"
+              ><input type="radio" name="copy-format" value="format3" />
+              2</label
+            >
+            <label class="toggle-pill"
+              ><input type="radio" name="copy-format" value="format4" />
+              3</label
+            >
+            <label class="toggle-pill"
+              ><input type="radio" name="copy-format" value="format5" />
+              4</label
+            >
+            <label class="toggle-pill"
+              ><input type="radio" name="copy-format" value="format2" />
+              5</label
+            >
+          </div>
+
+          <div class="action-group">
+            <button
+              class="btn btn-secondary icon-only"
+              onclick="
+                document.getElementById('export-settings-modal').style.display =
+                  'flex'
+              "
+              title="Export Settings"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                ></path>
+              </svg>
+            </button>
+
+            <button id="copy-to-clipboard" class="btn btn-primary flex-grow">
+              Copy Text
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Hidden elements for Legacy JS compatibility -->
+    <div style="display: none">
+      <div id="settings-icon"></div>
+      <div id="copy-options-panel"></div>
+      <div id="format-preview"></div>
+      <div id="file-name"></div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Source Settings Modal -->
+    <div id="source-settings-modal" class="modal-overlay" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Source Settings</h3>
+          <button
+            class="btn-close"
+            onclick="
+              document.getElementById('source-settings-modal').style.display =
+                'none'
+            "
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <span class="label-sm">Data Actions</span>
+
+          <div class="settings-group">
+            <button
+              class="settings-row"
+              onclick="
+                document.getElementById('file-input').click();
+                document.getElementById('source-settings-modal').style.display =
+                  'none';
+              "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              <span>Import File...</span>
+              <svg
+                style="width: 16px; height: 16px; color: var(--text-muted)"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+
+            <button
+              class="settings-row"
+              onclick="namelist.exportSourceToExcel()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+              <span>Export Source List</span>
+            </button>
+          </div>
+
+          <div class="settings-group">
+            <button
+              id="reset-upload"
+              class="settings-row text-danger"
+              onclick="
+                document.getElementById('source-settings-modal').style.display =
+                  'none'
+              "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+              <span>Clear All Data</span>
+            </button>
+          </div>
+
+          <p
+            style="
+              font-size: 13px;
+              color: var(--text-muted);
+              text-align: center;
+              line-height: 1.5;
+              margin-top: 8px;
+            "
+          >
+            Manage your master list here. Importing a file acts as the source
+            for your selections.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-primary flex-grow"
+            onclick="
+              document.getElementById('source-settings-modal').style.display =
+                'none'
+            "
+          >
+            Done
+          </button>
         </div>
       </div>
     </div>
-  </main>
 
-  <!-- Hidden elements for Legacy JS compatibility -->
-  <div style="display:none">
-    <div id="settings-icon"></div>
-    <div id="copy-options-panel"></div>
-    <div id="format-preview"></div>
-    <div id="file-name"></div>
-  </div>
-
-  <div id="toast-container" class="toast-container"></div>
-
-  <!-- Format Settings Modal -->
-  <!-- Source Settings Modal -->
-  <div id="source-settings-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Source Settings</h3>
-        <button class="btn-close"
-          onclick="document.getElementById('source-settings-modal').style.display='none'">✕</button>
-      </div>
-      <div class="modal-body">
-        <span class="label-sm">Data Actions</span>
-
-        <div class="settings-group">
-          <button class="settings-row"
-            onclick="document.getElementById('file-input').click(); document.getElementById('source-settings-modal').style.display='none'">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            <span>Import File...</span>
-            <svg style="width:16px; height:16px; color:var(--text-muted);" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-
-          <button class="settings-row" onclick="namelist.exportSourceToExcel()">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            <span>Export Source List</span>
+    <!-- Export Settings Modal -->
+    <div id="export-settings-modal" class="modal-overlay" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Export Settings</h3>
+          <button
+            class="btn-close"
+            onclick="
+              document.getElementById('export-settings-modal').style.display =
+                'none'
+            "
+          >
+            ✕
           </button>
         </div>
-
-        <div class="settings-group">
-          <button id="reset-upload" class="settings-row text-danger"
-            onclick="document.getElementById('source-settings-modal').style.display='none'">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-            <span>Clear All Data</span>
-          </button>
+        <div class="modal-body">
+          <span class="label-sm">Download File</span>
+          <div class="settings-group">
+            <button class="settings-row" id="export-excel">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <span>Download Excel</span>
+            </button>
+            <button class="settings-row" id="export-json">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                />
+              </svg>
+              <span>Download JSON</span>
+            </button>
+          </div>
         </div>
-
-        <p style="font-size: 13px; color: var(--text-muted); text-align: center; line-height: 1.5; margin-top: 8px;">
-          Manage your master list here. Importing a file acts as the source for your selections.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary flex-grow"
-          onclick="document.getElementById('source-settings-modal').style.display='none'">Done</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Export Settings Modal -->
-  <div id="export-settings-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Export Settings</h3>
-        <button class="btn-close"
-          onclick="document.getElementById('export-settings-modal').style.display='none'">✕</button>
-      </div>
-      <div class="modal-body">
-        <span class="label-sm">Download File</span>
-        <div class="settings-group">
-          <button class="settings-row" id="export-excel">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Download Excel</span>
-          </button>
-          <button class="settings-row" id="export-json">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-            </svg>
-            <span>Download JSON</span>
+        <div class="modal-footer">
+          <button
+            class="btn btn-primary flex-grow"
+            onclick="
+              document.getElementById('export-settings-modal').style.display =
+                'none'
+            "
+          >
+            Done
           </button>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary flex-grow"
-          onclick="document.getElementById('export-settings-modal').style.display='none'">Done</button>
+    </div>
+
+    <!-- Info Modal -->
+    <div
+      class="modal-overlay"
+      id="infoModalApp"
+      style="display: none"
+      onclick="closeInfoModal(event)"
+    >
+      <div
+        class="modal-content"
+        onclick="event.stopPropagation()"
+        style="text-align: center"
+      >
+        <div class="modal-body" style="padding: 36px 28px 24px">
+          <div
+            style="
+              width: 60px;
+              height: 60px;
+              border-radius: 18px;
+              background: linear-gradient(135deg, #7c6fee, #ec4899);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 20px;
+              box-shadow: 0 12px 30px rgba(124, 111, 238, 0.3);
+            "
+          >
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <path d="M3 9h18M3 15h18M9 3v18" />
+            </svg>
+          </div>
+          <div
+            style="
+              display: inline-block;
+              font-size: 11px;
+              font-weight: 700;
+              letter-spacing: 0.5px;
+              padding: 4px 12px;
+              border-radius: 99px;
+              background: rgba(124, 111, 238, 0.1);
+              color: #7c6fee;
+              margin-bottom: 12px;
+            "
+          >
+            v1.2
+          </div>
+          <h4
+            style="
+              margin: 0 0 12px;
+              font-size: 20px;
+              font-weight: 800;
+              letter-spacing: -0.4px;
+              color: var(--text-h);
+            "
+          >
+            Name List Generator
+          </h4>
+          <p
+            style="
+              color: var(--text-p);
+              font-size: 13px;
+              line-height: 1.55;
+              margin: 0;
+            "
+          >
+            The complete solution for generating and managing
+            <strong>professional class lists</strong>. Import, select, format,
+            and export with ease.<br /><br />
+            <span style="font-size: 12px; color: var(--text-muted)"
+              >© 2026 Azizi Yahya</span
+            >
+          </p>
+        </div>
+        <div class="modal-footer" style="justify-content: stretch">
+          <button class="btn btn-primary flex-grow" onclick="closeInfoModal()">
+            Got it
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
+    <script src="js/namelist.js"></script>
 
-  <!-- Info Modal -->
-  <div class="modal-overlay" id="infoModalApp" style="display:none;" onclick="closeInfoModal(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <h3>About</h3>
-        <button class="btn-close" onclick="closeInfoModal()">✕</button>
-      </div>
-      <div class="modal-body" style="text-align: center;">
-        <h4 style="margin: 0; font-size: 18px; margin-bottom: 2px;">Name List Generator</h4>
-        <div style="font-size: 13px; opacity: 0.6; margin-bottom: 12px;">v1.1</div>
-        <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5;">
-          The complete solution for generating and managing professional class lists.
-          <br><br>
-          <span style="font-size: 12px; opacity: 0.7;">© 2026 Azizi Yahya</span>
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary flex-grow" onclick="closeInfoModal()">Got it</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="js/namelist.js"></script>
-
-  <script>
-    // Menu & Theme Logic
-    function toggleMenu() {
-      const menu = document.getElementById('popoverMenu');
-      const overlay = document.getElementById('clickOutside');
-      menu.classList.toggle('active');
-      overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
-    }
-
-    function openInfoModal() {
-      toggleMenu(); // Close menu
-      document.getElementById('infoModalApp').style.display = 'flex';
-    }
-
-    function closeInfoModal(e) {
-      if (e) e.stopPropagation();
-      document.getElementById('infoModalApp').style.display = 'none';
-    }
-
-    function toggleThemeMode() {
-      const checkbox = document.getElementById('themeSwitch');
-      checkbox.checked = !checkbox.checked;
-      toggleTheme();
-    }
-
-    function toggleTheme() {
-      const checkbox = document.getElementById('themeSwitch');
-      const isDark = checkbox.checked;
-      applyTheme(isDark);
-    }
-
-    function applyTheme(isDark) {
-      if (isDark) {
-        document.body.classList.add('dark-mode');
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('APP_THEME', 'dark');
-      } else {
-        document.body.classList.remove('dark-mode');
-        document.documentElement.setAttribute('data-theme', 'light');
-        localStorage.setItem('APP_THEME', 'light');
+    <script>
+      /* ── Theme helpers ─────────────────────────── */
+      function applyThemeIcons(isDark) {
+        const sun = document.getElementById("themeIconSun");
+        const moon = document.getElementById("themeIconMoon");
+        const meta = document.getElementById("themeColorMeta");
+        if (sun) sun.style.display = isDark ? "none" : "";
+        if (moon) moon.style.display = isDark ? "" : "none";
+        if (meta) meta.content = isDark ? "#0a0a0f" : "#f0f2f8";
       }
 
-      const cb = document.getElementById('themeSwitch');
-      if (cb && cb.checked !== isDark) cb.checked = isDark;
-    }
-
-    // Sync with other tabs
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'APP_THEME') {
-        const isDark = e.newValue === 'dark';
-        applyTheme(isDark);
+      function applyTheme(isDark) {
+        if (isDark) {
+          document.body.classList.add("dark-mode");
+          document.documentElement.setAttribute("data-theme", "dark");
+          localStorage.setItem("APP_THEME", "dark");
+        } else {
+          document.body.classList.remove("dark-mode");
+          document.documentElement.setAttribute("data-theme", "light");
+          localStorage.setItem("APP_THEME", "light");
+        }
+        const cb = document.getElementById("themeSwitch");
+        if (cb && cb.checked !== isDark) cb.checked = isDark;
+        applyThemeIcons(isDark);
       }
-    });
 
-    // Init Theme UI (Checkbox & Body Class)
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('APP_THEME');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-
-      if (isDark) {
-        document.body.classList.add('dark-mode');
-        const t = document.getElementById('themeSwitch');
-        if (t) t.checked = true;
+      function toggleThemeMode() {
+        const isDark =
+          document.documentElement.getAttribute("data-theme") === "dark";
+        applyTheme(!isDark);
       }
-    });
 
-    // Main Tab Switcher
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-
-      if (tabName === 'source') {
-        document.querySelector('.mobile-tabs .tab-btn:nth-child(1)').classList.add('active');
-        document.getElementById('source-panel').classList.add('active');
-      } else {
-        document.querySelector('.mobile-tabs .tab-btn:nth-child(2)').classList.add('active');
-        document.getElementById('selected-panel').classList.add('active');
+      function quickToggleTheme() {
+        const isDark =
+          document.documentElement.getAttribute("data-theme") === "dark";
+        applyTheme(!isDark);
       }
-    }
 
-    // Auto switch to selected tab
-    document.getElementById('generate-table').addEventListener('click', () => {
-      if (window.innerWidth <= 768) {
-        switchTab('selected');
+      /* ── Menu helpers ──────────────────────────── */
+      function toggleMenu() {
+        const menu = document.getElementById("popoverMenu");
+        const overlay = document.getElementById("clickOutside");
+        const btn = document.getElementById("menuBtn");
+        if (!menu || !overlay) return;
+        const isOpen = menu.classList.toggle("active");
+        overlay.style.display = isOpen ? "block" : "none";
+        if (btn) btn.setAttribute("aria-expanded", isOpen);
+
+        if (isOpen && btn) {
+          const rect = btn.getBoundingClientRect();
+          menu.style.top = rect.bottom + 8 + "px";
+          menu.style.right = window.innerWidth - rect.right + "px";
+        }
       }
-      document.getElementById('selected-empty-msg').style.display = 'none';
-    });
 
-    // Empty State Logic
-    const observer = new MutationObserver(() => {
-      const hasRows = document.getElementById('namelist-body').children.length > 0;
-      document.getElementById('empty-msg').style.display = hasRows ? 'none' : 'flex';
-    });
-    observer.observe(document.getElementById('namelist-body'), { childList: true });
+      /* ── Info Modal ────────────────────────────── */
+      function openInfoModal() {
+        toggleMenu(); // Close menu
+        document.getElementById("infoModalApp").style.display = "flex";
+      }
 
-  </script>
+      function closeInfoModal(e) {
+        if (e) e.stopPropagation();
+        document.getElementById("infoModalApp").style.display = "none";
+      }
 
-</body>
+      /* ── Cross-tab sync ────────────────────────── */
+      window.addEventListener("storage", (e) => {
+        if (e.key === "APP_THEME") applyTheme(e.newValue === "dark");
+      });
 
+      /* ── Init theme on load ────────────────────── */
+      (function () {
+        const saved = localStorage.getItem("APP_THEME");
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        const isDark = saved === "dark" || (!saved && prefersDark);
+        if (isDark) document.body.classList.add("dark-mode");
+        const cb = document.getElementById("themeSwitch");
+        if (cb) cb.checked = isDark;
+        applyThemeIcons(isDark);
+      })();
+
+      /* ── Tab Switcher ──────────────────────────── */
+      function switchTab(tabName) {
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document
+          .querySelectorAll(".panel")
+          .forEach((p) => p.classList.remove("active"));
+
+        if (tabName === "source") {
+          document
+            .querySelector(".mobile-tabs .tab-btn:nth-child(1)")
+            .classList.add("active");
+          document.getElementById("source-panel").classList.add("active");
+        } else {
+          document
+            .querySelector(".mobile-tabs .tab-btn:nth-child(2)")
+            .classList.add("active");
+          document.getElementById("selected-panel").classList.add("active");
+        }
+      }
+
+      // Auto switch to selected tab after generate
+      document
+        .getElementById("generate-table")
+        .addEventListener("click", () => {
+          if (window.innerWidth <= 768) switchTab("selected");
+          document.getElementById("selected-empty-msg").style.display = "none";
+        });
+
+      // Empty State Logic
+      const observer = new MutationObserver(() => {
+        const hasRows =
+          document.getElementById("namelist-body").children.length > 0;
+        document.getElementById("empty-msg").style.display = hasRows
+          ? "none"
+          : "flex";
+      });
+      observer.observe(document.getElementById("namelist-body"), {
+        childList: true,
+      });
+    </script>
+  </body>
 </html>
