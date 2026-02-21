@@ -105,7 +105,7 @@ body.dark-mode .bg-mesh::after { opacity: 0.11; }
 header {
   position: sticky; top: 0; z-index: 100;
   height: 56px; padding: 0 16px;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; gap: 10px;
   background: var(--header-bg);
   backdrop-filter: saturate(1.8) blur(24px);
   -webkit-backdrop-filter: saturate(1.8) blur(24px);
@@ -120,34 +120,41 @@ header {
   from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)}
 }
 
+.header-title-block {
+  display: flex; flex-direction: column; gap: 0;
+}
+.header-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--accent); line-height: 1;
+}
 .brand {
-  display: flex; align-items: center; gap: 8px;
   font-weight: 800; font-size: 15px; letter-spacing: -0.3px;
   background: linear-gradient(135deg, var(--text-h) 40%, var(--text-p));
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
+  white-space: nowrap; line-height: 1.2;
 }
 
 /* Back button */
 .back-btn-absolute {
-  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
   width: 34px; height: 34px; border-radius: 50%;
+  flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   background: var(--surface); border: 1px solid var(--border);
   color: var(--text-h); text-decoration: none;
   backdrop-filter: blur(10px); box-shadow: var(--shadow);
-  transition: all 0.2s ease; z-index: 10;
+  transition: all 0.2s ease;
 }
 .back-btn-absolute:hover {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
-.back-btn-absolute:active { transform: translateY(-50%) scale(0.9); }
+.back-btn-absolute:active { transform: scale(0.9); }
 
 /* Header right extras */
 .header-extras {
-  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-  display: flex; align-items: center; gap: 8px; z-index: 102;
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0; margin-left: auto; z-index: 102;
 }
 
 /* Menu / icon buttons */

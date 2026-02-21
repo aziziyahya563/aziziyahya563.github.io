@@ -217,6 +217,19 @@ body {
   justify-content: space-between;
 }
 
+.header-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.header-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  line-height: 1;
+}
 .header h1 {
   font-size: 15px;
   font-weight: 800;
@@ -229,6 +242,7 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  line-height: 1.2;
 }
 
 .header p {

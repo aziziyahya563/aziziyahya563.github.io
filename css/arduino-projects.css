@@ -154,6 +154,19 @@ body {
   display: flex; align-items: center; justify-content: space-between;
 }
 
+.header-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.header-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  line-height: 1;
+}
 .header h1 {
   font-size: 15px; font-weight: 800; letter-spacing: -0.3px;
   color: var(--text-h); white-space: nowrap; overflow: hidden;
@@ -161,6 +174,7 @@ body {
   background: linear-gradient(135deg, var(--text-h) 40%, var(--text-p));
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
+  line-height: 1.2;
 }
 
 .header p { display: none; }
