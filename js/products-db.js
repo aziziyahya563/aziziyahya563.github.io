@@ -65,6 +65,100 @@ const PRODUCTS = {
     },
 
     // ==========================================
+    // PC BUILD COMPONENTS
+    // ==========================================
+    cpu_i7_8700k: {
+        name: "[CPU] Intel Core i7-8700K",
+        shopeeUrl: "https://s.shopee.com.my/3LLYnKFeyp",
+        tiktokUrl: "#"
+    },
+    cpu_r5_3600: {
+        name: "[CPU] AMD Ryzen 5 3600",
+        shopeeUrl: "https://s.shopee.com.my/3B28b1GIJo",
+        tiktokUrl: "#"
+    },
+    mobo_msi_z370: {
+        name: "[Mobo] MSI Z370 SLI Plus",
+        shopeeUrl: "https://s.shopee.com.my/30iiOiGven",
+        tiktokUrl: "#"
+    },
+    mobo_gigabyte_b450i: {
+        name: "[Mobo] Gigabyte B450I AORUS PRO WIFI",
+        shopeeUrl: "https://s.shopee.com.my/2qPICPHYzm",
+        tiktokUrl: "#"
+    },
+    hdd_wd_blue_6tb: {
+        name: "[HDD] WD Blue 6TB",
+        shopeeUrl: "https://s.shopee.com.my/2g5s06ICKl",
+        tiktokUrl: "#"
+    },
+    psu_1stplayer_sfx_650w: {
+        name: "[PSU] 1st Player SFX 650W 80+ Gold Full Modular",
+        shopeeUrl: "https://s.shopee.com.my/LhxD8vFJc",
+        tiktokUrl: "#"
+    },
+    gpu_zotac_gtx1070: {
+        name: "[GPU] ZOTAC GTX 1070 AMP Dual Fan",
+        shopeeUrl: "https://s.shopee.com.my/9pZ2XeYhCa",
+        tiktokUrl: "#"
+    },
+    case_deepcool_ch160: {
+        name: "[PC Case] Deepcool CH160",
+        shopeeUrl: "https://s.shopee.com.my/9fFcLLZKXZ",
+        tiktokUrl: "#"
+    },
+    heatsink_m2_aluminum: {
+        name: "[SSD Heatsink] Aluminum Heatsink for M.2 NGFF NVMe PCIe 2280 SSD",
+        shopeeUrl: "https://s.shopee.com.my/9UwC92ZxsY",
+        tiktokUrl: "#"
+    },
+    wifi_tplink_ax3000: {
+        name: "[WiFi Card] TP-Link AX3000 Wi-Fi 6 & Bluetooth 5.2 PCIe Adapter",
+        shopeeUrl: "https://s.shopee.com.my/9KclwjabDX",
+        tiktokUrl: "#"
+    },
+    adapter_typee_usb: {
+        name: "[Adapter] Motherboard Type-E USB Adapter (Female to 19-Pin Male)",
+        shopeeUrl: "https://s.shopee.com.my/W1NPRubyf",
+        tiktokUrl: "#"
+    },
+    adapter_usb3_to_usb2: {
+        name: "[Adapter] 20-Pin USB 3.0 to 9-Pin USB 2.0 Converter Adapter",
+        shopeeUrl: "https://s.shopee.com.my/156oWwVza",
+        tiktokUrl: "#"
+    },
+    adapter_m2_to_sata: {
+        name: "[Adapter] M.2 NGFF to SATA3 Adapter Card Enclosure",
+        shopeeUrl: "https://s.shopee.com.my/BOX0pvsed",
+        tiktokUrl: "#"
+    },
+    fan_idcooling_df12025: {
+        name: "[Fan] ID-Cooling DF-12025 ARGB Case Fan",
+        shopeeUrl: "https://s.shopee.com.my/50Tml9WAZn",
+        tiktokUrl: "#"
+    },
+    cooler_thermalright_pa120: {
+        name: "[CPU Cooler] Thermalright P.A 120 SE",
+        shopeeUrl: "https://s.shopee.com.my/6KyiSuNsn8",
+        tiktokUrl: "https://vt.tiktok.com/ZS91cUCFt3LoF-fgsCr/"
+    },
+    ram_corsair_rgb: {
+        name: "[RAM] Corsair Vengeance RGB Pro SL White ",
+        shopeeUrl: "https://s.shopee.com.my/1gDKnkHslV",
+        tiktokUrl: "#"
+    },
+    ssd_adata_sx8200: {
+        name: "[SSD] Adata XPG SX8200 Pro",
+        shopeeUrl: "https://s.shopee.com.my/1qWl03HFQW",
+        tiktokUrl: "#"
+    },
+    case_inwin_101: {
+        name: "[PC Case] InWin 101 PC Case",
+        shopeeUrl: "https://s.shopee.com.my/5fj1fljzGU",
+        tiktokUrl: "#"
+    },
+
+    // ==========================================
     // DESK SETUP GEAR
     // ==========================================
     monitor_acer_vg270p: {
@@ -91,26 +185,6 @@ const PRODUCTS = {
         name: "[Controller] DS4 OEM",
         shopeeUrl: "https://s.shopee.com.my/8fMdFPILFi",
         tiktokUrl: "https://vt.tiktok.com/ZS91cUUtGFprB-jdYvV/"
-    },
-    cooler_thermalright_pa120: {
-        name: "[CPU Cooler] Thermalright P.A 120 SE",
-        shopeeUrl: "https://s.shopee.com.my/6KyiSuNsn8",
-        tiktokUrl: "https://vt.tiktok.com/ZS91cUCFt3LoF-fgsCr/"
-    },
-    ram_corsair_rgb: {
-        name: "[RAM] Corsair Vengeance RGB Pro SL White ",
-        shopeeUrl: "https://s.shopee.com.my/6VI8fE9maI",
-        tiktokUrl: "#"
-    },
-    ssd_adata_sx8200: {
-        name: "[SSD] Adata XPG SX8200 Pro",
-        shopeeUrl: "https://s.shopee.com.my/3B1gh74XRK",
-        tiktokUrl: "#"
-    },
-    case_inwin_101: {
-        name: "[PC Case] InWin 101 PC Case",
-        shopeeUrl: "https://s.shopee.com.my/5fj1fljzGU",
-        tiktokUrl: "#"
     },
     desk_study: {
         name: "[Desk] Computer/ Study Desk",

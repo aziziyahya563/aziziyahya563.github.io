@@ -1,136 +1,190 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Desk Setups - Workspace Inspiration</title>
-    <meta name="description"
-        content="Discover hundreds of stunning desk setups with curated affiliate links to build your dream workspace. From minimalist to gaming setups, find inspiration for your perfect desk.">
-    <meta name="keywords" content="desk setup, workspace, office setup, gaming setup, minimalist desk, affiliate links">
-    <link rel="stylesheet" href="css/desk-setups.css">
-    <script src="js/products-db.js"></script> <!-- Link Product Database -->
+    <meta
+      name="description"
+      content="Discover hundreds of stunning desk setups with curated affiliate links to build your dream workspace. From minimalist to gaming setups, find inspiration for your perfect desk."
+    />
+    <meta
+      name="keywords"
+      content="desk setup, workspace, office setup, gaming setup, minimalist desk, affiliate links"
+    />
+    <link rel="stylesheet" href="css/desk-setups.css" />
+    <script src="js/products-db.js"></script>
+    <!-- Link Product Database -->
     <script>
-        (function () {
-            const t = localStorage.getItem('APP_THEME');
-            if (t) {
-                document.documentElement.setAttribute('data-theme', t);
-                const meta = document.querySelector('meta[name="theme-color"]');
-                if (meta) meta.content = t === 'dark' ? '#000000' : '#ffffff';
-            }
-        })();
+      (function () {
+        const t = localStorage.getItem("APP_THEME");
+        if (t) {
+          document.documentElement.setAttribute("data-theme", t);
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.content = t === "dark" ? "#000000" : "#ffffff";
+        }
+      })();
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="click-outside" id="clickOutside" onclick="toggleMenu()"></div>
 
     <!-- Menu moved outside app-layout to avoid z-index trapping -->
     <div class="popover-menu" id="popoverMenu">
-        <div class="menu-item" onclick="toggleThemeSwitch(event)">
-            <span>Dark Mode</span>
-            <label class="switch">
-                <input type="checkbox" id="themeSwitch" onchange="toggleTheme()">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <button class="menu-item" onclick="openInfoModal()">
-            <span>Info</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="16" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-        </button>
+      <div class="menu-item" onclick="toggleThemeSwitch(event)">
+        <span>Dark Mode</span>
+        <label class="switch">
+          <input type="checkbox" id="themeSwitch" onchange="toggleTheme()" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <button class="menu-item" onclick="openInfoModal()">
+        <span>Info</span>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+      </button>
     </div>
     <div class="app-layout">
-        <div class="background-pattern"></div>
+      <div class="background-pattern"></div>
 
-        <header class="header">
-            <a href="index.html" class="back-button" aria-label="Back to home">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-            </a>
-            <div class="header-content">
-                <h1>Desk Setups</h1>
-                <p>Discover hundreds of stunning desk setups and get all the gear to build your dream workspace</p>
-                <button class="menu-btn" onclick="toggleMenu()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="1"></circle>
-                        <circle cx="19" cy="12" r="1"></circle>
-                        <circle cx="5" cy="12" r="1"></circle>
-                    </svg>
-                </button>
-            </div>
-        </header>
+      <header class="header">
+        <a href="index.html" class="back-button" aria-label="Back to home">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+        </a>
+        <div class="header-content">
+          <h1>Desk Setups</h1>
+          <p>
+            Discover hundreds of stunning desk setups and get all the gear to
+            build your dream workspace
+          </p>
+          <button class="menu-btn" onclick="toggleMenu()">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="19" cy="12" r="1"></circle>
+              <circle cx="5" cy="12" r="1"></circle>
+            </svg>
+          </button>
+        </div>
+      </header>
 
-        <div class="controls">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search setups..." aria-label="Search desk setups">
-            </div>
-
-            <div class="filter-group">
-                <button class="filter-btn active" data-category="all">All</button>
-                <button class="filter-btn" data-category="minimal">Minimal</button>
-                <button class="filter-btn" data-category="gaming">Gaming</button>
-                <button class="filter-btn" data-category="creative">Creative</button>
-                <button class="filter-btn" data-category="tech">Tech</button>
-                <button class="filter-btn" data-category="home-office">Home Office</button>
-            </div>
+      <div class="controls">
+        <div class="search-box">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search setups..."
+            aria-label="Search desk setups"
+          />
         </div>
 
-        <div id="setupGrid" class="setup-grid">
-            <!-- Setups will be dynamically inserted here -->
+        <div class="filter-group">
+          <button class="filter-btn active" data-category="all">All</button>
+          <button class="filter-btn" data-category="minimal">Minimal</button>
+          <button class="filter-btn" data-category="gaming">Gaming</button>
+          <button class="filter-btn" data-category="creative">Creative</button>
+          <button class="filter-btn" data-category="tech">Tech</button>
+          <button class="filter-btn" data-category="home-office">
+            Home Office
+          </button>
         </div>
+      </div>
 
-        <!-- Search Modal -->
-        <div id="searchModal" class="search-modal">
-            <div class="search-modal-content">
-                <div class="search-modal-header">
-                    <h2 class="search-modal-title">Search Setups</h2>
-                    <button class="search-modal-close" onclick="closeSearchModal()">✕</button>
-                </div>
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Search setups..." aria-label="Search desk setups">
-                </div>
-            </div>
+      <div id="setupGrid" class="setup-grid">
+        <!-- Setups will be dynamically inserted here -->
+      </div>
+
+      <!-- Search Modal -->
+      <div id="searchModal" class="search-modal">
+        <div class="search-modal-content">
+          <div class="search-modal-header">
+            <h2 class="search-modal-title">Search Setups</h2>
+            <button class="search-modal-close" onclick="closeSearchModal()">
+              ✕
+            </button>
+          </div>
+          <div class="search-box">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search setups..."
+              aria-label="Search desk setups"
+            />
+          </div>
         </div>
+      </div>
 
-        <!-- Filter Modal -->
-        <div id="filterModal" class="filter-modal">
-            <div class="filter-modal-content">
-                <div class="filter-modal-header">
-                    <h2 class="filter-modal-title">Filter by Category</h2>
-                    <button class="filter-modal-close" onclick="closeFilterModal()">✕</button>
-                </div>
-                <div class="filter-group">
-                    <button class="filter-btn active" data-category="all">All</button>
-                    <button class="filter-btn" data-category="minimal">Minimal</button>
-                    <button class="filter-btn" data-category="gaming">Gaming</button>
-                    <button class="filter-btn" data-category="creative">Creative</button>
-                    <button class="filter-btn" data-category="tech">Tech</button>
-                    <button class="filter-btn" data-category="home-office">Home Office</button>
-                </div>
-            </div>
+      <!-- Filter Modal -->
+      <div id="filterModal" class="filter-modal">
+        <div class="filter-modal-content">
+          <div class="filter-modal-header">
+            <h2 class="filter-modal-title">Filter by Category</h2>
+            <button class="filter-modal-close" onclick="closeFilterModal()">
+              ✕
+            </button>
+          </div>
+          <div class="filter-group">
+            <button class="filter-btn active" data-category="all">All</button>
+            <button class="filter-btn" data-category="minimal">Minimal</button>
+            <button class="filter-btn" data-category="gaming">Gaming</button>
+            <button class="filter-btn" data-category="creative">
+              Creative
+            </button>
+            <button class="filter-btn" data-category="tech">Tech</button>
+            <button class="filter-btn" data-category="home-office">
+              Home Office
+            </button>
+          </div>
         </div>
+      </div>
 
-        <!-- Detail Modal -->
-        <div id="detailModal" class="modal">
-            <div class="modal-backdrop" onclick="closeModal()"></div>
-            <div class="modal-content">
-                <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
-                <div id="modalBody" class="modal-body">
-                    <!-- Setup details will be inserted here -->
-                </div>
-            </div>
+      <!-- Detail Modal -->
+      <div id="detailModal" class="modal">
+        <div class="modal-backdrop" onclick="closeModal()"></div>
+        <div class="modal-content">
+          <button class="modal-close" onclick="closeModal()" aria-label="Close">
+            ✕
+          </button>
+          <div id="modalBody" class="modal-body">
+            <!-- Setup details will be inserted here -->
+          </div>
         </div>
+      </div>
 
-        <!-- Bottom Navigation -->
-        <!-- Bottom Navigation (Commented out temporarily)
+      <!-- Bottom Navigation -->
+      <!-- Bottom Navigation (Commented out temporarily)
         <nav class="bottom-nav">
             <button class="nav-btn active" onclick="scrollToTop()">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -168,317 +222,384 @@
     </div>
 
     <!-- Info Modal -->
-    <div class="modal-overlay" id="infoModalDesk" onclick="closeInfoModal(event)">
-        <div class="modal-card-info" onclick="event.stopPropagation()">
-            <h3 class="info-title">About</h3>
-            <p class="info-text">
-                <strong>Desk Setups</strong><br>
-                v1.1<br><br>
-                A gallery of personal desk, room, and gaming setups. Explore different setup aesthetics.
-                <br><br>
-                <span style="font-size: 0.8rem; opacity: 0.7;">© 2026 Azizi Yahya</span>
-            </p>
-            <button class="info-btn" onclick="closeInfoModal(event)">Got it</button>
-        </div>
+    <div
+      class="modal-overlay"
+      id="infoModalDesk"
+      onclick="closeInfoModal(event)"
+    >
+      <div class="modal-card-info" onclick="event.stopPropagation()">
+        <h3 class="info-title">About</h3>
+        <p class="info-text">
+          <strong>Desk Setups</strong><br />
+          v1.1<br /><br />
+          A gallery of personal desk, room, and gaming setups. Explore different
+          setup aesthetics.
+          <br /><br />
+          <span style="font-size: 0.8rem; opacity: 0.7"
+            >© 2026 Azizi Yahya</span
+          >
+        </p>
+        <button class="info-btn" onclick="closeInfoModal(event)">Got it</button>
+      </div>
     </div>
 
     <script>
-        // Menu Functions
-        // Menu Functions
-        function toggleMenu() {
-            const menu = document.getElementById('popoverMenu');
-            const overlay = document.getElementById('clickOutside');
-            if (menu && overlay) {
-                menu.classList.toggle('active');
-                overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
-            }
+      // Menu Functions
+      // Menu Functions
+      function toggleMenu() {
+        const menu = document.getElementById("popoverMenu");
+        const overlay = document.getElementById("clickOutside");
+        if (menu && overlay) {
+          menu.classList.toggle("active");
+          overlay.style.display = menu.classList.contains("active")
+            ? "block"
+            : "none";
+        }
+      }
+
+      function openInfoModal() {
+        // Close menu if it's open
+        const menu = document.getElementById("popoverMenu");
+        if (menu && menu.classList.contains("active")) {
+          toggleMenu();
         }
 
-        function openInfoModal() {
-            // Close menu if it's open
-            const menu = document.getElementById('popoverMenu');
-            if (menu && menu.classList.contains('active')) {
-                toggleMenu();
-            }
-
-            const modal = document.getElementById('infoModalDesk');
-            if (modal) {
-                modal.classList.add('active');
-                // Lock scroll when modal is open
-                document.body.style.overflow = 'hidden';
-            } else {
-                console.error('Info Modal not found!');
-            }
+        const modal = document.getElementById("infoModalDesk");
+        if (modal) {
+          modal.classList.add("active");
+          // Lock scroll when modal is open
+          document.body.style.overflow = "hidden";
+        } else {
+          console.error("Info Modal not found!");
         }
+      }
 
-        function closeInfoModal(e) {
-            if (e) e.stopPropagation();
-            const modal = document.getElementById('infoModalDesk');
-            if (modal) {
-                modal.classList.remove('active');
-                // Restore scroll
-                document.body.style.overflow = '';
-            }
+      function closeInfoModal(e) {
+        if (e) e.stopPropagation();
+        const modal = document.getElementById("infoModalDesk");
+        if (modal) {
+          modal.classList.remove("active");
+          // Restore scroll
+          document.body.style.overflow = "";
         }
+      }
 
-        function toggleThemeSwitch(event) {
-            if (!event.target.closest('.switch')) {
-                const checkbox = document.getElementById('themeSwitch');
-                checkbox.checked = !checkbox.checked;
-                toggleTheme();
-            }
+      function toggleThemeSwitch(event) {
+        if (!event.target.closest(".switch")) {
+          const checkbox = document.getElementById("themeSwitch");
+          checkbox.checked = !checkbox.checked;
+          toggleTheme();
         }
+      }
 
-        function toggleTheme() {
-            const checkbox = document.getElementById('themeSwitch');
-            const target = checkbox.checked ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', target);
-            localStorage.setItem('APP_THEME', target);
+      function toggleTheme() {
+        const checkbox = document.getElementById("themeSwitch");
+        const target = checkbox.checked ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", target);
+        localStorage.setItem("APP_THEME", target);
 
-            // Update meta theme color
-            const meta = document.querySelector('meta[name="theme-color"]');
-            if (meta) meta.content = target === 'dark' ? '#000000' : '#ffffff';
-        }
+        // Update meta theme color
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.content = target === "dark" ? "#000000" : "#ffffff";
+      }
 
-        // Init Theme UI
-        const currentTheme = localStorage.getItem('APP_THEME');
-        if (currentTheme === 'dark') {
-            const ts = document.getElementById('themeSwitch');
-            if (ts) ts.checked = true;
-        }
+      // Init Theme UI
+      const currentTheme = localStorage.getItem("APP_THEME");
+      if (currentTheme === "dark") {
+        const ts = document.getElementById("themeSwitch");
+        if (ts) ts.checked = true;
+      }
 
-        // Mobile Device Detection
-        // ========================================
-        // SCROLL BEHAVIOR
-        // ========================================
+      // Mobile Device Detection
+      // ========================================
+      // SCROLL BEHAVIOR
+      // ========================================
 
-        let lastScrollTop = 0;
-        const header = document.querySelector('.header');
+      let lastScrollTop = 0;
+      const header = document.querySelector(".header");
 
-        window.addEventListener('scroll', function () {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      window.addEventListener(
+        "scroll",
+        function () {
+          const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
 
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
-                // Scrolling down
-                header.classList.add('hidden');
-            } else {
-                // Scrolling up
-                header.classList.remove('hidden');
-            }
+          if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // Scrolling down
+            header.classList.add("hidden");
+          } else {
+            // Scrolling up
+            header.classList.remove("hidden");
+          }
 
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-        }, false);
+          lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        },
+        false,
+      );
 
-        // ========================================
-        // MODAL FUNCTIONS
-        // ========================================
+      // ========================================
+      // MODAL FUNCTIONS
+      // ========================================
 
-        function openSearchModal() {
-            document.getElementById('searchModal').classList.add('active');
-            setTimeout(() => {
-                document.getElementById('searchInput').focus();
-            }, 300);
-        }
+      function openSearchModal() {
+        document.getElementById("searchModal").classList.add("active");
+        setTimeout(() => {
+          document.getElementById("searchInput").focus();
+        }, 300);
+      }
 
-        function closeSearchModal() {
-            document.getElementById('searchModal').classList.remove('active');
-        }
+      function closeSearchModal() {
+        document.getElementById("searchModal").classList.remove("active");
+      }
 
-        function openFilterModal() {
-            document.getElementById('filterModal').classList.add('active');
-        }
+      function openFilterModal() {
+        document.getElementById("filterModal").classList.add("active");
+      }
 
-        function closeFilterModal() {
-            document.getElementById('filterModal').classList.remove('active');
-        }
+      function closeFilterModal() {
+        document.getElementById("filterModal").classList.remove("active");
+      }
 
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
 
-        // Close modals when clicking backdrop
-        document.getElementById('searchModal').addEventListener('click', function (e) {
-            if (e.target === this) closeSearchModal();
+      // Close modals when clicking backdrop
+      document
+        .getElementById("searchModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeSearchModal();
         });
 
-        document.getElementById('filterModal').addEventListener('click', function (e) {
-            if (e.target === this) closeFilterModal();
+      document
+        .getElementById("filterModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeFilterModal();
         });
 
-        // ========================================
-        // DESK SETUP DATABASE
-        // ========================================
+      // ========================================
+      // DESK SETUP DATABASE
+      // ========================================
 
-        // Desk Setup Database
-        // This array can easily be expanded to hundreds of setups
-        const deskSetups = [
-            {
-                id: 1,
-                title: "My Budget Desk Setup (2024)",
-                category: "minimal",
-                description: "Limit my creativity with my wallet size. A glimpse inside my mid spec PC and the gadgets that live on my desk.",
-                image: "assets/deskSetup/img/001.jpg",
-                products: [
-                    PRODUCTS.monitor_acer_vg270p,
-                    PRODUCTS.headphone_cm_ch630,
-                    PRODUCTS.mouse_logitech_g304,
-                    PRODUCTS.keyboard_rk_h81,
-                    PRODUCTS.controller_ds4,
-                    PRODUCTS.cooler_thermalright_pa120,
-                    PRODUCTS.ram_corsair_rgb,
-                    PRODUCTS.ssd_adata_sx8200,
-                    PRODUCTS.case_inwin_101,
-                    PRODUCTS.desk_study,
-                    PRODUCTS.shelf_storage
-                ]
-            },
-            // {
-            //     id: 2,
-            //     title: "RGB Gaming Paradise",
-            //     category: "gaming",
-            //     description: "An immersive gaming setup with dual 27\" monitors, custom RGB lighting, and high-performance peripherals for competitive gaming.",
-            //     image: "https://images.unsplash.com/photo-1593640495253-23196b27a87f?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "ASUS ROG Swift 27\" 240Hz Monitor (x2)", icon: "🖥️", url: "#" },
-            //         { name: "Razer BlackWidow V3 Pro", icon: "⌨️", url: "#" },
-            //         { name: "Razer DeathAdder V3 Pro", icon: "🖱️", url: "#" },
-            //         { name: "HyperX Cloud Alpha Headset", icon: "🎧", url: "#" },
-            //         { name: "Nanoleaf RGB Light Panels", icon: "🌈", url: "#" }
-            //     ]
-            // },
-            // {
-            //     id: 3,
-            //     title: "Scandinavian Minimal",
-            //     category: "minimal",
-            //     description: "Bright and airy workspace inspired by Scandinavian design principles with white aesthetics and minimal clutter.",
-            //     image: "https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "MacBook Pro 16\"", icon: "💻", url: "#" },
-            //         { name: "Magic Keyboard", icon: "⌨️", url: "#" },
-            //         { name: "Magic Trackpad", icon: "🖱️", url: "#" },
-            //         { name: "iPad Pro 12.9\"", icon: "📱", url: "#" },
-            //         { name: "IKEA BEKANT Desk White", icon: "🪑", url: "#" }
-            //     ]
-            // },
-            // {
-            //     id: 4,
-            //     title: "Creative Studio Pro",
-            //     category: "creative",
-            //     description: "Professional creative setup optimized for video editing and graphic design with color-accurate displays.",
-            //     image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "Dell UltraSharp 32\" 4K Monitor", icon: "🖥️", url: "#" },
-            //         { name: "Wacom Cintiq Pro 24", icon: "🎨", url: "#" },
-            //         { name: "MacBook Pro M2 Max", icon: "💻", url: "#" },
-            //         { name: "Elgato Stream Deck", icon: "🎛️", url: "#" },
-            //         { name: "Herman Miller Aeron Chair", icon: "🪑", url: "#" }
-            //     ]
-            // },
-            // {
-            //     id: 5,
-            //     title: "Tech Enthusiast's Dream",
-            //     category: "tech",
-            //     description: "Multi-monitor setup for developers and tech professionals with premium mechanical keyboard and ergonomic accessories.",
-            //     image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "Samsung Odyssey G7 27\" (x3)", icon: "🖥️", url: "#" },
-            //         { name: "ZSA Moonlander Keyboard", icon: "⌨️", url: "#" },
-            //         { name: "Logitech G502 X", icon: "🖱️", url: "#" },
-            //         { name: "Elgato Key Light", icon: "💡", url: "#" },
-            //         { name: "ErgoChair Pro", icon: "🪑", url: "#" }
-            //     ]
-            // },
-            // {
-            //     id: 6,
-            //     title: "Modern Home Office",
-            //     category: "home-office",
-            //     description: "Professional home office setup balancing productivity and comfort with standing desk and premium accessories.",
-            //     image: "https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "Jarvis Bamboo Standing Desk", icon: "🪵", url: "#" },
-            //         { name: "Dell P2723DE Monitor", icon: "🖥️", url: "#" },
-            //         { name: "Steelcase Series 2 Chair", icon: "🪑", url: "#" },
-            //         { name: "Logitech Brio 4K Webcam", icon: "📹", url: "#" },
-            //         { name: "Blue Yeti X Microphone", icon: "🎤", url: "#" }
-            //     ]
-            // },
-            // // Additional setups can be added here easily
-            // {
-            //     id: 7,
-            //     title: "Dual Monitor Productivity",
-            //     category: "tech",
-            //     description: "Efficient dual-monitor setup for maximum productivity with cable management and aesthetic appeal.",
-            //     image: "https://images.unsplash.com/photo-1593640495253-23196b27a87f?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "BenQ PD2700U 27\" 4K (x2)", icon: "🖥️", url: "#" },
-            //         { name: "Varmilo VA87M Keyboard", icon: "⌨️", url: "#" },
-            //         { name: "Cable Management Kit", icon: "🔌", url: "#" }
-            //     ]
-            // },
-            // {
-            //     id: 8,
-            //     title: "Budget Gaming Setup",
-            //     category: "gaming",
-            //     description: "Affordable gaming setup that doesn't compromise on performance or style.",
-            //     image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "AOC 24G2 24\" 144Hz", icon: "🖥️", url: "#" },
-            //         { name: "Redragon K552 Keyboard", icon: "⌨️", url: "#" },
-            //         { name: "Logitech G203", icon: "🖱️", url: "#" },
-            //         { name: "RGB LED Strips", icon: "🌈", url: "#" }
-            //     ]
-            // }
-        ];
+      // Desk Setup Database
+      // This array can easily be expanded to hundreds of setups
+      const deskSetups = [
+        {
+          id: 1,
+          title: "My Budget Desk Setup (2024)",
+          category: "minimal",
+          description:
+            "Limit my creativity with my wallet size. A glimpse inside my mid spec PC and the gadgets that live on my desk.",
+          image: "assets/deskSetup/img/001.jpg",
+          products: [
+            PRODUCTS.monitor_acer_vg270p,
+            PRODUCTS.headphone_cm_ch630,
+            PRODUCTS.mouse_logitech_g304,
+            PRODUCTS.keyboard_rk_h81,
+            PRODUCTS.controller_ds4,
+            PRODUCTS.case_inwin_101,
+            PRODUCTS.desk_study,
+            PRODUCTS.shelf_storage,
+          ],
+        },
+        {
+          id: 2,
+          title: "My Budget PC Build (2025)",
+          category: "tech",
+          description:
+            "My first self-built PC. An Intel i7-8700K powered rig stuffed into the elegant InWin 101 case with white Corsair RAM and a ZOTAC GTX 1070.",
+          image: "assets/deskSetup/img/002.jpg",
+          products: [
+            PRODUCTS.cpu_i7_8700k,
+            PRODUCTS.cooler_thermalright_pa120,
+            PRODUCTS.mobo_msi_z370,
+            PRODUCTS.ram_corsair_rgb,
+            PRODUCTS.gpu_zotac_gtx1070,
+            PRODUCTS.hdd_wd_blue_6tb,
+            PRODUCTS.ssd_adata_sx8200,
+            PRODUCTS.heatsink_m2_aluminum,
+            PRODUCTS.wifi_tplink_ax3000,
+            PRODUCTS.case_inwin_101,
+            PRODUCTS.fan_idcooling_df12025,
+            PRODUCTS.psu_1stplayer_sfx_650w,
+          ],
+        },
+        {
+          id: 3,
+          title: "My Budget PC Build (2026) rev1",
+          category: "tech",
+          description:
+            "An upgraded rebuild going AMD with a Ryzen 5 3600 in a compact Deepcool CH160 ITX case. Same great value, smaller footprint.",
+          image: "assets/deskSetup/img/003.jpg",
+          products: [
+            PRODUCTS.cpu_r5_3600,
+            PRODUCTS.cooler_thermalright_pa120,
+            PRODUCTS.mobo_gigabyte_b450i,
+            PRODUCTS.ram_corsair_rgb,
+            PRODUCTS.hdd_wd_blue_6tb,
+            PRODUCTS.ssd_adata_sx8200,
+            PRODUCTS.heatsink_m2_aluminum,
+            PRODUCTS.gpu_zotac_gtx1070,
+            PRODUCTS.case_deepcool_ch160,
+            PRODUCTS.fan_idcooling_df12025,
+            PRODUCTS.adapter_typee_usb,
+            PRODUCTS.adapter_usb3_to_usb2,
+            PRODUCTS.adapter_m2_to_sata,
+            PRODUCTS.psu_1stplayer_sfx_650w,
+          ],
+        },
+        // {
+        //     id: 2,
+        //     title: "RGB Gaming Paradise",
+        //     category: "gaming",
+        //     description: "An immersive gaming setup with dual 27\" monitors, custom RGB lighting, and high-performance peripherals for competitive gaming.",
+        //     image: "https://images.unsplash.com/photo-1593640495253-23196b27a87f?w=800&auto=format&fit=crop",
+        //     products: [
+        //         { name: "ASUS ROG Swift 27\" 240Hz Monitor (x2)", icon: "🖥️", url: "#" },
+        //         { name: "Razer BlackWidow V3 Pro", icon: "⌨️", url: "#" },
+        //         { name: "Razer DeathAdder V3 Pro", icon: "🖱️", url: "#" },
+        //         { name: "HyperX Cloud Alpha Headset", icon: "🎧", url: "#" },
+        //         { name: "Nanoleaf RGB Light Panels", icon: "🌈", url: "#" }
+        //     ]
+        // },
+        // {
+        //     id: 3,
+        //     title: "Scandinavian Minimal",
+        //     category: "minimal",
+        //     description: "Bright and airy workspace inspired by Scandinavian design principles with white aesthetics and minimal clutter.",
+        //     image: "https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?w=800&auto=format&fit=crop",
+        //     products: [
+        //         { name: "MacBook Pro 16\"", icon: "💻", url: "#" },
+        //         { name: "Magic Keyboard", icon: "⌨️", url: "#" },
+        //         { name: "Magic Trackpad", icon: "🖱️", url: "#" },
+        //         { name: "iPad Pro 12.9\"", icon: "📱", url: "#" },
+        //         { name: "IKEA BEKANT Desk White", icon: "🪑", url: "#" }
+        //     ]
+        // },
+        // {
+        //     id: 4,
+        //     title: "Creative Studio Pro",
+        //     category: "creative",
+        //     description: "Professional creative setup optimized for video editing and graphic design with color-accurate displays.",
+        //     image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&auto=format&fit=crop",
+        //     products: [
+        //         { name: "Dell UltraSharp 32\" 4K Monitor", icon: "🖥️", url: "#" },
+        //         { name: "Wacom Cintiq Pro 24", icon: "🎨", url: "#" },
+        //         { name: "MacBook Pro M2 Max", icon: "💻", url: "#" },
+        //         { name: "Elgato Stream Deck", icon: "🎛️", url: "#" },
+        //         { name: "Herman Miller Aeron Chair", icon: "🪑", url: "#" }
+        //     ]
+        // },
+        // {
+        //     id: 5,
+        //     title: "Tech Enthusiast's Dream",
+        //     category: "tech",
+        //     description: "Multi-monitor setup for developers and tech professionals with premium mechanical keyboard and ergonomic accessories.",
+        //     image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&auto=format&fit=crop",
+        //     products: [
+        //         { name: "Samsung Odyssey G7 27\" (x3)", icon: "🖥️", url: "#" },
+        //         { name: "ZSA Moonlander Keyboard", icon: "⌨️", url: "#" },
+        //         { name: "Logitech G502 X", icon: "🖱️", url: "#" },
+        //         { name: "Elgato Key Light", icon: "💡", url: "#" },
+        //         { name: "ErgoChair Pro", icon: "🪑", url: "#" }
+        //     ]
+        // },
+        // {
+        //     id: 6,
+        //     title: "Modern Home Office",
+        //     category: "home-office",
+        //     description: "Professional home office setup balancing productivity and comfort with standing desk and premium accessories.",
+        //     image: "https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?w=800&auto=format&fit=crop",
+        //     products: [
+        //         { name: "Jarvis Bamboo Standing Desk", icon: "🪵", url: "#" },
+        //         { name: "Dell P2723DE Monitor", icon: "🖥️", url: "#" },
+        //         { name: "Steelcase Series 2 Chair", icon: "🪑", url: "#" },
+        //         { name: "Logitech Brio 4K Webcam", icon: "📹", url: "#" },
+        //         { name: "Blue Yeti X Microphone", icon: "🎤", url: "#" }
+        //     ]
+        // },
+        // // Additional setups can be added here easily
+        // {
+        //     id: 7,
+        //     title: "Dual Monitor Productivity",
+        //     category: "tech",
+        //     description: "Efficient dual-monitor setup for maximum productivity with cable management and aesthetic appeal.",
+        //     image: "https://images.unsplash.com/photo-1593640495253-23196b27a87f?w=800&auto=format&fit=crop",
+        //     products: [
+        //         { name: "BenQ PD2700U 27\" 4K (x2)", icon: "🖥️", url: "#" },
+        //         { name: "Varmilo VA87M Keyboard", icon: "⌨️", url: "#" },
+        //         { name: "Cable Management Kit", icon: "🔌", url: "#" }
+        //     ]
+        // },
+        // {
+        //     id: 8,
+        //     title: "Budget Gaming Setup",
+        //     category: "gaming",
+        //     description: "Affordable gaming setup that doesn't compromise on performance or style.",
+        //     image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&auto=format&fit=crop",
+        //     products: [
+        //         { name: "AOC 24G2 24\" 144Hz", icon: "🖥️", url: "#" },
+        //         { name: "Redragon K552 Keyboard", icon: "⌨️", url: "#" },
+        //         { name: "Logitech G203", icon: "🖱️", url: "#" },
+        //         { name: "RGB LED Strips", icon: "🌈", url: "#" }
+        //     ]
+        // }
+      ];
 
-        // ========================================
-        // MOBILE-FIRST STATE & CONFIGURATION
-        // ========================================
+      // ========================================
+      // MOBILE-FIRST STATE & CONFIGURATION
+      // ========================================
 
-        let currentCategory = 'all';
-        let searchQuery = '';
-        let currentPage = 1;
-        const SETUPS_PER_PAGE = 12; // Load 12 setups at a time
+      let currentCategory = "all";
+      let searchQuery = "";
+      let currentPage = 1;
+      const SETUPS_PER_PAGE = 12; // Load 12 setups at a time
 
-        // Detect mobile device
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      // Detect mobile device
+      const isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent,
+        );
+      const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
-        // DOM elements
-        const setupGrid = document.getElementById('setupGrid');
-        const searchInput = document.getElementById('searchInput');
-        const filterButtons = document.querySelectorAll('.filter-btn');
+      // DOM elements
+      const setupGrid = document.getElementById("setupGrid");
+      const searchInput = document.getElementById("searchInput");
+      const filterButtons = document.querySelectorAll(".filter-btn");
 
-        // ========================================
-        // MOBILE HAPTIC FEEDBACK (if supported)
-        // ========================================
-        function triggerHaptic(style = 'light') {
-            if ('vibrate' in navigator && isMobile) {
-                const patterns = {
-                    light: 10,
-                    medium: 20,
-                    heavy: 30
-                };
-                navigator.vibrate(patterns[style] || 10);
-            }
+      // ========================================
+      // MOBILE HAPTIC FEEDBACK (if supported)
+      // ========================================
+      function triggerHaptic(style = "light") {
+        if ("vibrate" in navigator && isMobile) {
+          const patterns = {
+            light: 10,
+            medium: 20,
+            heavy: 30,
+          };
+          navigator.vibrate(patterns[style] || 10);
         }
+      }
 
-        // ========================================
-        // GET FILTERED SETUPS
-        // ========================================
-        function getFilteredSetups() {
-            return deskSetups.filter(setup => {
-                const matchesCategory = currentCategory === 'all' || setup.category === currentCategory;
-                const matchesSearch = setup.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    setup.description.toLowerCase().includes(searchQuery.toLowerCase());
-                return matchesCategory && matchesSearch;
-            });
-        }
+      // ========================================
+      // GET FILTERED SETUPS
+      // ========================================
+      function getFilteredSetups() {
+        return deskSetups.filter((setup) => {
+          const matchesCategory =
+            currentCategory === "all" || setup.category === currentCategory;
+          const matchesSearch =
+            setup.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            setup.description.toLowerCase().includes(searchQuery.toLowerCase());
+          return matchesCategory && matchesSearch;
+        });
+      }
 
-        // ========================================
-        // RENDER PREVIEW CARD
-        // ========================================
-        function createSetupCard(setup, index) {
-            return `
+      // ========================================
+      // RENDER PREVIEW CARD
+      // ========================================
+      function createSetupCard(setup, index) {
+        return `
                 <article class="setup-card" data-id="${setup.id}" style="animation-delay: ${index * 50}ms" onclick="openModal(${setup.id})">
                     <img 
                         src="${setup.image}" 
@@ -492,7 +613,7 @@
                         <h2 class="caption-title">${setup.title}</h2>
                         <p class="caption-text">${setup.description}</p>
                         <div class="caption-footer">
-                            <span class="caption-category">${setup.category.replace('-', ' ')}</span>
+                            <span class="caption-category">${setup.category.replace("-", " ")}</span>
                             <button class="icon-btn" onclick="event.stopPropagation(); shareSetup(${setup.id})" aria-label="Share" title="Share">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="18" cy="5" r="3"></circle>
@@ -510,51 +631,53 @@
                     </div>
                 </article>
             `;
-        }
+      }
 
-        // ========================================
-        // SHARE SETUP
-        // ========================================
-        window.shareSetup = async function (setupId) {
-            triggerHaptic('light');
-            const setup = deskSetups.find(s => s.id === setupId);
-            if (!setup) return;
+      // ========================================
+      // SHARE SETUP
+      // ========================================
+      window.shareSetup = async function (setupId) {
+        triggerHaptic("light");
+        const setup = deskSetups.find((s) => s.id === setupId);
+        if (!setup) return;
 
-            const shareData = {
-                title: setup.title,
-                text: `Check out this ${setup.category} setup: ${setup.description}`,
-                url: window.location.href + `?setup=${setupId}`
-            };
-
-            try {
-                if (navigator.share) {
-                    await navigator.share(shareData);
-                } else {
-                    // Fallback: Copy to clipboard
-                    await navigator.clipboard.writeText(window.location.href + `?setup=${setupId}`);
-                    alert('Link copied to clipboard!');
-                }
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    console.log('Share failed:', err);
-                }
-            }
+        const shareData = {
+          title: setup.title,
+          text: `Check out this ${setup.category} setup: ${setup.description}`,
+          url: window.location.href + `?setup=${setupId}`,
         };
 
-        // ========================================
-        // OPEN MODAL WITH FULL DETAILS
-        // ========================================
-        window.openModal = function (setupId) {
-            triggerHaptic('medium');
-            const setup = deskSetups.find(s => s.id === setupId);
-            if (!setup) return;
+        try {
+          if (navigator.share) {
+            await navigator.share(shareData);
+          } else {
+            // Fallback: Copy to clipboard
+            await navigator.clipboard.writeText(
+              window.location.href + `?setup=${setupId}`,
+            );
+            alert("Link copied to clipboard!");
+          }
+        } catch (err) {
+          if (err.name !== "AbortError") {
+            console.log("Share failed:", err);
+          }
+        }
+      };
 
-            const modal = document.getElementById('detailModal');
-            const modalBody = document.getElementById('modalBody');
+      // ========================================
+      // OPEN MODAL WITH FULL DETAILS
+      // ========================================
+      window.openModal = function (setupId) {
+        triggerHaptic("medium");
+        const setup = deskSetups.find((s) => s.id === setupId);
+        if (!setup) return;
 
-            // Populate modal with full details
-            // Populate modal with full details
-            modalBody.innerHTML = `
+        const modal = document.getElementById("detailModal");
+        const modalBody = document.getElementById("modalBody");
+
+        // Populate modal with full details
+        // Populate modal with full details
+        modalBody.innerHTML = `
                 <img 
                     src="${setup.image}" 
                     alt="${setup.title}" 
@@ -562,7 +685,7 @@
                 >
                 <div class="modal-header">
                     <h1 class="modal-title">${setup.title}</h1>
-                    <span class="setup-category">${setup.category.replace('-', ' ')}</span>
+                    <span class="setup-category">${setup.category.replace("-", " ")}</span>
                 </div>
                 
                 <p class="modal-description">${setup.description}</p>
@@ -570,33 +693,40 @@
                 <div class="modal-products">
                     <h3 class="products-title">🛒 Get the Gear</h3>
                     <div class="products-list" id="products-list-${setup.id}">
-                        ${setup.products.map((product, index) => {
-                const isShopeeValid = product.shopeeUrl && product.shopeeUrl !== '#';
-                const isTiktokValid = product.tiktokUrl && product.tiktokUrl !== '#';
+                        ${setup.products
+                          .map((product, index) => {
+                            const isShopeeValid =
+                              product.shopeeUrl && product.shopeeUrl !== "#";
+                            const isTiktokValid =
+                              product.tiktokUrl && product.tiktokUrl !== "#";
 
-                return `
-                            <div class="product-item ${index >= 3 ? 'hidden-item' : ''}" data-index="${index}">
+                            return `
+                            <div class="product-item ${index >= 3 ? "hidden-item" : ""}" data-index="${index}">
                                 <div class="product-name">${product.name}</div>
                                 <div class="product-links">
                                     <a 
-                                        ${isShopeeValid ? `href="${product.shopeeUrl}" target="_blank" rel="noopener noreferrer"` : ''}
-                                        class="affiliate-btn shopee-btn ${!isShopeeValid ? 'disabled' : ''}"
-                                        onclick="event.stopPropagation(); ${isShopeeValid ? "triggerHaptic('light');" : 'return false;'}"
+                                        ${isShopeeValid ? `href="${product.shopeeUrl}" target="_blank" rel="noopener noreferrer"` : ""}
+                                        class="affiliate-btn shopee-btn ${!isShopeeValid ? "disabled" : ""}"
+                                        onclick="event.stopPropagation(); ${isShopeeValid ? "triggerHaptic('light');" : "return false;"}"
                                     >
                                         <span class="btn-label">Shopee</span>
                                     </a>
                                     <a 
-                                        ${isTiktokValid ? `href="${product.tiktokUrl}" target="_blank" rel="noopener noreferrer"` : ''}
-                                        class="affiliate-btn tiktok-btn ${!isTiktokValid ? 'disabled' : ''}"
-                                        onclick="event.stopPropagation(); ${isTiktokValid ? "triggerHaptic('light');" : 'return false;'}"
+                                        ${isTiktokValid ? `href="${product.tiktokUrl}" target="_blank" rel="noopener noreferrer"` : ""}
+                                        class="affiliate-btn tiktok-btn ${!isTiktokValid ? "disabled" : ""}"
+                                        onclick="event.stopPropagation(); ${isTiktokValid ? "triggerHaptic('light');" : "return false;"}"
                                     >
                                         <span class="btn-label">TikTok</span>
                                     </a>
                                 </div>
                             </div>
-                        `}).join('')}
+                        `;
+                          })
+                          .join("")}
                     </div>
-                    ${setup.products.length > 3 ? `
+                    ${
+                      setup.products.length > 3
+                        ? `
                         <button class="show-more-btn-simple" onclick="toggleProducts(${setup.id}); event.stopPropagation();" data-setup-id="${setup.id}">
                             <span class="show-more-icon">•••</span>
                             <span class="show-more-text">Show ${setup.products.length - 3} More</span>
@@ -604,7 +734,9 @@
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
                         </button>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                 </div>
                 
                 <div class="affiliate-disclosure">
@@ -612,124 +744,145 @@
                 </div>
             `;
 
-            // Show modal with animation
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        // Show modal with animation
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden"; // Prevent background scroll
 
-            // Add touch feedback to product links
-            if (isTouch) {
-                setTimeout(() => {
-                    modalBody.querySelectorAll('.product-link').forEach(link => {
-                        link.addEventListener('touchstart', function () {
-                            triggerHaptic('light');
-                        }, { passive: true });
-                    });
-                }, 100);
-            }
-        };
+        // Add touch feedback to product links
+        if (isTouch) {
+          setTimeout(() => {
+            modalBody.querySelectorAll(".product-link").forEach((link) => {
+              link.addEventListener(
+                "touchstart",
+                function () {
+                  triggerHaptic("light");
+                },
+                { passive: true },
+              );
+            });
+          }, 100);
+        }
+      };
 
-        // ========================================
-        // TOGGLE PRODUCTS VISIBILITY
-        // ========================================
-        window.toggleProducts = function (setupId) {
-            triggerHaptic('light');
-            const productsList = document.getElementById(`products-list-${setupId}`);
-            const btn = document.querySelector(`[data-setup-id="${setupId}"]`);
-            const hiddenItems = productsList.querySelectorAll('.hidden-item');
-            const isExpanded = productsList.classList.contains('expanded');
-            const totalProducts = productsList.querySelectorAll('.product-item').length;
+      // ========================================
+      // TOGGLE PRODUCTS VISIBILITY
+      // ========================================
+      window.toggleProducts = function (setupId) {
+        triggerHaptic("light");
+        const productsList = document.getElementById(
+          `products-list-${setupId}`,
+        );
+        const btn = document.querySelector(`[data-setup-id="${setupId}"]`);
+        const hiddenItems = productsList.querySelectorAll(".hidden-item");
+        const isExpanded = productsList.classList.contains("expanded");
+        const totalProducts =
+          productsList.querySelectorAll(".product-item").length;
 
-            if (isExpanded) {
-                // Collapse
-                hiddenItems.forEach(item => {
-                    item.style.maxHeight = item.scrollHeight + 'px';
-                    setTimeout(() => {
-                        item.style.maxHeight = '0';
-                    }, 10);
-                });
-                productsList.classList.remove('expanded');
-                btn.querySelector('.show-more-text').textContent = `Show ${totalProducts - 3} More`;
-                btn.classList.remove('expanded');
-            } else {
-                // Expand
-                productsList.classList.add('expanded'); // Add class first to restore padding/border
-                hiddenItems.forEach(item => {
-                    // Add buffer to ensure we clear borders and avoid clipping
-                    item.style.maxHeight = (item.scrollHeight + 20) + 'px';
-                });
+        if (isExpanded) {
+          // Collapse
+          hiddenItems.forEach((item) => {
+            item.style.maxHeight = item.scrollHeight + "px";
+            setTimeout(() => {
+              item.style.maxHeight = "0";
+            }, 10);
+          });
+          productsList.classList.remove("expanded");
+          btn.querySelector(".show-more-text").textContent =
+            `Show ${totalProducts - 3} More`;
+          btn.classList.remove("expanded");
+        } else {
+          // Expand
+          productsList.classList.add("expanded"); // Add class first to restore padding/border
+          hiddenItems.forEach((item) => {
+            // Add buffer to ensure we clear borders and avoid clipping
+            item.style.maxHeight = item.scrollHeight + 20 + "px";
+          });
 
-                // Clear fixed height after animation to allow responsiveness
-                setTimeout(() => {
-                    hiddenItems.forEach(item => {
-                        item.style.maxHeight = null;
-                    });
-                }, 310);
+          // Clear fixed height after animation to allow responsiveness
+          setTimeout(() => {
+            hiddenItems.forEach((item) => {
+              item.style.maxHeight = null;
+            });
+          }, 310);
 
-                btn.querySelector('.show-more-text').textContent = 'Show Less';
-                btn.classList.add('expanded');
-            }
-        };
+          btn.querySelector(".show-more-text").textContent = "Show Less";
+          btn.classList.add("expanded");
+        }
+      };
 
-        // ========================================
-        // CLOSE MODAL
-        // ========================================
-        window.closeModal = function () {
-            triggerHaptic('light');
-            const modal = document.getElementById('detailModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scroll
-        };
+      // ========================================
+      // CLOSE MODAL
+      // ========================================
+      window.closeModal = function () {
+        triggerHaptic("light");
+        const modal = document.getElementById("detailModal");
+        modal.classList.remove("active");
+        document.body.style.overflow = ""; // Restore scroll
+      };
 
-        // Close modal on ESC key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
+      // Close modal on ESC key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeModal();
+        }
+      });
 
-        // ========================================
-        // RENDER SETUPS WITH PAGINATION
-        // ========================================
-        function renderSetups(append = false) {
-            const filteredSetups = getFilteredSetups();
-            const totalSetups = filteredSetups.length;
+      // ========================================
+      // RENDER SETUPS WITH PAGINATION
+      // ========================================
+      function renderSetups(append = false) {
+        const filteredSetups = getFilteredSetups();
+        const totalSetups = filteredSetups.length;
 
-            // Remove existing load more button if any
-            const existingButton = document.getElementById('loadMoreBtn');
-            if (existingButton) existingButton.remove();
+        // Remove existing load more button if any
+        const existingButton = document.getElementById("loadMoreBtn");
+        if (existingButton) existingButton.remove();
 
-            if (totalSetups === 0) {
-                setupGrid.innerHTML = `
+        if (totalSetups === 0) {
+          setupGrid.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">🔍</div>
                         <h3>No setups found</h3>
                         <p>Try adjusting your filters or search terms</p>
                     </div>
                 `;
-                return;
-            }
+          return;
+        }
 
-            // Calculate which setups to show
-            const setupsToShow = filteredSetups.slice(0, currentPage * SETUPS_PER_PAGE);
-            const hasMore = totalSetups > setupsToShow.length;
+        // Calculate which setups to show
+        const setupsToShow = filteredSetups.slice(
+          0,
+          currentPage * SETUPS_PER_PAGE,
+        );
+        const hasMore = totalSetups > setupsToShow.length;
 
-            // Render cards
-            if (!append) {
-                setupGrid.innerHTML = setupsToShow.map((setup, index) => createSetupCard(setup, index)).join('');
-            } else {
-                // Append new cards (for "Load More")
-                const startIndex = (currentPage - 1) * SETUPS_PER_PAGE;
-                const newCards = filteredSetups.slice(startIndex, currentPage * SETUPS_PER_PAGE);
-                setupGrid.insertAdjacentHTML('beforeend', newCards.map((setup, index) => createSetupCard(setup, index)).join(''));
-            }
+        // Render cards
+        if (!append) {
+          setupGrid.innerHTML = setupsToShow
+            .map((setup, index) => createSetupCard(setup, index))
+            .join("");
+        } else {
+          // Append new cards (for "Load More")
+          const startIndex = (currentPage - 1) * SETUPS_PER_PAGE;
+          const newCards = filteredSetups.slice(
+            startIndex,
+            currentPage * SETUPS_PER_PAGE,
+          );
+          setupGrid.insertAdjacentHTML(
+            "beforeend",
+            newCards
+              .map((setup, index) => createSetupCard(setup, index))
+              .join(""),
+          );
+        }
 
-            // Add Load More button if there are more setups
-            if (hasMore) {
-                const remaining = totalSetups - setupsToShow.length;
-                const loadMoreBtn = document.createElement('div');
-                loadMoreBtn.id = 'loadMoreBtn';
-                loadMoreBtn.className = 'load-more-container';
-                loadMoreBtn.innerHTML = `
+        // Add Load More button if there are more setups
+        if (hasMore) {
+          const remaining = totalSetups - setupsToShow.length;
+          const loadMoreBtn = document.createElement("div");
+          loadMoreBtn.id = "loadMoreBtn";
+          loadMoreBtn.className = "load-more-container";
+          loadMoreBtn.innerHTML = `
                     <button class="load-more-btn" onclick="loadMore()">
                         <span class="load-more-icon">⬇️</span>
                         <span class="load-more-text">Load More Setups</span>
@@ -737,188 +890,204 @@
                     </button>
                     <div class="showing-count">Showing ${setupsToShow.length} of ${totalSetups} setups</div>
                 `;
-                setupGrid.parentElement.insertBefore(loadMoreBtn, setupGrid.nextSibling);
-            }
-
-            // Add touch feedback to product links (mobile only)
-            if (isTouch) {
-                addTouchFeedback();
-            }
-
-            // Observe new cards
-            if ('IntersectionObserver' in window) {
-                setTimeout(() => observeNewCards(), 50);
-            }
+          setupGrid.parentElement.insertBefore(
+            loadMoreBtn,
+            setupGrid.nextSibling,
+          );
         }
 
-        // ========================================
-        // LOAD MORE FUNCTION
-        // ========================================
-        window.loadMore = function () {
-            triggerHaptic('medium');
-            currentPage++;
-            renderSetups(true);
+        // Add touch feedback to product links (mobile only)
+        if (isTouch) {
+          addTouchFeedback();
+        }
 
-            // Smooth scroll to first new card
-            setTimeout(() => {
-                const cards = document.querySelectorAll('.setup-card');
-                const firstNewCard = cards[cards.length - Math.min(SETUPS_PER_PAGE, cards.length)];
-                if (firstNewCard) {
-                    firstNewCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
+        // Observe new cards
+        if ("IntersectionObserver" in window) {
+          setTimeout(() => observeNewCards(), 50);
+        }
+      }
+
+      // ========================================
+      // LOAD MORE FUNCTION
+      // ========================================
+      window.loadMore = function () {
+        triggerHaptic("medium");
+        currentPage++;
+        renderSetups(true);
+
+        // Smooth scroll to first new card
+        setTimeout(() => {
+          const cards = document.querySelectorAll(".setup-card");
+          const firstNewCard =
+            cards[cards.length - Math.min(SETUPS_PER_PAGE, cards.length)];
+          if (firstNewCard) {
+            firstNewCard.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 100);
+      };
+
+      // ========================================
+      // MOBILE TOUCH FEEDBACK
+      // ========================================
+      function addTouchFeedback() {
+        document.querySelectorAll(".product-link").forEach((link) => {
+          link.addEventListener(
+            "touchstart",
+            function () {
+              triggerHaptic("light");
+            },
+            { passive: true },
+          );
+        });
+      }
+
+      // ========================================
+      // SEARCH INPUT - Mobile optimized
+      // ========================================
+      let searchTimeout;
+      searchInput.addEventListener("input", (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          searchQuery = e.target.value;
+          currentPage = 1; // Reset to first page
+          renderSetups(false);
+        }, 150);
+      });
+
+      searchInput.addEventListener("search", (e) => {
+        if (e.target.value === "") {
+          searchQuery = "";
+          currentPage = 1;
+          renderSetups(false);
+        }
+      });
+
+      // ========================================
+      // FILTER BUTTONS - With haptic feedback
+      // ========================================
+      // Get filter buttons from both locations (desktop controls and modal)
+      const allFilterButtons = document.querySelectorAll(".filter-btn");
+
+      allFilterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          triggerHaptic("light");
+
+          // Update all filter buttons (in case there are multiple sets)
+          allFilterButtons.forEach((btn) => {
+            if (btn.dataset.category === button.dataset.category) {
+              btn.classList.add("active");
+            } else {
+              btn.classList.remove("active");
+            }
+          });
+
+          currentCategory = button.dataset.category;
+          currentPage = 1; // Reset to first page
+          renderSetups(false);
+
+          // Close filter modal if it's open
+          closeFilterModal();
+
+          if (isMobile) {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        });
+      });
+
+      // ========================================
+      // INITIAL RENDER
+      // ========================================
+      renderSetups();
+
+      // ========================================
+      // SCROLL REVEAL ANIMATION (Intersection Observer)
+      // ========================================
+      let observer;
+      if ("IntersectionObserver" in window) {
+        const observerOptions = {
+          threshold: 0.05,
+          rootMargin: "0px 0px -30px 0px",
         };
 
-        // ========================================
-        // MOBILE TOUCH FEEDBACK
-        // ========================================
-        function addTouchFeedback() {
-            document.querySelectorAll('.product-link').forEach(link => {
-                link.addEventListener('touchstart', function () {
-                    triggerHaptic('light');
-                }, { passive: true });
-            });
-        }
-
-        // ========================================
-        // SEARCH INPUT - Mobile optimized
-        // ========================================
-        let searchTimeout;
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                searchQuery = e.target.value;
-                currentPage = 1; // Reset to first page
-                renderSetups(false);
-            }, 150);
-        });
-
-        searchInput.addEventListener('search', (e) => {
-            if (e.target.value === '') {
-                searchQuery = '';
-                currentPage = 1;
-                renderSetups(false);
+        observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = "1";
+              entry.target.style.transform = "translateY(0)";
             }
-        });
+          });
+        }, observerOptions);
 
-        // ========================================
-        // FILTER BUTTONS - With haptic feedback
-        // ========================================
-        // Get filter buttons from both locations (desktop controls and modal)
-        const allFilterButtons = document.querySelectorAll('.filter-btn');
+        const observeCards = () => {
+          document.querySelectorAll(".setup-card").forEach((card) => {
+            if (!card.dataset.observed) {
+              card.style.opacity = "0";
+              card.style.transform = "translateY(16px)";
+              observer.observe(card);
+              card.dataset.observed = "true";
+            }
+          });
+        };
 
-        allFilterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                triggerHaptic('light');
+        setTimeout(observeCards, 50);
 
-                // Update all filter buttons (in case there are multiple sets)
-                allFilterButtons.forEach(btn => {
-                    if (btn.dataset.category === button.dataset.category) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                });
+        // Function to observe new cards when loading more
+        window.observeNewCards = observeCards;
+      }
 
-                currentCategory = button.dataset.category;
-                currentPage = 1; // Reset to first page
-                renderSetups(false);
+      // ========================================
+      // MOBILE PULL-TO-REFRESH HINT
+      // ========================================
+      if (isMobile) {
+        let touchStartY = 0;
+        let touchEndY = 0;
 
-                // Close filter modal if it's open
-                closeFilterModal();
+        document.addEventListener(
+          "touchstart",
+          (e) => {
+            touchStartY = e.touches[0].clientY;
+          },
+          { passive: true },
+        );
 
-                if (isMobile) {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            });
-        });
+        document.addEventListener(
+          "touchend",
+          (e) => {
+            touchEndY = e.changedTouches[0].clientY;
+            // If pulled down significantly at top of page, could add refresh hint
+            if (touchEndY - touchStartY > 100 && window.scrollY === 0) {
+              // Optional: Add visual feedback for pull-to-refresh
+              console.log("Pull to refresh detected");
+            }
+          },
+          { passive: true },
+        );
+      }
 
-        // ========================================
-        // INITIAL RENDER
-        // ========================================
-        renderSetups();
+      // ========================================
+      // PERFORMANCE: Lazy load images
+      // ========================================
+      if ("loading" in HTMLImageElement.prototype) {
+        // Browser supports native lazy loading (already added in HTML)
+        console.log("✓ Native lazy loading supported");
+      }
 
-        // ========================================
-        // SCROLL REVEAL ANIMATION (Intersection Observer)
-        // ========================================
-        let observer;
-        if ('IntersectionObserver' in window) {
-            const observerOptions = {
-                threshold: 0.05,
-                rootMargin: '0px 0px -30px 0px'
-            };
+      // ========================================
+      // ACCESSIBILITY: Announce filter changes
+      // ========================================
+      function announceToScreenReader(message) {
+        const announcement = document.createElement("div");
+        announcement.setAttribute("role", "status");
+        announcement.setAttribute("aria-live", "polite");
+        announcement.className = "sr-only";
+        announcement.textContent = message;
+        document.body.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 1000);
+      }
 
-            observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            const observeCards = () => {
-                document.querySelectorAll('.setup-card').forEach(card => {
-                    if (!card.dataset.observed) {
-                        card.style.opacity = '0';
-                        card.style.transform = 'translateY(16px)';
-                        observer.observe(card);
-                        card.dataset.observed = 'true';
-                    }
-                });
-            };
-
-            setTimeout(observeCards, 50);
-
-            // Function to observe new cards when loading more
-            window.observeNewCards = observeCards;
-        }
-
-        // ========================================
-        // MOBILE PULL-TO-REFRESH HINT
-        // ========================================
-        if (isMobile) {
-            let touchStartY = 0;
-            let touchEndY = 0;
-
-            document.addEventListener('touchstart', (e) => {
-                touchStartY = e.touches[0].clientY;
-            }, { passive: true });
-
-            document.addEventListener('touchend', (e) => {
-                touchEndY = e.changedTouches[0].clientY;
-                // If pulled down significantly at top of page, could add refresh hint
-                if (touchEndY - touchStartY > 100 && window.scrollY === 0) {
-                    // Optional: Add visual feedback for pull-to-refresh
-                    console.log('Pull to refresh detected');
-                }
-            }, { passive: true });
-        }
-
-        // ========================================
-        // PERFORMANCE: Lazy load images
-        // ========================================
-        if ('loading' in HTMLImageElement.prototype) {
-            // Browser supports native lazy loading (already added in HTML)
-            console.log('✓ Native lazy loading supported');
-        }
-
-        // ========================================
-        // ACCESSIBILITY: Announce filter changes
-        // ========================================
-        function announceToScreenReader(message) {
-            const announcement = document.createElement('div');
-            announcement.setAttribute('role', 'status');
-            announcement.setAttribute('aria-live', 'polite');
-            announcement.className = 'sr-only';
-            announcement.textContent = message;
-            document.body.appendChild(announcement);
-            setTimeout(() => announcement.remove(), 1000);
-        }
-
-        // Add screen reader announcement styles
-        const style = document.createElement('style');
-        style.textContent = `
+      // Add screen reader announcement styles
+      const style = document.createElement("style");
+      style.textContent = `
             .sr-only {
                 position: absolute;
                 width: 1px;
@@ -931,8 +1100,7 @@
                 border-width: 0;
             }
         `;
-        document.head.appendChild(style);
+      document.head.appendChild(style);
     </script>
-</body>
-
+  </body>
 </html>
