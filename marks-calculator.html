@@ -81,7 +81,9 @@
         background: var(--bg);
         color: var(--text-h);
         min-height: 100vh;
+        min-height: 100dvh;
         overflow-x: hidden;
+        overscroll-behavior: none;
         -webkit-font-smoothing: antialiased;
         transition:
           background 0.4s,
@@ -92,7 +94,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding-bottom: 48px;
+        padding-bottom: 24px;
       }
 
       /* ── Mesh Background ───────────────────────────── */
@@ -602,22 +604,45 @@
         align-items: center;
       }
 
+      /* ── Scroll-less Layout Logic ─────────────────── */
+      body.calculator-mode {
+        overflow: hidden !important;
+        padding-bottom: 0 !important;
+        position: fixed !important;
+        inset: 0;
+        overscroll-behavior: none;
+      }
+      #view-calculator {
+        height: calc(100vh - 56px);
+        height: calc(100dvh - 56px);
+        padding-bottom: 0;
+        margin-bottom: 0;
+        overflow: hidden;
+      }
+
       /* ── Assessment Tiles ─────────────────────────── */
       .calc-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
+        overflow-y: auto;
+        margin: 0 -18px;
+        padding: 0 18px 24px;
+        align-content: start;
+        flex: 1; /* Expand to fill scroll area */
+        min-height: 0; /* CRITICAL: Prevents flex child from overflowing the screen height */
+        touch-action: pan-y;
       }
 
       .assessment-tile {
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--r-xl);
-        padding: 16px;
+        padding: 14px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        gap: 10px;
+        gap: 8px;
         box-shadow: var(--shadow);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
@@ -625,7 +650,7 @@
         cursor: pointer;
         position: relative;
         overflow: hidden;
-        min-height: 110px;
+        min-height: 94px;
         animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
       }
       .assessment-tile:hover {
@@ -657,7 +682,7 @@
       .input-area {
         background: var(--input-bg);
         border-radius: 12px;
-        padding: 10px 12px;
+        padding: 8px 12px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -1509,6 +1534,7 @@
 
         document.getElementById("view-home").style.display = "none";
         document.getElementById("view-calculator").style.display = "flex";
+        document.body.classList.add("calculator-mode");
 
         document.getElementById("calcCourseCode").textContent =
           `${course.code} · ${course.name.toUpperCase()}`;
@@ -1532,6 +1558,7 @@
         currentCourseId = null;
         document.getElementById("view-calculator").style.display = "none";
         document.getElementById("view-home").style.display = "flex";
+        document.body.classList.remove("calculator-mode");
         renderCourseList();
         window.scrollTo(0, 0);
       }
