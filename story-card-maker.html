@@ -307,8 +307,9 @@
 
       .preview-wrapper {
         width: 100%;
-        max-width: min(95vw, calc(62vh * 9 / 16));
-        max-height: 62vh;
+        height: 100%;
+        max-height: 100%;
+        max-width: min(100%, calc((100vh - 160px) * 9 / 16));
         aspect-ratio: 9 / 16;
         background: var(--surface);
         backdrop-filter: blur(16px);
@@ -509,6 +510,10 @@
         stroke-linejoin: round;
         transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         flex-shrink: 0;
+      }
+
+      .btn .desktop-text {
+        display: none;
       }
 
       .btn:hover svg {
@@ -930,6 +935,48 @@
           min-width: 40px;
         }
       }
+
+      /* ─── Desktop App Layout ──────────────────────────────────── */
+      @media (min-width: 800px) {
+        .preview-container {
+          padding: 40px 40px 20px;
+        }
+
+        .preview-wrapper {
+          border-radius: 36px;
+          box-shadow:
+            var(--shadow-lg),
+            0 0 0 1px rgba(255, 255, 255, 0.08);
+        }
+
+        .controls {
+          padding: 20px 40px 40px;
+          gap: 20px;
+          justify-content: center;
+        }
+
+        .btn {
+          height: 54px;
+          font-size: 15px;
+          flex: 1;
+          max-width: 300px;
+        }
+
+        .btn-icon {
+          border-radius: var(--radius-pill);
+          width: auto;
+          min-width: auto;
+        }
+
+        /* Show the text span on desktop */
+        #shuffleBtn .desktop-text {
+          display: inline;
+        }
+        #shuffleBtn {
+          display: flex;
+          gap: 10px;
+        }
+      }
     </style>
 
     <script>
@@ -1181,6 +1228,7 @@
             <polyline points="21 16 21 21 16 21" />
             <line x1="15" y1="15" x2="21" y2="21" />
           </svg>
+          <span class="desktop-text">Shuffle</span>
         </button>
 
         <button
