@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#0a0a0f" id="themeColorMeta" />
+    <title>Uni Timetable</title>
+    <link rel="stylesheet" href="css/timetable.css" />
+  </head>
+  <body>
+    <div class="bg-mesh"></div>
+
+    <div class="app-layout">
+      <!-- Header -->
+      <header>
+        <a
+          href="index.html"
+          class="back-btn-absolute"
+          aria-label="Back to home"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+        </a>
+
+        <div class="header-title-block">
+          <div class="header-eyebrow">Education</div>
+          <div class="brand">Uni Timetable</div>
+        </div>
+
+        <div class="header-extras">
+          <button
+            class="icon-btn"
+            onclick="quickToggleTheme()"
+            aria-label="Toggle dark mode"
+          >
+            <svg
+              id="themeIconSun"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+              />
+            </svg>
+            <svg
+              id="themeIconMoon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="display: none"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+          <button
+            class="menu-btn"
+            id="menuBtn"
+            onclick="toggleMenu()"
+            aria-label="Open menu"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="5" r="1" fill="currentColor" />
+              <circle cx="12" cy="12" r="1" fill="currentColor" />
+              <circle cx="12" cy="19" r="1" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Tab Bar -->
+      <div class="timetable-tabs" id="tabContainer"></div>
+
+      <!-- Swipeable Timetables -->
+      <div class="swipe-container" id="swipeContainer"></div>
+    </div>
+
+    <!-- Popover Menu & Click Outside -->
+    <div class="click-outside" id="clickOutside" onclick="toggleMenu()"></div>
+
+    <div class="popover-menu" id="popoverMenu" role="menu">
+      <div class="popover-menu-header">Settings</div>
+      <div class="popover-divider"></div>
+      <div class="menu-item" onclick="toggleThemeSwitch(event)" role="menuitem">
+        <div class="menu-item-left">
+          <div
+            class="menu-item-icon"
+            style="
+              background: rgba(124, 111, 238, 0.12);
+              color: var(--accent-1);
+            "
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </div>
+          <span>Dark Mode</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="themeSwitch" onchange="toggleTheme()" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="popover-divider"></div>
+      <button class="menu-item" onclick="openInfoModal()" role="menuitem">
+        <div class="menu-item-left">
+          <div
+            class="menu-item-icon"
+            style="background: rgba(6, 182, 212, 0.12); color: var(--accent-3)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+          </div>
+          <span>About</span>
+        </div>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="color: var(--text-muted)"
+        >
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Info Modal -->
+    <div
+      class="modal-overlay"
+      id="infoModalApp"
+      onclick="closeInfoModal(event)"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-card-info" onclick="event.stopPropagation()">
+        <div
+          style="
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 12px 30px var(--accent-glow);
+          "
+        >
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+        </div>
+        <div
+          style="
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 4px 12px;
+            border-radius: 99px;
+            background: color-mix(in srgb, var(--accent) 12%, transparent);
+            color: var(--accent);
+            margin-bottom: 12px;
+          "
+        >
+          v1.0
+        </div>
+        <h3 class="info-title">Uni Timetable</h3>
+        <p class="info-text">
+          A dynamic application for viewing class schedules across multiple
+          groups of students. <br /><br />
+          <span style="font-size: 12px; color: var(--text-muted)"
+            >© 2026 Azizi Yahya</span
+          >
+        </p>
+        <button class="info-btn" onclick="closeInfoModal(event)">Got it</button>
+      </div>
+    </div>
+
+    <script>
+      /* ── Dark Mode Logic ── */
+      function quickToggleTheme() {
+        const isDark = document.body.dataset.theme === "dark";
+        setTheme(!isDark);
+      }
+      function toggleTheme() {
+        const checkbox = document.getElementById("themeSwitch");
+        setTheme(checkbox.checked);
+      }
+      function setTheme(isDark) {
+        if (isDark) {
+          document.body.dataset.theme = "dark";
+          document.body.classList.add("dark-mode");
+          document.getElementById("themeIconSun").style.display = "none";
+          document.getElementById("themeIconMoon").style.display = "block";
+        } else {
+          document.body.dataset.theme = "light";
+          document.body.classList.remove("dark-mode");
+          document.getElementById("themeIconSun").style.display = "block";
+          document.getElementById("themeIconMoon").style.display = "none";
+        }
+        document.getElementById("themeSwitch").checked = isDark;
+        document.getElementById("themeColorMeta").content = isDark
+          ? "#0a0a0f"
+          : "#f0f2f8";
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+      }
+
+      // Init Theme
+      const savedTheme = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
+      if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+        setTheme(true);
+      } else {
+        setTheme(false);
+      }
+
+      /* ── Popover logic ── */
+      function toggleThemeSwitch(event) {
+        if (!event.target.closest(".switch")) {
+          const cb = document.getElementById("themeSwitch");
+          cb.checked = !cb.checked;
+          toggleTheme();
+        }
+      }
+
+      function toggleMenu() {
+        const menu = document.getElementById("popoverMenu");
+        const overlay = document.getElementById("clickOutside");
+        const btn = document.getElementById("menuBtn");
+        if (!menu || !overlay) return;
+
+        const isOpen = menu.classList.toggle("active");
+        overlay.style.display = isOpen ? "block" : "none";
+        if (btn) btn.setAttribute("aria-expanded", isOpen);
+
+        if (isOpen) {
+          // Position relative to the menu button
+          if (btn) {
+            const rect = btn.getBoundingClientRect();
+            menu.style.top = rect.bottom + 8 + "px";
+            menu.style.right = window.innerWidth - rect.right + "px";
+          }
+        }
+      }
+
+      function openInfoModal() {
+        const menu = document.getElementById("popoverMenu");
+        if (menu && menu.classList.contains("active")) toggleMenu();
+        const modal = document.getElementById("infoModalApp");
+        if (modal) {
+          modal.classList.add("active");
+        }
+      }
+
+      function closeInfoModal(e) {
+        if (e) e.stopPropagation();
+        const modal = document.getElementById("infoModalApp");
+        if (modal) {
+          modal.classList.remove("active");
+        }
+      }
+
+      /* ── Data & Rendering ── */
+      const sharedClasses = {
+        web_dev_lec: {
+          time: "08:00 - 10:00",
+          type: "Lecture",
+          title: "Web Development",
+          location: "📍 Main Hall A",
+          instructor: "👨‍🏫 Dr. Alan",
+          color: "#10b981",
+        },
+        os_lec: {
+          time: "09:00 - 11:30",
+          type: "Lecture",
+          title: "Operating Systems",
+          location: "📍 BT 2",
+          instructor: "👨‍🏫 Dr. Smith",
+          color: "#f59e0b",
+        },
+        // Unique labs for each group
+        web_lab_A: {
+          time: "11:00 - 13:00",
+          type: "Lab",
+          title: "Web Dev Lab (Group A)",
+          location: "📍 Computer Lab 1",
+          instructor: "👨‍🏫 Mr. Sajjad",
+          color: "#10b981",
+        },
+        web_lab_B: {
+          time: "14:00 - 16:00",
+          type: "Lab",
+          title: "Web Dev Lab (Group B)",
+          location: "📍 Computer Lab 2",
+          instructor: "👨‍🏫 Mr. Sajjad",
+          color: "#10b981",
+        },
+        web_lab_C: {
+          time: "10:00 - 12:00",
+          type: "Lab",
+          title: "Web Dev Lab (Group C)",
+          location: "📍 Computer Lab 3",
+          instructor: "👨‍🏫 Mr. Sajjad",
+          color: "#10b981",
+        },
+        // A tutorial shared by A and C
+        maths_tut: {
+          time: "14:00 - 16:00",
+          type: "Tutorial",
+          title: "Discrete Mathematics",
+          location: "📍 Room A203",
+          instructor: "👩‍🏫 Dr. Sarah",
+          color: "#ec4899",
+        },
+      };
+
+      const timetables = [
+        {
+          id: "group-a",
+          name: "Group A",
+          schedule: [
+            {
+              day: "Monday",
+              color: "#10b981",
+              classes: [sharedClasses.web_dev_lec, sharedClasses.web_lab_A], // Shared Lecture + Unique Lab
+            },
+            {
+              day: "Tuesday",
+              color: "#ec4899",
+              classes: [sharedClasses.maths_tut],
+            },
+            {
+              day: "Wednesday",
+              color: "#f59e0b",
+              classes: [sharedClasses.os_lec], // Shared Lecture
+            },
+          ],
+        },
+        {
+          id: "group-b",
+          name: "Group B",
+          schedule: [
+            {
+              day: "Monday",
+              color: "#10b981",
+              classes: [sharedClasses.web_dev_lec], // Shared Lecture
+            },
+            {
+              day: "Tuesday",
+              color: "#10b981",
+              classes: [sharedClasses.web_lab_B], // Unique Lab on a different day
+            },
+            {
+              day: "Wednesday",
+              color: "#f59e0b",
+              classes: [sharedClasses.os_lec], // Shared Lecture
+            },
+          ],
+        },
+        {
+          id: "group-c",
+          name: "Group C",
+          schedule: [
+            {
+              day: "Monday",
+              color: "#10b981",
+              classes: [sharedClasses.web_dev_lec], // Shared Lecture
+            },
+            {
+              day: "Tuesday",
+              color: "#ec4899",
+              classes: [sharedClasses.maths_tut],
+            },
+            {
+              day: "Wednesday",
+              color: "#f59e0b",
+              classes: [sharedClasses.os_lec], // Shared Lecture
+            },
+            {
+              day: "Thursday",
+              color: "#10b981",
+              classes: [sharedClasses.web_lab_C], // Unique Lab
+            },
+          ],
+        },
+      ];
+
+      function renderTimetables() {
+        const tabContainer = document.getElementById("tabContainer");
+        const swipeContainer = document.getElementById("swipeContainer");
+
+        let tabsHtml = "";
+        let panesHtml = "";
+
+        timetables.forEach((group, index) => {
+          // Tabs
+          tabsHtml += `<div class="tab ${index === 0 ? "active" : ""}" onclick="scrollToPane(${index})">${group.name}</div>`;
+
+          // Panes
+          let daysHtml = "";
+          if (group.schedule.length === 0) {
+            daysHtml = `<div class="day-group"><div class="day-header" style="color: #64748b">No classes</div>
+             <div class="empty-state">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                 <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                 <circle cx="12" cy="15" r="2" fill="currentColor" fill-opacity="0.2" />
+               </svg>
+               <p>No classes scheduled.</p>
+             </div></div>`;
+          } else {
+            group.schedule.forEach((day) => {
+              let classesHtml = "";
+              day.classes.forEach((c) => {
+                classesHtml += `
+                  <div class="class-card" style="--item-color: ${c.color}">
+                    <div class="class-header">
+                      <span class="class-time">${c.time}</span>
+                      <span class="class-tag">${c.type}</span>
+                    </div>
+                    <div class="class-title">${c.title}</div>
+                    <div class="class-footer">
+                      ${c.location ? `<span class="class-info">${c.location}</span>` : ""}
+                      ${c.instructor ? `<span class="class-info">${c.instructor}</span>` : ""}
+                    </div>
+                  </div>
+                 `;
+              });
+              daysHtml += `
+                 <div class="day-group">
+                   <div class="day-header" style="color: ${day.color}">${day.day}</div>
+                   ${classesHtml}
+                 </div>
+               `;
+            });
+
+            // Adding the weekend empty state
+            daysHtml += `<div class="day-group">
+                <div class="day-header" style="color: #64748b">Weekend</div>
+                <div class="empty-state">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                    <circle cx="12" cy="15" r="2" fill="currentColor" fill-opacity="0.2" />
+                  </svg>
+                  <p>No classes scheduled. Enjoy your weekend!</p>
+                </div>
+              </div>`;
+          }
+
+          panesHtml += `<div class="timetable-pane" id="pane-${index}">${daysHtml}</div>`;
+        });
+
+        tabContainer.innerHTML = tabsHtml;
+        swipeContainer.innerHTML = panesHtml;
+      }
+
+      // Call render first
+      renderTimetables();
+
+      /* ── Swipe / Tab Logic ── */
+      const container = document.getElementById("swipeContainer");
+
+      // Scroll to pane mathematically
+      window.scrollToPane = function (index) {
+        const targetOffset = container.clientWidth * index;
+        container.scrollTo({ left: targetOffset, behavior: "smooth" });
+        updateTabs(index);
+      };
+
+      // Update active tab styling
+      function updateTabs(index) {
+        const tabs = document.querySelectorAll(".tab");
+        tabs.forEach((tab, i) => {
+          if (i === index) tab.classList.add("active");
+          else tab.classList.remove("active");
+        });
+      }
+
+      // Use IntersectionObserver to update tab when swiping natively on mobile
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const panes = document.querySelectorAll(".timetable-pane");
+              const index = Array.from(panes).indexOf(entry.target);
+              updateTabs(index);
+            }
+          });
+        },
+        {
+          root: container,
+          threshold: 0.6, // Trigger when >60% of pane is visible
+        },
+      );
+
+      // Re-observe after dynamic render
+      document
+        .querySelectorAll(".timetable-pane")
+        .forEach((pane) => observer.observe(pane));
+    </script>
+  </body>
+</html>
