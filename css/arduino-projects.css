@@ -382,16 +382,16 @@ body {
 }
 
 .modal-content {
-  position: fixed; top: 0; bottom: 0; left: 0; right: 0;
-  width: 100%; height: 100%;
+  position: fixed; top: 0; bottom: 0; left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 100%; max-width: 640px; height: 100%;
   background: var(--surface-s);
-  transform: translateY(100%);
   transition: transform 0.35s cubic-bezier(0.32,0.72,0,1);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   z-index: 501;
 }
-.modal.active .modal-content { transform: translateY(0); }
+.modal.active .modal-content { transform: translateX(-50%) translateY(0); }
 
 .modal-close {
   position: sticky; top: 20px; right: 20px;
