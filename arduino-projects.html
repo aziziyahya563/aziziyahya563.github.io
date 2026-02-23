@@ -91,21 +91,7 @@
             </div>
         </header>
 
-        <!-- <div class="controls">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search projects..."
-                    aria-label="Search Arduino projects">
-            </div>
 
-            <div class="filter-group">
-                <button class="filter-btn active" data-category="all">All</button>
-                <button class="filter-btn" data-category="beginner">Beginner</button>
-                <button class="filter-btn" data-category="intermediate">Intermediate</button>
-                <button class="filter-btn" data-category="advanced">Advanced</button>
-                <button class="filter-btn" data-category="iot">IoT</button>
-                <button class="filter-btn" data-category="robotics">Robotics</button>
-            </div>
-        </div> -->
 
         <div id="setupGrid" class="setup-grid">
             <!-- Setups will be dynamically inserted here -->
@@ -388,103 +374,7 @@
                 code: "assets/arduinoProjects/code/vacuumRobot_with_antiCollision.ino",
                 flowchart: "assets/arduinoProjects/flowcharts/001_flowchart.png"
             }
-            // {
-            //     id: 2,
-            //     title: "RGB LED Strip Controller",
-            //     category: "beginner",
-            //     description: "Control WS2812B LED strips with IR remote and mobile app. Create stunning lighting effects!",
-            //     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "Arduino Nano", icon: "🔌", url: "#" },
-            //         { name: "WS2812B LED Strip 5M", icon: "🌈", url: "#" },
-            //         { name: "IR Receiver Module", icon: "📡", url: "#" },
-            //         { name: "5V 10A Power Supply", icon: "🔋", url: "#" },
-            //         { name: "IR Remote Control", icon: "🎮", url: "#" }
-            //     ]
-            // },
-            // {
-            //     id: 3,
-            //     title: "Line Following Robot",
-            //     category: "robotics",
-            //     description: "Autonomous robot that follows black lines using IR sensors. Great introduction to robotics!",
-            //     image: "https://images.unsplash.com/photo-1563207153-f403bf289096?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "Arduino Uno R3", icon: "🔌", url: "#" },
-            //         { name: "L298N Motor Driver", icon: "⚙️", url: "#" },
-            //         { name: "IR Line Sensor Module", icon: "👁️", url: "#" },
-            //         { name: "DC Motors & Wheels", icon: "🛞", url: "#" },
-            //         { name: "Robot Chassis Kit", icon: "🤖", url: "#" }
-            //     ]
-            // },
-            // {
-            //     id: 4,
-            //     title: "MQTT Home Automation Hub",
-            //     category: "iot",
-            //     description: "ESP32-based home automation system with MQTT protocol. Control lights, fans, and more remotely!",
-            //     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "ESP32 DevKit V1", icon: "🔌", url: "#" },
-            //         { name: "4-Channel Relay Module", icon: "🔌", url: "#" },
-            //         { name: "DHT22 Sensor", icon: "🌡️", url: "#" },
-            //         { name: "PIR Motion Sensor", icon: "👁️", url: "#" },
-            //         { name: "OLED Display 1.3\"", icon: "📟", url: "#" }
-            //     ]
-            // },
-            // {
-            //     id: 5,
-            //     title: "Weather Station with Display",
-            //     category: "intermediate",
-            //     description: "Complete weather station measuring temperature, humidity, pressure, and displaying on TFT screen.",
-            //     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "Arduino Mega 2560", icon: "🔌", url: "#" },
-            //         { name: "BME280 Sensor", icon: "🌡️", url: "#" },
-            //         { name: "2.8\" TFT LCD Touch Screen", icon: "📱", url: "#" },
-            //         { name: "Real Time Clock Module", icon: "⏰", url: "#" },
-            //         { name: "SD Card Module", icon: "💾", url: "#" }
-            //     ]
-            // },
-            // {
-            //     id: 6,
-            //     title: "Bluetooth Controlled Car",
-            //     category: "robotics",
-            //     description: "Build a smartphone-controlled RC car with obstacle avoidance using ultrasonic sensors.",
-            //     image: "https://images.unsplash.com/photo-1563207153-f403bf289096?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "Arduino Uno R3", icon: "🔌", url: "#" },
-            //         { name: "HC-05 Bluetooth Module", icon: "📱", url: "#" },
-            //         { name: "L293D Motor Driver Shield", icon: "⚙️", url: "#" },
-            //         { name: "HC-SR04 Ultrasonic Sensor", icon: "📡", url: "#" },
-            //         { name: "4WD Robot Car Kit", icon: "🚗", url: "#" }
-            //     ]
-            // },
-            // {
-            //     id: 7,
-            //     title: "CNC Drawing Machine",
-            //     category: "advanced",
-            //     description: "3-axis CNC machine for drawing. Uses stepper motors and GRBL firmware for precise control.",
-            //     image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "Arduino Uno + CNC Shield", icon: "🔌", url: "#" },
-            //         { name: "NEMA 17 Stepper Motors (3x)", icon: "⚙️", url: "#" },
-            //         { name: "A4988 Stepper Drivers (3x)", icon: "🔧", url: "#" },
-            //         { name: "GT2 Timing Belt & Pulleys", icon: "🔗", url: "#" },
-            //         { name: "Linear Rails & Bearings", icon: "🛤️", url: "#" }
-            //     ]
-            // },
-            // {
-            //     id: 8,
-            //     title: "Voice Controlled LED System",
-            //     category: "intermediate",
-            //     description: "Control your LED lights using voice commands via Google Assistant or Alexa integration.",
-            //     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop",
-            //     products: [
-            //         { name: "NodeMCU ESP8266", icon: "🔌", url: "#" },
-            //         { name: "Relay Module 4-Channel", icon: "🔌", url: "#" },
-            //         { name: "WS2812B LED Strip", icon: "🌈", url: "#" },
-            //         { name: "5V Power Supply", icon: "🔋", url: "#" }
-            //     ]
-            // }
+
         ];
 
         // ========================================
@@ -615,10 +505,11 @@
                     alt="${setup.title}" 
                     class="modal-image"
                 >
-                <div class="modal-header">
-                    <h1 class="modal-title">${setup.title}</h1>
-                    <span class="setup-category">${setup.category.replace('-', ' ')}</span>
-                </div>
+                <div class="modal-content-inner">
+                    <div class="modal-header">
+                        <h1 class="modal-title">${setup.title}</h1>
+                        <span class="setup-category">${setup.category.replace('-', ' ')}</span>
+                    </div>
                 
                 <p class="modal-description">${setup.description}</p>
                 
@@ -629,9 +520,27 @@
                 const isShopeeValid = product.shopeeUrl && product.shopeeUrl !== '#';
                 const isTiktokValid = product.tiktokUrl && product.tiktokUrl !== '#';
 
+                let rawName = product.name;
+                let category = "Component";
+                if (rawName.startsWith("[")) {
+                    const endIdx = rawName.indexOf("]");
+                    if (endIdx !== -1) {
+                        category = rawName.substring(1, endIdx);
+                        rawName = rawName.substring(endIdx + 1).trim();
+                    }
+                }
+
                 return `
                             <div class="product-item ${index >= 3 ? 'hidden-item' : ''}" data-index="${index}">
-                                <div class="product-name">${product.name}</div>
+                                <div class="product-icon-box">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                                    </svg>
+                                </div>
+                                <div class="product-details">
+                                    <div class="product-category">${category}</div>
+                                    <div class="product-name" title="${rawName}">${rawName}</div>
+                                </div>
                                 <div class="product-links">
                                     <a 
                                         ${isShopeeValid ? `href="${product.shopeeUrl}" target="_blank" rel="noopener noreferrer"` : ''}
@@ -722,6 +631,7 @@
                 
                 <div class="affiliate-disclosure">
                     🔗 <strong>Affiliate Links:</strong> This page contains affiliate links. If you purchase through these links, I may earn a small commission at no extra cost to you.
+                </div>
                 </div>
             `;
 
@@ -987,64 +897,7 @@
             window.observeNewCards = observeCards;
         }
 
-        // ========================================
-        // MOBILE PULL-TO-REFRESH HINT
-        // ========================================
-        if (isMobile) {
-            let touchStartY = 0;
-            let touchEndY = 0;
 
-            document.addEventListener('touchstart', (e) => {
-                touchStartY = e.touches[0].clientY;
-            }, { passive: true });
-
-            document.addEventListener('touchend', (e) => {
-                touchEndY = e.changedTouches[0].clientY;
-                // If pulled down significantly at top of page, could add refresh hint
-                if (touchEndY - touchStartY > 100 && window.scrollY === 0) {
-                    // Optional: Add visual feedback for pull-to-refresh
-                    console.log('Pull to refresh detected');
-                }
-            }, { passive: true });
-        }
-
-        // ========================================
-        // PERFORMANCE: Lazy load images
-        // ========================================
-        if ('loading' in HTMLImageElement.prototype) {
-            // Browser supports native lazy loading (already added in HTML)
-            console.log('✓ Native lazy loading supported');
-        }
-
-        // ========================================
-        // ACCESSIBILITY: Announce filter changes
-        // ========================================
-        function announceToScreenReader(message) {
-            const announcement = document.createElement('div');
-            announcement.setAttribute('role', 'status');
-            announcement.setAttribute('aria-live', 'polite');
-            announcement.className = 'sr-only';
-            announcement.textContent = message;
-            document.body.appendChild(announcement);
-            setTimeout(() => announcement.remove(), 1000);
-        }
-
-        // Add screen reader announcement styles
-        const style = document.createElement('style');
-        style.textContent = `
-            .sr-only {
-                position: absolute;
-                width: 1px;
-                height: 1px;
-                padding: 0;
-                margin: -1px;
-                overflow: hidden;
-                clip: rect(0, 0, 0, 0);
-                white-space: nowrap;
-                border-width: 0;
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 
