@@ -590,6 +590,30 @@
         color: var(--text-muted);
       }
 
+      .grade-select {
+        width: 100%;
+        height: 100%;
+        min-height: 24px;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        color: var(--text-h);
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        font-family: inherit;
+        appearance: none;
+        -webkit-appearance: none;
+        padding-right: 30px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%238892b0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+      }
+      .grade-select option {
+        background-color: var(--surface-s);
+        color: var(--text-h);
+      }
+
       /* ── Menu ─────────────────────────────────────── */
       .click-outside {
         position: fixed;
@@ -1067,111 +1091,7 @@
     <!-- ── Dashboard Content ── -->
     <div class="dashboard" id="main-dashboard">
       <div class="section-header" style="margin-top: 0">
-        <span class="section-label">Current Standing (Sem 2)</span>
-        <div class="section-line"></div>
-      </div>
-
-      <div id="manualInputSectionOuter" style="width: 100%">
-        <div
-          class="courses-grid"
-          style="margin-bottom: 12px; margin-top: 4px"
-          id="manualInputSection"
-        >
-          <div
-            class="course-card"
-            style="
-              padding: 14px;
-              justify-content: space-between;
-              min-height: auto;
-              cursor: default;
-              gap: 8px;
-            "
-          >
-            <span
-              style="font-size: 12px; font-weight: 700; color: var(--text-p)"
-              >Current CGPA</span
-            >
-            <div
-              style="
-                background: var(--input-bg);
-                border-radius: 12px;
-                padding: 8px;
-                transition: all 0.2s ease;
-                display: flex;
-                align-items: center;
-              "
-            >
-              <input
-                type="number"
-                id="manualCgpa"
-                step="0.01"
-                min="0"
-                max="4.00"
-                placeholder="0.00"
-                oninput="saveManualCGPA()"
-                style="
-                  width: 100%;
-                  background: transparent;
-                  border: none;
-                  outline: none;
-                  font-size: 1.2rem;
-                  font-weight: 800;
-                  color: var(--text-h);
-                  font-family: inherit;
-                "
-              />
-            </div>
-          </div>
-          <div
-            class="course-card"
-            style="
-              padding: 14px;
-              justify-content: space-between;
-              min-height: auto;
-              cursor: default;
-              gap: 8px;
-            "
-          >
-            <span
-              style="font-size: 12px; font-weight: 700; color: var(--text-p)"
-              >Total Credits</span
-            >
-            <div
-              style="
-                background: var(--input-bg);
-                border-radius: 12px;
-                padding: 8px;
-                transition: all 0.2s ease;
-                display: flex;
-                align-items: center;
-              "
-            >
-              <input
-                type="number"
-                id="manualCredits"
-                step="1"
-                min="0"
-                max="150"
-                placeholder="eg: 39"
-                oninput="saveManualCGPA()"
-                style="
-                  width: 100%;
-                  background: transparent;
-                  border: none;
-                  outline: none;
-                  font-size: 1.2rem;
-                  font-weight: 800;
-                  color: var(--text-h);
-                  font-family: inherit;
-                "
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-header" style="margin-top: 0">
-        <span class="section-label">Projected CGPA</span>
+        <span class="section-label">Expected GPA (SEM 3)</span>
         <div class="section-line"></div>
       </div>
       <div class="score-display" style="margin-bottom: 4px">
@@ -1182,7 +1102,40 @@
             text-transform: uppercase;
             opacity: 0.9;
           "
-          >Projected CGPA</span
+          >Projected GPA (SEM 3)</span
+        >
+        <div class="current-score" id="total" style="margin-top: 4px">0.00</div>
+      </div>
+
+      <div
+        class="section-header"
+        style="
+          justify-content: space-between;
+          margin-top: 12px;
+          margin-bottom: 8px;
+        "
+      >
+        <span class="section-label" id="currentSemesterLabel"
+          >Expected Grades (SEM 3)</span
+        >
+        <div class="section-line"></div>
+      </div>
+
+      <div class="courses-grid" id="coursesGrid"></div>
+
+      <div class="section-header" style="margin-top: 0">
+        <span class="section-label">EXPECTED CGPA (SEM 3)</span>
+        <div class="section-line"></div>
+      </div>
+      <div class="score-display" style="margin-bottom: 4px">
+        <span
+          style="
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            opacity: 0.9;
+          "
+          >Projected CGPA (SEM 3)</span
         >
         <div class="current-score" id="cgpa" style="margin-top: 4px">0.00</div>
 
@@ -1197,26 +1150,81 @@
             margin-top: 12px;
           "
         >
-          Sem <span id="displaySemScore">3</span> GPA:
-          <span id="total">0.00</span>
+          SEM <span id="displaySemScore">3</span> GPA:
+          <span id="total-secondary">0.00</span>
         </div>
       </div>
-
-      <div
-        class="section-header"
-        style="
-          justify-content: space-between;
-          margin-top: 12px;
-          margin-bottom: 8px;
-        "
-      >
-        <span class="section-label" id="currentSemesterLabel"
-          >Expected Grades (Sem 3)</span
-        >
+      <div class="section-header" style="margin-top: 0">
+        <span class="section-label">Current CGPA (SEM 2)</span>
         <div class="section-line"></div>
       </div>
 
-      <div class="courses-grid" id="coursesGrid"></div>
+      <div id="manualInputSectionOuter" style="width: 100%">
+        <div
+          class="courses-grid"
+          style="margin-bottom: 12px; margin-top: 4px"
+          id="manualInputSection"
+        >
+          <div
+            class="course-card"
+            style="padding: 16px; min-height: auto; cursor: default; gap: 12px"
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+              "
+            >
+              <span
+                style="font-size: 13px; font-weight: 700; color: var(--text-p)"
+                >CGPA</span
+              >
+            </div>
+            <div class="input-area" style="padding: 8px 14px; margin-top: 0">
+              <input
+                type="number"
+                id="manualCgpa"
+                step="0.01"
+                min="0"
+                max="4.00"
+                placeholder="0.00"
+                oninput="saveManualCGPA()"
+                style="font-size: 1.35rem"
+              />
+            </div>
+          </div>
+          <div
+            class="course-card"
+            style="padding: 16px; min-height: auto; cursor: default; gap: 12px"
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+              "
+            >
+              <span
+                style="font-size: 13px; font-weight: 700; color: var(--text-p)"
+                >Total Credits</span
+              >
+            </div>
+            <div class="input-area" style="padding: 8px 14px; margin-top: 0">
+              <input
+                type="number"
+                id="manualCredits"
+                step="1"
+                min="0"
+                max="150"
+                placeholder="eg: 39"
+                oninput="saveManualCGPA()"
+                style="font-size: 1.35rem"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Info Modal -->
@@ -1236,7 +1244,7 @@
             <line x1="8" y1="6" x2="12" y2="6" />
           </svg>
         </div>
-        <div class="modal-version">v1.1</div>
+        <div class="modal-version">v1.2</div>
         <h3 class="modal-title">CGPA Calculator</h3>
         <p class="modal-text">
           Track your <strong>continuous assessments</strong> across all subjects
@@ -1491,7 +1499,7 @@
                 class="grade-select"
                 id="grade-${course.id}"
                 onchange="updateGrade('${course.id}', this.value)"
-                style="width: 100%; height: 100%; min-height: 24px; background: transparent; border: none; outline: none; color: var(--text-h); font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; appearance: none; -webkit-appearance: none; padding-right: 20px; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\\\'http://www.w3.org/2000/svg\\\' width=\\\'16\\\' height=\\\'16\\\' fill=\\\'none\\\' stroke=\\\'%238892b0\\\' stroke-width=\\\'2\\\' stroke-linecap=\\\'round\\\' stroke-linejoin=\\\'round\\\'><polyline points=\\\'6 9 12 15 18 9\\\'/></svg>'); background-repeat: no-repeat; background-position: right center;">
+              >
                 ${selectOptions}
               </select>
             </div>
@@ -1499,19 +1507,6 @@
 
           grid.appendChild(card);
         });
-
-        const styleId = "gpa-styles";
-        if (!document.getElementById(styleId)) {
-          const style = document.createElement("style");
-          style.id = styleId;
-          style.innerHTML = `
-            .grade-select option {
-              background-color: var(--surface-s);
-              color: var(--text-h);
-            }
-          `;
-          document.head.appendChild(style);
-        }
 
         document.getElementById("headerEyebrow").textContent = "Education";
         document.getElementById("headerTitle").textContent = "CGPA Calculator";
@@ -1543,14 +1538,22 @@
         });
 
         const totalEl = document.getElementById("total");
+        const totalSecondaryEl = document.getElementById("total-secondary");
         const newSgpa = semCredits === 0 ? 0 : semPoints / semCredits;
 
         if (newSgpa.toFixed(2) !== counters.sgpa.toFixed(2)) {
-          totalEl.classList.remove("score-pulse");
-          void totalEl.offsetWidth;
-          totalEl.classList.add("score-pulse");
+          if (totalEl) {
+            totalEl.classList.remove("score-pulse");
+            void totalEl.offsetWidth;
+            totalEl.classList.add("score-pulse");
+          }
         }
-        totalEl.textContent = newSgpa.toFixed(2);
+        if (totalEl) {
+          totalEl.textContent = newSgpa.toFixed(2);
+        }
+        if (totalSecondaryEl) {
+          totalSecondaryEl.textContent = newSgpa.toFixed(2);
+        }
         counters.sgpa = newSgpa;
 
         // Calculate CGPA
