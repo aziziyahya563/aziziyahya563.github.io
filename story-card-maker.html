@@ -314,29 +314,30 @@
         background: var(--surface);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border-radius: 28px;
+        border-radius: 36px;
+        /* Force hardware acceleration for anti-aliased smooth corners */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
         border: 1px solid var(--border);
-        box-shadow:
-          var(--shadow-lg),
-          0 0 0 1px rgba(255, 255, 255, 0.06);
+        box-shadow: var(--shadow);
         overflow: hidden;
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         cursor: pointer;
       }
 
       .preview-wrapper.has-image {
-        background: #111;
+        background: #000;
         border-color: transparent;
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+        box-shadow: var(--shadow-lg);
       }
 
       .preview-wrapper:hover {
-        transform: translateY(-5px) scale(1.01);
-        box-shadow: 0 28px 70px rgba(124, 111, 238, 0.2);
+        transform: translateY(-6px) scale(1.015) translateZ(0);
+        box-shadow: var(--shadow-lg);
       }
 
       .preview-wrapper.drag-over {
@@ -454,6 +455,58 @@
         100% {
           transform: rotate(360deg) scale(1);
         }
+      }
+
+      /* ─── Scale Control ───────────────────────────────────────── */
+      .scale-wrapper {
+        width: 100%;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+        animation: fadeUp 0.4s ease both;
+      }
+      .scale-wrapper.active {
+        display: flex;
+      }
+      .scale-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 280px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-p);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+      .scale-slider {
+        -webkit-appearance: none;
+        width: 100%;
+        max-width: 280px;
+        height: 6px;
+        background: color-mix(in srgb, var(--accent-1) 20%, var(--border));
+        border-radius: 99px;
+        outline: none;
+      }
+      .scale-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid var(--accent-1);
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(124, 111, 238, 0.3);
+        transition:
+          transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+          background 0.2s;
+      }
+      .scale-slider::-webkit-slider-thumb:active {
+        transform: scale(1.15);
+        background: var(--accent-1);
+        border-color: white;
       }
 
       /* ─── Controls Bar ────────────────────────────────────────── */
@@ -952,9 +1005,7 @@
 
         .preview-wrapper {
           border-radius: 36px;
-          box-shadow:
-            var(--shadow-lg),
-            0 0 0 1px rgba(255, 255, 255, 0.08);
+          box-shadow: var(--shadow-lg);
         }
 
         .controls {
@@ -1200,6 +1251,22 @@
 
       <!-- ── Controls ── -->
       <div class="controls">
+        <div class="scale-wrapper" id="scaleWrapper">
+          <div class="scale-header">
+            <span>Image Scale</span>
+            <span id="scaleValue" style="color: var(--accent-1)">70%</span>
+          </div>
+          <input
+            type="range"
+            class="scale-slider"
+            id="scaleSlider"
+            min="60"
+            max="90"
+            value="70"
+            oninput="updateScale(this.value)"
+          />
+        </div>
+
         <button
           class="btn btn-upload"
           id="openBtn"
@@ -1235,14 +1302,19 @@
           id="downloadBtn"
           onclick="handleShareOrDownload()"
         >
-          <svg viewBox="0 0 24 24">
-            <circle cx="18" cy="5" r="3" />
-            <circle cx="6" cy="12" r="3" />
-            <circle cx="18" cy="19" r="3" />
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-          </svg>
-          Share
+          <span
+            id="downloadBtnContent"
+            style="display: flex; align-items: center; gap: 10px"
+          >
+            <svg viewBox="0 0 24 24">
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+            Share
+          </span>
         </button>
       </div>
 
@@ -1351,6 +1423,25 @@
           if (cb) cb.checked = true;
         }
         applyThemeIcons(isDark);
+
+        // Platform detection for Download vs Share
+        const isMobile =
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent,
+          );
+        if (!isMobile) {
+          const btn = document.getElementById("downloadBtnContent");
+          if (btn) {
+            btn.innerHTML = `
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download
+            `;
+          }
+        }
       })();
 
       window.addEventListener("storage", (e) => {
@@ -1381,10 +1472,17 @@
       canvas.width = CANVAS_WIDTH;
       canvas.height = CANVAS_HEIGHT;
 
-      const CORNER_RADIUS = 60;
+      const CORNER_RADIUS = 110;
       const SHADOW_BLUR = 100;
 
       let currentImgObj = null;
+      let currentScale = 0.7;
+
+      function updateScale(val) {
+        currentScale = val / 100;
+        document.getElementById("scaleValue").innerText = val + "%";
+        if (currentImgObj) render();
+      }
 
       /* Toast ─────────────────────────── */
       function showToast(message, duration = 3000, type = "error") {
@@ -1509,6 +1607,7 @@
             openBtn.classList.remove("btn-upload");
 
             shuffleBtn.style.display = "flex";
+            document.getElementById("scaleWrapper").classList.add("active");
             showToast("Image loaded", 2000, "success");
           };
           img.onerror = () => {
@@ -1516,6 +1615,7 @@
             loader.style.display = "none";
             emptyState.style.display = "flex";
             dropZone.classList.remove("has-image");
+            document.getElementById("scaleWrapper").classList.remove("active");
           };
           img.src = e.target.result;
         };
@@ -1531,54 +1631,113 @@
       /* Gradient generation ───────────── */
       function generateSmartGradient(img) {
         const sc = document.createElement("canvas");
-        sc.width = sc.height = 5;
+        const w = 64,
+          h = 64;
+        sc.width = w;
+        sc.height = h;
         const sctx = sc.getContext("2d");
-        sctx.drawImage(img, 0, 0, 5, 5);
+        sctx.drawImage(img, 0, 0, w, h);
 
-        const getCol = (x, y) => {
-          const p = sctx.getImageData(x, y, 1, 1).data;
-          return {
-            rgb: `rgb(${p[0]},${p[1]},${p[2]})`,
-            r: p[0],
-            g: p[1],
-            b: p[2],
-          };
+        // Uses a lightweight K-Means clustering (k=2) to extract the dominant/vibrant color
+        const extractDominant = (sx, sy, sw, sh) => {
+          const data = sctx.getImageData(sx, sy, sw, sh).data;
+          let pixels = [];
+          // Step by 16 (4 pixels) for faster processing
+          for (let i = 0; i < data.length; i += 16) {
+            if (data[i + 3] > 0) {
+              // Ignore transparent pixels
+              pixels.push([data[i], data[i + 1], data[i + 2]]);
+            }
+          }
+          if (pixels.length === 0) return [128, 128, 128];
+
+          let c1 = pixels[0];
+          let c2 = pixels[pixels.length - 1];
+          let cl1 = [],
+            cl2 = [];
+
+          for (let iter = 0; iter < 4; iter++) {
+            cl1 = [];
+            cl2 = [];
+            for (let p of pixels) {
+              let d1 =
+                Math.abs(p[0] - c1[0]) +
+                Math.abs(p[1] - c1[1]) +
+                Math.abs(p[2] - c1[2]);
+              let d2 =
+                Math.abs(p[0] - c2[0]) +
+                Math.abs(p[1] - c2[1]) +
+                Math.abs(p[2] - c2[2]);
+              if (d1 < d2) cl1.push(p);
+              else cl2.push(p);
+            }
+            if (cl1.length > 0) {
+              let r = 0,
+                g = 0,
+                b = 0;
+              for (let p of cl1) {
+                r += p[0];
+                g += p[1];
+                b += p[2];
+              }
+              c1 = [r / cl1.length, g / cl1.length, b / cl1.length];
+            }
+            if (cl2.length > 0) {
+              let r = 0,
+                g = 0,
+                b = 0;
+              for (let p of cl2) {
+                r += p[0];
+                g += p[1];
+                b += p[2];
+              }
+              c2 = [r / cl2.length, g / cl2.length, b / cl2.length];
+            }
+          }
+
+          // Estimate vibrancy as diff between max and min rgb channels
+          const vibrancy = (c) =>
+            Math.max(c[0], c[1], c[2]) - Math.min(c[0], c[1], c[2]);
+          const v1 = vibrancy(c1);
+          const v2 = vibrancy(c2);
+
+          // Prefer larger cluster, unless smaller cluster is significant (20%+) and far more vibrant
+          if (cl1.length > cl2.length) {
+            return cl2.length > pixels.length * 0.2 && v2 > v1 + 30 ? c2 : c1;
+          } else {
+            return cl1.length > pixels.length * 0.2 && v1 > v2 + 30 ? c1 : c2;
+          }
         };
 
-        const tl = getCol(0, 0),
-          tr = getCol(4, 0);
-        const bl = getCol(0, 4),
-          br = getCol(4, 4);
-        const tm = getCol(2, 0),
-          bm = getCol(2, 4);
-        const lm = getCol(0, 2),
-          rm = getCol(4, 2);
+        const topCol = extractDominant(0, 0, w, h / 2);
+        const botCol = extractDominant(0, h / 2, w, h / 2);
+        const leftCol = extractDominant(0, 0, w / 2, h);
+        const rightCol = extractDominant(w / 2, 0, w / 2, h);
 
-        const gradients = [
-          { colors: [tm.rgb, bm.rgb], direction: [0, 0, 0, CANVAS_HEIGHT] },
+        const formatCol = (c) =>
+          `rgb(${Math.round(c[0])}, ${Math.round(c[1])}, ${Math.round(c[2])})`;
+
+        // Intelligently map combinations based on layout regions
+        const presets = [
           {
-            colors: [tl.rgb, br.rgb],
+            colors: [formatCol(topCol), formatCol(botCol)],
+            direction: [0, 0, 0, CANVAS_HEIGHT],
+          }, // Top to Bottom
+          {
+            colors: [formatCol(leftCol), formatCol(rightCol)],
+            direction: [0, 0, CANVAS_WIDTH, 0],
+          }, // Left to Right
+          {
+            colors: [formatCol(topCol), formatCol(rightCol)],
             direction: [0, 0, CANVAS_WIDTH, CANVAS_HEIGHT],
-          },
+          }, // TL to BR
           {
-            colors: [tr.rgb, bl.rgb],
-            direction: [CANVAS_WIDTH, 0, 0, CANVAS_HEIGHT],
-          },
-          { colors: [lm.rgb, rm.rgb], direction: [0, 0, CANVAS_WIDTH, 0] },
-          {
-            colors: [bl.rgb, tr.rgb],
+            colors: [formatCol(leftCol), formatCol(botCol)],
             direction: [0, CANVAS_HEIGHT, CANVAS_WIDTH, 0],
-          },
-          { colors: [bm.rgb, tm.rgb], direction: [0, 0, 0, CANVAS_HEIGHT] },
-          { colors: [rm.rgb, lm.rgb], direction: [0, 0, CANVAS_WIDTH, 0] },
-          { colors: [bl.rgb, tl.rgb], direction: [0, CANVAS_HEIGHT, 0, 0] },
-          {
-            colors: [br.rgb, tr.rgb],
-            direction: [CANVAS_WIDTH, CANVAS_HEIGHT, CANVAS_WIDTH, 0],
-          },
+          }, // BL to TR
         ];
 
-        const sel = gradients[Math.floor(Math.random() * gradients.length)];
+        const sel = presets[Math.floor(Math.random() * presets.length)];
         return { colors: sel.colors, direction: sel.direction };
       }
 
@@ -1594,7 +1753,7 @@
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-        const targetWidth = CANVAS_WIDTH * 0.7;
+        const targetWidth = CANVAS_WIDTH * currentScale;
         const scaleFactor = targetWidth / currentImgObj.width;
         let finalWidth = targetWidth;
         let finalHeight = currentImgObj.height * scaleFactor;
@@ -1608,15 +1767,71 @@
         const x = (CANVAS_WIDTH - finalWidth) / 2;
         const y = (CANVAS_HEIGHT - finalHeight) / 2;
 
+        const drawSquircle = (ctx, x, y, w, h, radius) => {
+          ctx.beginPath();
+          const r = Math.min(radius, w / 2, h / 2);
+
+          // Premium Continuous Corners (Apple iOS Smooth Corners)
+          // Instead of a simple harsh circle arc, we use extended cubic bezier
+          // curves that smoothly blend into the straight edges (C2 continuity).
+          const p = r * 1.28; // Curve blends in starting further back
+          const c = r * 0.5; // Control point tension for the perfect bulge
+
+          ctx.moveTo(x + p, y);
+          ctx.lineTo(x + w - p, y);
+
+          // Top Right Corner
+          ctx.bezierCurveTo(x + w - c, y, x + w, y + c, x + w, y + p);
+          ctx.lineTo(x + w, y + h - p);
+
+          // Bottom Right Corner
+          ctx.bezierCurveTo(
+            x + w,
+            y + h - c,
+            x + w - c,
+            y + h,
+            x + w - p,
+            y + h,
+          );
+          ctx.lineTo(x + p, y + h);
+
+          // Bottom Left Corner
+          ctx.bezierCurveTo(x + c, y + h, x, y + h - c, x, y + h - p);
+          ctx.lineTo(x, y + p);
+
+          // Top Left Corner
+          ctx.bezierCurveTo(x, y + c, x + c, y, x + p, y);
+          ctx.closePath();
+        };
+
         ctx.save();
-        ctx.shadowColor = "rgba(0,0,0,0.4)";
-        ctx.shadowBlur = SHADOW_BLUR;
-        ctx.shadowOffsetY = 60;
-        ctx.beginPath();
-        ctx.roundRect(x, y, finalWidth, finalHeight, CORNER_RADIUS);
         ctx.fillStyle = "#000";
-        ctx.fill();
+
+        // Premium 6-layered smooth shadow for ultra-realistic physical depth
+        // Mimics the diffused light-scattering behavior of an actual 3D object
+        const shadows = [
+          { blur: 210, y: 100, alpha: 0.18 },
+          { blur: 130, y: 60, alpha: 0.12 },
+          { blur: 65, y: 30, alpha: 0.08 },
+          { blur: 30, y: 15, alpha: 0.05 },
+          { blur: 14, y: 7, alpha: 0.04 },
+          { blur: 4, y: 2, alpha: 0.03 },
+        ];
+
+        shadows.forEach((s) => {
+          ctx.shadowColor = `rgba(0, 0, 0, ${s.alpha})`;
+          ctx.shadowBlur = s.blur;
+          ctx.shadowOffsetY = s.y;
+          drawSquircle(ctx, x, y, finalWidth, finalHeight, CORNER_RADIUS);
+          ctx.fill();
+        });
+
+        // Reset shadow for clipping and image drawing
         ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+
+        drawSquircle(ctx, x, y, finalWidth, finalHeight, CORNER_RADIUS);
         ctx.clip();
         ctx.drawImage(currentImgObj, x, y, finalWidth, finalHeight);
         ctx.restore();
@@ -1644,7 +1859,13 @@
               const fileName = `story-card-${Date.now()}.png`;
               const file = new File([blob], fileName, { type: "image/png" });
 
+              const isMobile =
+                /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                  navigator.userAgent,
+                );
+
               if (
+                isMobile &&
                 navigator.share &&
                 navigator.canShare &&
                 navigator.canShare({ files: [file] })
