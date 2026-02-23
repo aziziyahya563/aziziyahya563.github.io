@@ -1695,23 +1695,6 @@
           downloadBtn.innerHTML = originalHtml;
         }
       }
-
-      /* Reset ─────────────────────────── */
-      function resetApp() {
-        currentImgObj = null;
-        ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        previewImg.style.display = "none";
-        emptyState.style.display = "flex";
-        dropZone.classList.remove("has-image");
-        downloadBtn.classList.remove("active");
-
-        openBtn.innerHTML =
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Open';
-        openBtn.classList.remove("btn-icon", "btn-ghost");
-        openBtn.classList.add("btn-upload");
-        shuffleBtn.style.display = "none";
-        document.getElementById("fileInput").value = "";
-      }
     </script>
   </body>
 </html>

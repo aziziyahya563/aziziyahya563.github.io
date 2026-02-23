@@ -1382,7 +1382,6 @@
       };
 
       let counters = {
-        cgpa: 0,
         sgpa: 0,
       };
 
@@ -1460,8 +1459,6 @@
         grid.innerHTML = "";
 
         const courses = semesters[3] || [];
-        const codeEl = document.getElementById("displaySemScore");
-        if (codeEl) codeEl.textContent = "3";
 
         courses.forEach((course, index) => {
           const card = document.createElement("div");
@@ -1572,7 +1569,6 @@
           cumCredits > 0 ? Math.min(cumPoints / cumCredits, 4.0) : 0;
 
         cgpaEl.textContent = newCgpa.toFixed(2);
-        counters.cgpa = newCgpa;
 
         // UX: shimmer effect for high GPA
         if (newCgpa >= 3.5) {

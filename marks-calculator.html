@@ -381,7 +381,7 @@
         border-color: var(--border);
       }
       .course-card.disabled::after {
-        content: "Soon";
+        content: "Coming Soon";
         position: absolute;
         top: 10px;
         right: 10px;
@@ -983,7 +983,7 @@
       @media (min-width: 640px) {
         .dashboard {
           padding-top: 40px;
-          max-width: 1000px;
+          max-width: 640px;
         }
         .courses-grid {
           grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -1645,8 +1645,7 @@
 
       function calculateScore() {
         let total = 0,
-          enteredCount = 0,
-          totalPossibleWeight = 0;
+          enteredCount = 0;
         const data = allMarksData[currentCourseId] || {};
         const assessments = getAssessments(currentCourseId);
 
@@ -1661,12 +1660,11 @@
             const score = parseFloat(val);
             if (score >= 0 && score <= a.max) {
               enteredCount++;
-              totalPossibleWeight += a.weight;
               total += (score / a.max) * a.weight;
             }
           }
         });
-        updateDisplay(total, enteredCount, totalPossibleWeight);
+        updateDisplay(total, enteredCount);
       }
 
       function updateDisplay(total, enteredCount) {
@@ -1709,10 +1707,6 @@
               ? `Need ${diff.toFixed(1)}% more for an A`
               : `Aim high in remaining items & final exam`;
         }
-      }
-
-      function updateInputColors() {
-        /* no-op, kept for compat */
       }
 
       window.addEventListener("storage", (e) => {
