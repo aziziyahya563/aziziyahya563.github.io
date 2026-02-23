@@ -9,9 +9,9 @@
     <meta name="theme-color" content="#0a0a0f" id="themeColorMeta" />
     <meta
       name="description"
-      content="CGPA & Grade Calculator — Track your continuous assessment marks and estimate your final grade."
+      content="GPA Calculator — Calculate your semester GPA and track your overall academic progress."
     />
-    <title>CGPA Calculator</title>
+    <title>GPA Calculator</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
@@ -348,20 +348,45 @@
 
       /* ── Course Cards ─────────────────────────────── */
       .courses-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 16px;
+        display: flex;
+        flex-direction: column;
         width: 100%;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r-xl);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        overflow: hidden;
+        animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
       }
 
+      .course-item {
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        position: relative;
+        transition: background-color 0.25s ease;
+      }
+      .course-item:not(:last-child) {
+        border-bottom: 1px solid var(--border);
+      }
+      .course-item:hover {
+        background-color: rgba(255, 255, 255, 0.03);
+      }
       .course-card {
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--r-xl);
-        padding: 14px;
+        padding: 12px 14px;
         display: flex;
-        flex-direction: column;
-        gap: 8px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
         box-shadow: var(--shadow);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
@@ -371,76 +396,21 @@
         overflow: hidden;
         animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
       }
-      .course-card::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 3px;
-        background: var(--card-accent, var(--accent));
-        opacity: 0;
-        transition: opacity 0.2s;
-        border-radius: 0 2px 2px 0;
-      }
       .course-card:hover {
         transform: translateY(-4px);
         box-shadow: var(--shadow-lg);
-        border-color: var(--card-accent, var(--accent));
-      }
-      .course-card:hover::before {
-        opacity: 1;
+        border-color: var(--accent);
       }
       .course-card:active {
         transform: scale(0.97);
       }
 
-      /* stagger */
-      .course-card:nth-child(1) {
-        animation-delay: 0.08s;
-      }
-      .course-card:nth-child(2) {
-        animation-delay: 0.13s;
-      }
-      .course-card:nth-child(3) {
-        animation-delay: 0.18s;
-      }
-      .course-card:nth-child(4) {
-        animation-delay: 0.23s;
-      }
-      .course-card:nth-child(5) {
-        animation-delay: 0.28s;
-      }
-      .course-card:nth-child(6) {
-        animation-delay: 0.33s;
-      }
-
-      .card-icon {
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        background: var(--card-accent, var(--accent));
-        box-shadow: 0 4px 12px -2px
-          color-mix(in srgb, var(--card-accent, var(--accent)) 40%, transparent);
-      }
-      .card-icon svg {
-        width: 16px;
-        height: 16px;
-        stroke: white;
-        stroke-width: 2;
-        fill: none;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-
       .card-header {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
       }
       .card-info {
         flex: 1;
@@ -448,10 +418,10 @@
       }
       .card-code {
         font-size: 10px;
-        font-weight: 700;
+        font-weight: 800;
         letter-spacing: 0.5px;
         text-transform: uppercase;
-        color: var(--text-muted);
+        color: var(--card-accent, var(--accent));
         margin-bottom: 2px;
       }
       .card-name {
@@ -465,8 +435,8 @@
       }
 
       .preview-section {
-        border-top: 1px solid var(--border);
-        padding-top: 10px;
+        flex-shrink: 0;
+        width: 120px;
       }
 
       /* ── Score Card ───────────────────────────────── */
@@ -558,9 +528,10 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-top: auto;
         transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1.5px solid transparent;
+        height: 100%;
+        width: 100%;
       }
       .input-area:focus-within {
         background: var(--surface-s);
@@ -593,7 +564,7 @@
       .grade-select {
         width: 100%;
         height: 100%;
-        min-height: 24px;
+        min-height: 20px;
         background-color: transparent;
         border: none;
         outline: none;
@@ -877,18 +848,6 @@
           padding: 32px 28px;
           max-width: 640px;
         }
-
-        .courses-grid {
-          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-          gap: 12px;
-        }
-      }
-
-      @media (max-width: 639px) {
-        .courses-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 10px;
-        }
       }
     </style>
 
@@ -1161,27 +1120,32 @@
 
       <div id="manualInputSectionOuter" style="width: 100%">
         <div
-          class="courses-grid"
-          style="margin-bottom: 12px; margin-top: 4px"
+          class="course-card"
           id="manualInputSection"
+          style="
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            margin-top: 4px;
+            gap: 12px;
+            cursor: default;
+          "
         >
-          <div
-            class="course-card"
-            style="padding: 16px; min-height: auto; cursor: default; gap: 12px"
-          >
-            <div
+          <!-- CGPA Half -->
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 6px">
+            <span
               style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--text-p);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
               "
+              >CGPA</span
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: var(--text-p)"
-                >CGPA</span
-              >
-            </div>
-            <div class="input-area" style="padding: 8px 14px; margin-top: 0">
+            <div class="input-area" style="padding: 6px 12px; height: 38px">
               <input
                 type="number"
                 id="manualCgpa"
@@ -1190,27 +1154,34 @@
                 max="4.00"
                 placeholder="0.00"
                 oninput="saveManualCGPA()"
-                style="font-size: 1.35rem"
+                style="font-size: 1.25rem"
               />
             </div>
           </div>
+
+          <!-- Vertical Divider -->
           <div
-            class="course-card"
-            style="padding: 16px; min-height: auto; cursor: default; gap: 12px"
-          >
-            <div
+            style="
+              width: 1px;
+              height: 40px;
+              background: var(--border);
+              margin: 0 4px;
+            "
+          ></div>
+
+          <!-- Credits Half -->
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 6px">
+            <span
               style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--text-p);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
               "
+              >Total Credits</span
             >
-              <span
-                style="font-size: 13px; font-weight: 700; color: var(--text-p)"
-                >Total Credits</span
-              >
-            </div>
-            <div class="input-area" style="padding: 8px 14px; margin-top: 0">
+            <div class="input-area" style="padding: 6px 12px; height: 38px">
               <input
                 type="number"
                 id="manualCredits"
@@ -1219,7 +1190,7 @@
                 max="150"
                 placeholder="eg: 39"
                 oninput="saveManualCGPA()"
-                style="font-size: 1.35rem"
+                style="font-size: 1.25rem"
               />
             </div>
           </div>
@@ -1244,8 +1215,8 @@
             <line x1="8" y1="6" x2="12" y2="6" />
           </svg>
         </div>
-        <div class="modal-version">v1.2</div>
-        <h3 class="modal-title">CGPA Calculator</h3>
+        <div class="modal-version">v1.3</div>
+        <h3 class="modal-title">GPA Calculator</h3>
         <p class="modal-text">
           Track your <strong>continuous assessments</strong> across all subjects
           and calculate exactly what you need to hit your target grade.<br /><br />
@@ -1473,28 +1444,21 @@
           const bgClass = bgClasses[index % bgClasses.length];
           const selectedGrade = gpaData[3][course.id];
 
-          let selectOptions = `<option value="">Select Grade</option>`;
+          let selectOptions = `<option value="">Select</option>`;
           grades.forEach((g) => {
             selectOptions += `<option value="${g.weight}" ${selectedGrade !== undefined && selectedGrade.toString() === g.weight.toString() ? "selected" : ""}>${g.grade} (${g.weight.toFixed(2)})</option>`;
           });
 
-          card.className = `course-card ${bgClass}`;
-          card.style.animationDelay = `${index * 0.05}s`;
-          card.style.cursor = "default";
+          card.className = `course-item ${bgClass}`;
           card.innerHTML = `
           <div class="card-header">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <path d="${course.icon}"/>
-              </svg>
-            </div>
             <div class="card-info">
               <div class="card-code">${course.code} &middot; ${course.credits} Credits</div>
               <div class="card-name">${course.name}</div>
             </div>
           </div>
-          <div class="preview-section" style="padding-top: 14px; margin-top: auto; border-top: none;">
-            <div class="input-area" style="padding: 6px 10px;">
+          <div class="preview-section">
+            <div class="input-area" style="padding: 6px 12px;">
               <select
                 class="grade-select"
                 id="grade-${course.id}"
@@ -1509,7 +1473,7 @@
         });
 
         document.getElementById("headerEyebrow").textContent = "Education";
-        document.getElementById("headerTitle").textContent = "CGPA Calculator";
+        document.getElementById("headerTitle").textContent = "GPA Calculator";
         const backBtn = document.getElementById("mainBackBtn");
         backBtn.href = "index.html";
         backBtn.onclick = null;
