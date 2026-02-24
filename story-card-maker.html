@@ -716,6 +716,16 @@
         border-color: color-mix(in srgb, #ef4444 20%, transparent);
       }
 
+      .toast.processing {
+        background: color-mix(
+          in srgb,
+          var(--accent-1) 12%,
+          var(--surface-solid)
+        );
+        color: var(--accent-1);
+        border-color: color-mix(in srgb, var(--accent-1) 20%, transparent);
+      }
+
       /* ─── Popover Menu ────────────────────────────────────────── */
       .click-outside {
         position: fixed;
@@ -1485,27 +1495,36 @@
       }
 
       /* Toast ─────────────────────────── */
+      let toastTimeout;
       function showToast(message, duration = 3000, type = "error") {
         const toast = document.getElementById("toast");
         const msgEl = toast.querySelector(".toast-message");
         const iconEl = document.getElementById("toastIcon");
 
         msgEl.textContent = message;
+        toast.classList.remove("success", "error", "processing");
 
-        // SVG paths for icon
         if (type === "success") {
           iconEl.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
           toast.classList.add("success");
-          toast.classList.remove("error");
+        } else if (type === "processing") {
+          iconEl.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;animation:spin 0.75s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
+          toast.classList.add("processing");
         } else {
           iconEl.innerHTML =
             '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
           toast.classList.add("error");
-          toast.classList.remove("success");
         }
 
         toast.classList.add("show");
-        setTimeout(() => toast.classList.remove("show"), duration);
+        if (toastTimeout) clearTimeout(toastTimeout);
+        if (duration > 0) {
+          toastTimeout = setTimeout(() => {
+            toast.classList.remove("show");
+            toastTimeout = null;
+          }, duration);
+        }
       }
 
       /* Drag & Drop ───────────────────── */
@@ -1843,16 +1862,13 @@
       async function handleShareOrDownload() {
         if (!currentImgObj) return;
 
-        const originalHtml = downloadBtn.innerHTML;
-        downloadBtn.innerHTML =
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;animation:spin 0.75s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Processing…';
+        showToast("Processing story card...", 0, "processing");
 
         try {
           canvas.toBlob(
             async (blob) => {
               if (!blob) {
                 showToast("Failed to generate image.", 3000, "error");
-                downloadBtn.innerHTML = originalHtml;
                 return;
               }
 
@@ -1877,12 +1893,12 @@
                     text: "Check out this background I made!",
                   });
                   showToast("Shared successfully!", 3000, "success");
-                  downloadBtn.innerHTML = originalHtml;
                 } catch (shareErr) {
                   if (shareErr.name !== "AbortError") {
                     triggerDownload(blob);
                   } else {
-                    downloadBtn.innerHTML = originalHtml;
+                    // Hide processing toast on abort
+                    document.getElementById("toast").classList.remove("show");
                   }
                 }
               } else {
@@ -1900,7 +1916,6 @@
           );
         } catch (err) {
           showToast("Action failed.", 3000, "error");
-          downloadBtn.innerHTML = originalHtml;
         }
 
         function triggerDownload(blob) {
@@ -1913,7 +1928,6 @@
           document.body.removeChild(link);
           setTimeout(() => URL.revokeObjectURL(url), 100);
           showToast("Image downloaded!", 3000, "success");
-          downloadBtn.innerHTML = originalHtml;
         }
       }
     </script>
