@@ -42,11 +42,13 @@ Track and project academic performance across multiple assessments.
 Project your semester GPA and estimated cumulative CGPA based on expected grades.
 
 - **Key Features:**
-  - Select expected grades (A to F) per subject for the current semester
   - Live semester GPA calculation weighted by credit hours
   - Enter previous CGPA + total credits to project the new cumulative CGPA
-  - Persistent grade selections via `localStorage`
-  - Reset data option via the settings menu
+  - **Configurable Grading Scales:** Choose between Plus/Minus (12 grades), UPM/UTM Style (11 grades), or Letter Only (5 grades)
+  - **Configuration Sharing:** Export and import subject lists & settings to share with classmates (.json)
+  - **Custom Semester Labels:** Personalize the text on summary cards (e.g. "Semester 3", "Fall 2024")
+  - Centralized Settings modal for all configuration and subject management
+  - Fully persistent state via `localStorage`
 
 ---
 
