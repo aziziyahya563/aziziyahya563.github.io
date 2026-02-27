@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <meta name="theme-color" content="#0a0a0f" id="themeColorMeta" />
+    <meta name="theme-color" content="#000000" id="themeColorMeta" />
     <meta
       name="description"
       content="GPA Calculator — Quickly calculate your semester GPA and estimate your CGPA based on your course grades."
@@ -32,24 +32,25 @@
 
       /* ── Tokens ────────────────────────────────────── */
       :root {
-        --accent: #0ea5e9;
-        --accent-2: #0284c7;
-        --accent-glow: rgba(14, 165, 233, 0.25);
-        --a1: #7c6fee;
+        color-scheme: light;
+        --accent: #6366f1;
+        --accent-2: #4f46e5;
+        --accent-glow: rgba(99, 102, 241, 0.22);
+        --a1: #8b5cf6;
         --a2: #ec4899;
         --a3: #06b6d4;
 
-        --bg: #f0f2f8;
-        --surface: rgba(255, 255, 255, 0.78);
+        --bg: #f4f5ff;
+        --surface: rgba(255, 255, 255, 0.88);
         --surface-s: #ffffff;
-        --input-bg: rgba(0, 0, 0, 0.04);
-        --border: rgba(0, 0, 0, 0.07);
-        --text-h: #0d0f1a;
-        --text-p: #4a5069;
-        --text-muted: #8892b0;
-        --shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
-        --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
-        --header-bg: rgba(240, 242, 248, 0.88);
+        --input-bg: rgba(99, 102, 241, 0.05);
+        --border: rgba(99, 102, 241, 0.1);
+        --text-h: #0d0f1c;
+        --text-p: #4a4f75;
+        --text-muted: #9399bb;
+        --shadow: 0 4px 24px rgba(99, 102, 241, 0.08);
+        --shadow-lg: 0 16px 48px rgba(99, 102, 241, 0.14);
+        --header-bg: rgba(244, 245, 255, 0.9);
         --r-xl: 24px;
         --r-lg: 18px;
         --r-md: 14px;
@@ -57,17 +58,18 @@
       }
 
       [data-theme="dark"] {
-        --bg: #0a0a0f;
-        --surface: rgba(22, 22, 34, 0.82);
-        --surface-s: #16161f;
-        --input-bg: rgba(255, 255, 255, 0.05);
-        --border: rgba(255, 255, 255, 0.08);
-        --text-h: #f0f2ff;
-        --text-p: #8892b0;
-        --text-muted: #4a5069;
+        color-scheme: dark;
+        --bg: #000000;
+        --surface: rgba(28, 28, 30, 0.85);
+        --surface-s: #1c1c1e;
+        --input-bg: rgba(255, 255, 255, 0.08);
+        --border: rgba(255, 255, 255, 0.1);
+        --text-h: #ffffff;
+        --text-p: rgba(235, 235, 245, 0.6);
+        --text-muted: rgba(235, 235, 245, 0.3);
         --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
         --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.7);
-        --header-bg: rgba(10, 10, 15, 0.88);
+        --header-bg: rgba(0, 0, 0, 0.88);
       }
 
       /* ── UX Enhancements ───────────────────────────── */
@@ -150,7 +152,7 @@
         height: 70vw;
         top: -20vw;
         left: -20vw;
-        background: radial-gradient(circle, #7c6fee, #0ea5e9);
+        background: radial-gradient(circle, #8b5cf6, #6366f1);
         animation: floatA 18s ease-in-out infinite alternate;
       }
       .bg-mesh::after {
@@ -158,7 +160,7 @@
         height: 55vw;
         bottom: -15vw;
         right: -15vw;
-        background: radial-gradient(circle, #06b6d4, #0ea5e9);
+        background: radial-gradient(circle, #06b6d4, #6366f1);
         animation: floatB 22s ease-in-out infinite alternate;
       }
       @keyframes floatA {
@@ -445,7 +447,7 @@
         padding: 24px 20px;
         text-align: center;
         color: white;
-        box-shadow: 0 20px 50px -12px rgba(14, 165, 233, 0.45);
+        box-shadow: 0 20px 50px -12px rgba(99, 102, 241, 0.5);
         position: relative;
         overflow: hidden;
         display: flex;
@@ -456,9 +458,9 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
         background: linear-gradient(
           135deg,
-          #0ea5e9 0%,
-          #0284c7 60%,
-          #0369a1 100%
+          #8b5cf6 0%,
+          #6366f1 45%,
+          #4f46e5 100%
         );
         background-size: 200% 200%;
         animation:
@@ -1301,7 +1303,7 @@
         const t = localStorage.getItem("APP_THEME");
         if (t) document.documentElement.setAttribute("data-theme", t);
         const m = document.getElementById("themeColorMeta");
-        if (m) m.content = t === "dark" ? "#0a0a0f" : "#f0f2f8";
+        if (m) m.content = t === "dark" ? "#000000" : "#f0f2f8";
       })();
     </script>
   </head>
@@ -1992,15 +1994,11 @@
     <script>
       /* ── Theme helpers ───────────────────────────── */
       function applyThemeIcons(isDark) {
-        document.getElementById("themeIconSun").style.display = isDark
-          ? "none"
-          : "";
-        document.getElementById("themeIconMoon").style.display = isDark
-          ? ""
-          : "none";
-        document.getElementById("themeColorMeta").content = isDark
-          ? "#0a0a0f"
-          : "#f0f2f8";
+        const meta = document.getElementById("themeColorMeta");
+        if (meta) meta.content = isDark ? "#000000" : "#f0f2f8";
+
+        const sw = document.getElementById("themeSwitch");
+        if (sw && sw.checked !== isDark) sw.checked = isDark;
       }
 
       function toggleTheme() {
@@ -2010,6 +2008,21 @@
         document.documentElement.setAttribute("data-theme", target);
         localStorage.setItem("APP_THEME", target);
         applyThemeIcons(!isDark);
+      }
+
+      function toggleThemeSwitch(e) {
+        if (e && e.target.tagName === "INPUT") return;
+        const sw = document.getElementById("themeSwitch");
+        if (sw) {
+          sw.checked = !sw.checked;
+          toggleTheme();
+        }
+      }
+
+      function loadTheme() {
+        const isDark =
+          document.documentElement.getAttribute("data-theme") === "dark";
+        applyThemeIcons(isDark);
       }
 
       /* ── Menu helpers ────────────────────────────── */
