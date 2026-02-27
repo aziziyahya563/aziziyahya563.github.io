@@ -1035,7 +1035,7 @@
 
     <!-- Settings Popover -->
     <div class="popover-menu" id="popoverMenu" role="menu">
-      <div class="menu-label">Settings</div>
+      <div class="menu-label" data-i18n="settings">Settings</div>
       <div class="menu-item" onclick="toggleThemeSwitch(event)" role="menuitem">
         <div class="menu-item-left">
           <div
@@ -1054,13 +1054,39 @@
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           </div>
-          <span>Dark Mode</span>
+          <span data-i18n="darkMode">Dark Mode</span>
         </div>
         <label class="switch">
           <input type="checkbox" id="themeSwitch" onchange="toggleTheme()" />
           <span class="slider"></span>
         </label>
       </div>
+      <div class="menu-sep"></div>
+      <button class="menu-item" onclick="toggleLanguage()" role="menuitem">
+        <div class="menu-item-left">
+          <div
+            class="mi-icon"
+            style="background: rgba(59, 130, 246, 0.12); color: #3b82f6"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 14px; height: 14px"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M2 12h20" />
+              <path
+                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+              />
+            </svg>
+          </div>
+          <span data-i18n="language">Bahasa Melayu</span>
+        </div>
+      </button>
       <div class="menu-sep"></div>
       <button class="menu-item" onclick="openInfoModal()" role="menuitem">
         <div class="menu-item-left">
@@ -1082,7 +1108,7 @@
               <line x1="12" y1="8" x2="12.01" y2="8" />
             </svg>
           </div>
-          <span>About</span>
+          <span data-i18n="about">About</span>
         </div>
         <svg
           width="12"
@@ -1109,8 +1135,8 @@
           </svg>
         </a>
         <div class="header-brand">
-          <div class="header-eyebrow">Utility</div>
-          <div class="header-title">Hijri Converter</div>
+          <div class="header-eyebrow" data-i18n="utility">Utility</div>
+          <div class="header-title" data-i18n="title">Hijri Converter</div>
         </div>
       </div>
       <div class="header-actions">
@@ -1185,9 +1211,13 @@
           </button>
 
           <div class="showcase" id="showcase">
-            <div class="showcase-label">Hijri Date</div>
+            <div class="showcase-label" data-i18n="hijriDate">Hijri Date</div>
             <div class="hijri-day-number" id="hijriDay">—</div>
-            <div class="hijri-month-name" id="hijriMonthName">
+            <div
+              class="hijri-month-name"
+              id="hijriMonthName"
+              data-i18n="selectDate"
+            >
               Select a date
             </div>
             <div class="hijri-year-tag" id="hijriYear">AH</div>
@@ -1202,15 +1232,21 @@
         <!-- Right: Controls -->
         <div class="control-panel">
           <div class="ctl-header">
-            <div class="ctl-title">Date Converter</div>
-            <div class="ctl-subtitle">Gregorian → Hijri (Umm al-Qura)</div>
+            <div class="ctl-title" data-i18n="dateConverter">
+              Date Converter
+            </div>
+            <div class="ctl-subtitle" data-i18n="gregToHijri">
+              Gregorian → Hijri (Umm al-Qura)
+            </div>
           </div>
 
           <div class="sep"></div>
 
           <div>
             <div class="field-row">
-              <div class="field-label">Gregorian Date</div>
+              <div class="field-label" data-i18n="gregorianDate">
+                Gregorian Date
+              </div>
               <button class="today-chip" onclick="setToday()">
                 <svg
                   viewBox="0 0 24 24"
@@ -1222,7 +1258,7 @@
                   <circle cx="12" cy="12" r="10" />
                   <polyline points="12 6 12 12 16 14" />
                 </svg>
-                Today
+                <span data-i18n="today">Today</span>
               </button>
             </div>
             <div class="date-row">
@@ -1281,7 +1317,9 @@
 
           <div class="bottom-note">
             <div class="note-dot"></div>
-            Uses the Umm al-Qura astronomical calculation.
+            <span data-i18n="disclaimer"
+              >Uses the Umm al-Qura astronomical calculation.</span
+            >
           </div>
         </div>
       </div>
@@ -1319,8 +1357,10 @@
           </svg>
         </div>
         <div class="modal-version">v1.0</div>
-        <h3 class="modal-title" id="modalTitle">Hijri Converter</h3>
-        <p class="modal-body">
+        <h3 class="modal-title" id="modalTitle" data-i18n="modalTitle">
+          Hijri Converter
+        </h3>
+        <p class="modal-body" data-i18n="modalBody">
           An elegant tool to convert any Gregorian date into the
           <strong>Hijri (Islamic)</strong> calendar using the Umm al-Qura
           astronomical method.<br /><br />
@@ -1328,7 +1368,13 @@
             >© 2026 Azizi Yahya</span
           >
         </p>
-        <button class="modal-btn" onclick="closeInfoModal(event)">Done</button>
+        <button
+          class="modal-btn"
+          onclick="closeInfoModal(event)"
+          data-i18n="done"
+        >
+          Done
+        </button>
       </div>
     </div>
 
@@ -1415,31 +1461,33 @@
         const date = new Date(Number(y), Number(m) - 1, Number(d));
 
         try {
-          const gregFmt = new Intl.DateTimeFormat("en-US", {
+          const locale = currentLang === "en" ? "en-MY" : "ms-MY";
+          const gregFmt = new Intl.DateTimeFormat(locale, {
             day: "numeric",
             month: "long",
             year: "numeric",
           });
           gregDateEl.textContent = gregFmt.format(date);
 
-          const wdFmt = new Intl.DateTimeFormat("en-US", { weekday: "long" });
+          const wdFmt = new Intl.DateTimeFormat(locale, { weekday: "long" });
           gregWeekdayEl.textContent = wdFmt.format(date);
 
           const hijriFmt = new Intl.DateTimeFormat(
-            "en-US-u-ca-islamic-umalqura",
+            `${locale}-u-ca-islamic-umalqura`,
             { day: "numeric", month: "long", year: "numeric" },
           );
           const parts = hijriFmt.formatToParts(date);
           const hd = parts.find((p) => p.type === "day")?.value || "—";
           const hm = parts.find((p) => p.type === "month")?.value || "";
           let hy = parts.find((p) => p.type === "year")?.value || "";
-          hy = hy.replace(/ ah$/i, "").trim();
+          hy = hy.replace(/ ah$/i, "").replace(/ h$/i, "").trim();
 
+          const era = currentLang === "en" ? "AH" : "H";
           hijriDayEl.textContent = hd;
           hijriMonthEl.textContent = hm;
-          hijriYearEl.textContent = hy + " AH";
+          hijriYearEl.textContent = hy + " " + era;
           if (wmEl) wmEl.textContent = hd;
-          copyBtn.setAttribute("data-value", `${hm} ${hd}, ${hy} AH`);
+          copyBtn.setAttribute("data-value", `${hd} ${hm} ${hy} ${era}`);
 
           showcase.style.animation = "none";
           showcase.offsetHeight;
@@ -1451,7 +1499,8 @@
           panel.classList.add("pulse-success");
         } catch (err) {
           hijriDayEl.textContent = "—";
-          hijriMonthEl.textContent = "Invalid date";
+          hijriMonthEl.textContent =
+            translations[currentLang]?.invalidDate || "Invalid date";
           hijriYearEl.textContent = "";
           copyBtn.setAttribute("data-value", "");
         }
@@ -1495,7 +1544,7 @@
 
         write
           .then(() => {
-            showToast("Copied");
+            showToast(translations[currentLang].copied);
             const orig = copyBtn.innerHTML;
             copyBtn.innerHTML =
               '<svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
@@ -1507,7 +1556,7 @@
             }, 2000);
           })
           .catch(() => {
-            showToast("Failed to copy");
+            showToast(translations[currentLang].failedToCopy);
             isCopying = false;
           });
       }
@@ -1535,8 +1584,77 @@
         updateInputRef(date);
       }
 
+      /* ─── Translations ──────────────────────────────────── */
+      const translations = {
+        en: {
+          settings: "Settings",
+          darkMode: "Dark Mode",
+          language: "Bahasa Melayu",
+          about: "About",
+          utility: "Utility",
+          title: "Hijri Converter",
+          hijriDate: "Hijri Date",
+          selectDate: "Select a date",
+          dateConverter: "Date Converter",
+          gregToHijri: "Gregorian → Hijri (Umm al-Qura)",
+          gregorianDate: "Gregorian Date",
+          today: "Today",
+          disclaimer: "Uses the Umm al-Qura astronomical calculation.",
+          copied: "Copied",
+          failedToCopy: "Failed to copy",
+          invalidDate: "Invalid date",
+          modalTitle: "Hijri Converter",
+          modalBody:
+            'An elegant tool to convert any Gregorian date into the <strong>Hijri (Islamic)</strong> calendar using the Umm al-Qura astronomical method.<br /><br /><span style="font-size: 11px; color: var(--t3)">© 2026 Azizi Yahya</span>',
+          done: "Done",
+        },
+        ms: {
+          settings: "Tetapan",
+          darkMode: "Mod Gelap",
+          language: "English",
+          about: "Tentang",
+          utility: "Utiliti",
+          title: "Penukar Hijrah",
+          hijriDate: "Tarikh Hijrah",
+          selectDate: "Pilih tarikh",
+          dateConverter: "Penukar Tarikh",
+          gregToHijri: "Masihi → Hijrah (Umm al-Qura)",
+          gregorianDate: "Tarikh Masihi",
+          today: "Hari Ini",
+          disclaimer: "Menggunakan pengiraan astronomi Umm al-Qura.",
+          copied: "Disalin",
+          failedToCopy: "Gagal disalin",
+          invalidDate: "Tarikh tidak sah",
+          modalTitle: "Penukar Hijrah",
+          modalBody:
+            'Alat yang elegan untuk menukar mana-mana tarikh Masihi ke kalendar <strong>Hijrah (Islam)</strong> menggunakan kaedah astronomi Umm al-Qura.<br /><br /><span style="font-size: 11px; color: var(--t3)">© 2026 Azizi Yahya</span>',
+          done: "Selesai",
+        },
+      };
+
+      let currentLang = localStorage.getItem("APP_LANG") || "en";
+
+      function toggleLanguage() {
+        currentLang = currentLang === "en" ? "ms" : "en";
+        localStorage.setItem("APP_LANG", currentLang);
+        applyTranslations();
+        convertDate();
+      }
+
+      function applyTranslations() {
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (translations[currentLang][key]) {
+            el.innerHTML = translations[currentLang][key];
+          }
+        });
+        document.documentElement.lang = currentLang;
+        document.title = translations[currentLang].title;
+      }
+
       /* ─── Init ──────────────────────────────────────────── */
       (function init() {
+        applyTranslations();
         const saved = localStorage.getItem("APP_THEME");
         const isDark = saved === "dark";
         document.documentElement.setAttribute("data-theme", saved || "light");
