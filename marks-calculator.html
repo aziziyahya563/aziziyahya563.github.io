@@ -90,6 +90,18 @@
           color 0.4s;
       }
 
+      /* Hide number input spinners globally */
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        appearance: none;
+        margin: 0;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+
       body {
         display: flex;
         flex-direction: column;
@@ -638,11 +650,11 @@
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--r-xl);
-        padding: 14px;
+        padding: 12px 14px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        gap: 8px;
+        gap: 6px;
         box-shadow: var(--shadow);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
@@ -650,7 +662,7 @@
         cursor: pointer;
         position: relative;
         overflow: hidden;
-        min-height: 94px;
+        height: 94px;
         animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
       }
       .assessment-tile:hover {
@@ -666,12 +678,16 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
+        gap: 8px;
       }
       .tile-name {
         font-size: 13px;
         font-weight: 700;
         color: var(--text-p);
         line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .tile-weight {
         font-size: 11px;
@@ -681,8 +697,8 @@
 
       .input-area {
         background: var(--input-bg);
-        border-radius: 12px;
-        padding: 8px 12px;
+        border-radius: 10px;
+        padding: 6px 10px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -697,10 +713,11 @@
 
       .input-area input {
         width: 100%;
+        min-width: 0;
         background: transparent;
         border: none;
         outline: none;
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: 800;
         color: var(--text-h);
         font-family: "Inter", sans-serif;
@@ -717,7 +734,7 @@
       }
 
       .den {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 700;
         color: var(--text-muted);
       }
@@ -860,16 +877,24 @@
         background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(8px);
         z-index: 500;
-        display: none;
+        display: flex;
         align-items: center;
         justify-content: center;
         padding: 24px;
         opacity: 0;
-        transition: opacity 0.3s;
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+          opacity 0.3s,
+          visibility 0.3s;
       }
       .modal-overlay.active {
-        display: flex;
         opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+      #courseModal {
+        z-index: 9999 !important;
       }
 
       .modal-card {
@@ -979,6 +1004,445 @@
         --card-accent: #4895ef;
       }
 
+      /* ── Forms & Settings Modal ─────────────────── */
+      .cf-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+      .cf-group input {
+        background: var(--input-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-family: inherit;
+        font-size: 14px;
+        color: var(--text-h);
+        outline: none;
+        width: 100%;
+        transition: border-color 0.2s;
+      }
+      .cf-group input:focus {
+        border-color: var(--accent);
+      }
+      .cf-btns {
+        display: flex;
+        gap: 8px;
+        position: sticky;
+        bottom: 0;
+        background: var(--bg);
+        padding: 16px 20px calc(16px + env(safe-area-inset-bottom, 0px));
+        border-top: 1px solid var(--border);
+        z-index: 10;
+      }
+      .cf-save {
+        flex: 1;
+        padding: 12px;
+        border-radius: 99px;
+        background: linear-gradient(135deg, var(--accent), #0d9488);
+        color: white;
+        border: none;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3);
+        transition:
+          opacity 0.18s,
+          transform 0.18s;
+      }
+      .cf-save:hover {
+        opacity: 0.88;
+      }
+      .cf-save:active {
+        transform: scale(0.97);
+      }
+      .cf-cancel {
+        padding: 12px 18px;
+        border-radius: 99px;
+        background: var(--input-bg);
+        color: var(--text-p);
+        border: 1px solid var(--border);
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.18s;
+      }
+      .cf-cancel:hover {
+        background: var(--border);
+      }
+
+      /* Settings Modal */
+      .settings-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1200;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+          opacity 0.3s,
+          visibility 0.3s;
+      }
+      .settings-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+      .settings-sheet {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 28px 28px 0 0;
+        width: 100%;
+        max-width: 640px;
+        max-height: 92dvh;
+        overflow-y: auto;
+        transform: translateY(100%);
+        opacity: 0;
+        transition:
+          transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.28s;
+        padding-bottom: env(safe-area-inset-bottom, 24px);
+      }
+      .settings-overlay.active .settings-sheet {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .settings-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 22px 20px 14px;
+        position: sticky;
+        top: 0;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        z-index: 1;
+      }
+      .settings-title {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: -0.4px;
+        color: var(--text-h);
+      }
+      .settings-close {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--input-bg);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-p);
+        transition: background 0.18s;
+      }
+      .settings-close:hover {
+        background: var(--border);
+      }
+      .settings-close svg {
+        width: 14px;
+        height: 14px;
+      }
+      .stg-section {
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .stg-section:last-child {
+        border-bottom: none;
+      }
+      .stg-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .stg-label {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-p);
+      }
+      .stg-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px;
+        cursor: pointer;
+        transition: background 0.18s;
+      }
+      .stg-row:not(:last-child) {
+        border-bottom: 1px solid var(--border);
+      }
+      .stg-row:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .stg-row-left {
+        display: flex;
+        flex-direction: column;
+      }
+      .stg-row-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-h);
+      }
+      .stg-row-desc {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 2px;
+      }
+      /* Config buttons */
+      .stg-config-row {
+        display: flex;
+        gap: 10px;
+      }
+      .stg-cfg-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 12px 8px;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1.5px solid var(--border);
+        transition: all 0.18s;
+      }
+      .stg-cfg-btn svg {
+        width: 15px;
+        height: 15px;
+        stroke-width: 2;
+        flex-shrink: 0;
+      }
+      .stg-export {
+        background: rgba(16, 185, 129, 0.08);
+        color: #10b981;
+        border-color: rgba(16, 185, 129, 0.2);
+      }
+      .stg-export:hover {
+        background: rgba(16, 185, 129, 0.18);
+      }
+      .stg-import {
+        background: rgba(99, 102, 241, 0.08);
+        color: #6366f1;
+        border-color: rgba(99, 102, 241, 0.2);
+      }
+      .stg-import:hover {
+        background: rgba(99, 102, 241, 0.18);
+      }
+      .stg-subjects {
+        display: flex;
+        flex-direction: column;
+        background: var(--surface-s);
+        border: 1px solid var(--border);
+        border-radius: var(--r-xl);
+        overflow: hidden;
+      }
+      .stg-subject-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        transition: background 0.18s;
+      }
+      .stg-subject-row:not(:last-child) {
+        border-bottom: 1px solid var(--border);
+      }
+      .stg-subject-row:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .stg-subject-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .stg-subject-code {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        margin-bottom: 1px;
+        color: var(--accent);
+      }
+      .stg-subject-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-h);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .course-actions {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+      .course-act-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        transition: all 0.18s;
+        font-family: inherit;
+        background: transparent;
+        color: var(--text-p);
+      }
+      .course-act-btn svg {
+        width: 14px;
+        height: 14px;
+        stroke-width: 2.3;
+      }
+      .course-act-btn.view:hover {
+        background: color-mix(in srgb, var(--text-h) 15%, transparent);
+        color: var(--text-h);
+      }
+      .course-act-btn.edit:hover {
+        background: color-mix(in srgb, var(--accent) 15%, transparent);
+        color: var(--accent);
+      }
+      .course-act-btn.del:hover {
+        background: rgba(239, 68, 68, 0.12);
+        color: #ef4444;
+      }
+      .course-act-btn:active {
+        transform: scale(0.88);
+      }
+      .add-course-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        background: color-mix(in srgb, var(--accent) 12%, transparent);
+        color: var(--accent);
+        border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+        border-radius: 99px;
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        flex-shrink: 0;
+      }
+      .add-course-btn:hover {
+        background: var(--accent);
+        color: #fff;
+        border-color: transparent;
+      }
+      .add-course-btn:active {
+        transform: scale(0.93);
+      }
+      .add-course-btn svg {
+        width: 12px;
+        height: 12px;
+        stroke-width: 3;
+      }
+      .stg-add-btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1.5px dashed var(--border);
+        background: transparent;
+        color: var(--text-p);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.2s;
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .stg-add-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 5%, transparent);
+      }
+
+      /* Assessment rows in course modal */
+      .asc-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+        align-items: center;
+      }
+      .asc-inputs-group {
+        display: grid;
+        grid-template-columns: 1fr 50px 50px 50px;
+        flex: 1;
+        background: var(--input-bg);
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .asc-inputs-group input {
+        border: none !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        margin-bottom: 0 !important;
+        padding: 8px 6px !important;
+        text-align: center;
+        font-size: 13px !important;
+        width: 100% !important;
+      }
+      .asc-inputs-group input.asc-name {
+        text-align: left;
+        padding-left: 10px !important;
+      }
+      .asc-inputs-group input:not(:last-child) {
+        border-right: 1px solid var(--border) !important;
+      }
+      .asc-inputs-group input:focus {
+        background: var(--surface-s) !important;
+      }
+      .asc-del {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .asc-del:hover {
+        background: rgba(239, 68, 68, 0.2);
+      }
+      .asc-add-btn {
+        font-size: 12px;
+        color: var(--accent);
+        background: none;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 4px;
+      }
+      .asc-add-btn:hover {
+        text-decoration: underline;
+      }
+
       /* ── Desktop ──────────────────────────────────── */
       @media (min-width: 640px) {
         .dashboard {
@@ -1012,7 +1476,42 @@
 
     <!-- Popover Menu -->
     <div class="popover-menu" id="popoverMenu" role="menu">
-      <div class="popover-menu-header">Settings</div>
+      <div class="popover-menu-header">Menu</div>
+      <button class="menu-item" onclick="openSettingsModal()" role="menuitem">
+        <div class="menu-item-left">
+          <div
+            class="menu-item-icon"
+            style="background: rgba(99, 102, 241, 0.12); color: #6366f1"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+              />
+            </svg>
+          </div>
+          <span>Settings</span>
+        </div>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="color: var(--text-p)"
+        >
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
       <div class="popover-divider"></div>
       <div class="menu-item" onclick="toggleThemeSwitch(event)" role="menuitem">
         <div class="menu-item-left">
@@ -1166,10 +1665,28 @@
 
     <!-- ── VIEW 1: Course List ── -->
     <div class="dashboard" id="view-home">
-      <div class="section-header">
+      <div class="section-header" style="justify-content: space-between">
         <span class="section-label">My Courses</span>
         <div class="section-line"></div>
-        <span class="section-count" id="courseCount">6</span>
+        <button
+          class="add-course-btn"
+          onclick="openSettingsModal()"
+          aria-label="Settings"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+            />
+          </svg>
+          Settings
+        </button>
       </div>
       <div class="courses-grid" id="coursesGrid"></div>
     </div>
@@ -1184,12 +1701,336 @@
         </div>
       </div>
 
-      <div class="section-header">
+      <div class="section-header" style="justify-content: space-between">
         <span class="section-label">Assessments</span>
         <div class="section-line"></div>
+        <button
+          class="add-course-btn"
+          onclick="openSettingsModal()"
+          aria-label="Settings"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+            />
+          </svg>
+          Settings
+        </button>
       </div>
 
       <div class="calc-grid" id="assessmentsGrid"></div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div
+      class="settings-overlay"
+      id="settingsModal"
+      onclick="closeSettingsModal(event)"
+    >
+      <div class="settings-sheet" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div class="settings-header">
+          <span class="settings-title">Settings</span>
+          <button
+            class="settings-close"
+            onclick="closeSettingsModal()"
+            aria-label="Close"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <!-- Subjects Section -->
+        <div class="stg-section">
+          <div class="stg-section-header">
+            <span class="stg-label">Manage Subjects & Assessments</span>
+          </div>
+          <div class="stg-subjects" id="stgSubjectsList">
+            <!-- Populated via JS -->
+          </div>
+          <button class="stg-add-btn" onclick="openCourseModal(null)">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add New Subject
+          </button>
+        </div>
+        <!-- Tool Section -->
+        <div class="stg-section">
+          <div class="stg-section-header">
+            <span class="stg-label">Data Management</span>
+          </div>
+          <div class="stg-config-row">
+            <button class="stg-cfg-btn stg-export" onclick="exportConfig()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                <polyline points="16 6 12 2 8 6" />
+                <line x1="12" y1="2" x2="12" y2="15" />
+              </svg>
+              Export Config
+            </button>
+            <button class="stg-cfg-btn stg-import" onclick="importConfig()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                <polyline points="8 10 12 14 16 10" />
+                <line x1="12" y1="14" x2="12" y2="3" />
+              </svg>
+              Import Config
+            </button>
+            <input
+              type="file"
+              id="marksConfigFileInput"
+              style="display: none"
+              accept=".json"
+              onchange="handleConfigFile(event)"
+            />
+          </div>
+        </div>
+        <!-- Danger Zone Section -->
+        <div class="stg-section">
+          <div class="stg-section-header">
+            <span class="stg-label" style="color: #ef4444">Danger Zone</span>
+          </div>
+          <div class="stg-subjects">
+            <div class="stg-row" onclick="resetMarks()">
+              <div class="stg-row-left">
+                <span class="stg-row-title" style="color: #f59e0b"
+                  >Clear All Marks</span
+                >
+                <span class="stg-row-desc"
+                  >Reset inputted values, keep subjects</span
+                >
+              </div>
+            </div>
+            <div class="stg-row" onclick="resetToDefault()">
+              <div class="stg-row-left">
+                <span class="stg-row-title" style="color: #ef4444"
+                  >Reset to Default</span
+                >
+                <span class="stg-row-desc"
+                  >Wipe all data and restore original setup</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Editor Modal -->
+    <div
+      class="settings-overlay"
+      id="courseModal"
+      onclick="closeCourseModal(event)"
+      style="z-index: 9999 !important"
+    >
+      <div
+        class="settings-sheet"
+        onclick="event.stopPropagation()"
+        style="max-width: 500px"
+      >
+        <div class="settings-header">
+          <span class="settings-title" id="cfTitle">Add Subject</span>
+          <button
+            class="settings-close"
+            onclick="closeCourseModal()"
+            aria-label="Close"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div style="padding: 24px 20px; text-align: left">
+          <div class="cf-group">
+            <label
+              style="
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--text-p);
+                text-transform: uppercase;
+              "
+              >Subject Name</label
+            >
+            <input
+              type="text"
+              id="cf-name"
+              placeholder="E.g. Database Systems"
+              maxlength="40"
+              style="margin-bottom: 0"
+            />
+          </div>
+          <div class="cf-group">
+            <label
+              style="
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--text-p);
+                text-transform: uppercase;
+              "
+              >Subject Code</label
+            >
+            <input
+              type="text"
+              id="cf-code"
+              placeholder="E.g. CSI213"
+              maxlength="12"
+              style="margin-bottom: 0"
+            />
+          </div>
+
+          <div class="cf-group" style="margin-top: 20px">
+            <label
+              style="
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--text-p);
+                text-transform: uppercase;
+                margin-bottom: 8px;
+              "
+              >Assessments</label
+            >
+            <div
+              style="
+                display: flex;
+                gap: 8px;
+                margin-bottom: 6px;
+                padding-right: 40px; /* 32px btn + 8px gap */
+              "
+            >
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 50px 50px 50px;
+                  flex: 1;
+                "
+              >
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 800;
+                    color: var(--text-muted);
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    padding-left: 10px;
+                  "
+                >
+                  Name
+                </div>
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 800;
+                    color: var(--text-muted);
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    text-align: center;
+                  "
+                >
+                  %
+                </div>
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 800;
+                    color: var(--text-muted);
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    text-align: center;
+                  "
+                >
+                  Marks
+                </div>
+                <div
+                  style="
+                    font-size: 10px;
+                    font-weight: 800;
+                    color: var(--text-muted);
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    text-align: center;
+                  "
+                >
+                  Max
+                </div>
+              </div>
+            </div>
+            <div id="cf-assessments-list">
+              <!-- Populated dynamically -->
+            </div>
+            <button class="asc-add-btn" onclick="addAssessmentRow()">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Add Assessment
+            </button>
+          </div>
+        </div>
+        <div class="cf-btns">
+          <button class="cf-cancel" type="button" onclick="closeCourseModal()">
+            Cancel
+          </button>
+          <button class="cf-save" type="button" onclick="saveCourseForm()">
+            Save Subject
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Info Modal -->
@@ -1209,7 +2050,7 @@
             <line x1="8" y1="6" x2="12" y2="6" />
           </svg>
         </div>
-        <div class="modal-version">v3.3</div>
+        <div class="modal-version">v3.4</div>
         <h3 class="modal-title">Grade Calculator</h3>
         <p class="modal-text">
           Track your <strong>continuous assessments</strong> across all subjects
@@ -1265,6 +2106,271 @@
         }
       }
 
+      /* ── Settings Modal ──────────────────────────── */
+      function openSettingsModal() {
+        toggleMenu();
+        renderSettingsContent();
+        document.getElementById("settingsModal").classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeSettingsModal(e) {
+        if (e && e.target !== document.getElementById("settingsModal")) return;
+        document.getElementById("settingsModal").classList.remove("active");
+        document.body.style.overflow = "";
+      }
+
+      function renderSettingsContent() {
+        const list = document.getElementById("stgSubjectsList");
+        list.innerHTML = "";
+        customCourses.forEach((course) => {
+          const isEnabled = course.isEnabled !== false;
+          const eyeIcon = isEnabled
+            ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`
+            : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+
+          const row = document.createElement("div");
+          row.className = "stg-subject-row";
+          if (!isEnabled) row.style.opacity = "0.5";
+
+          row.innerHTML = `
+            <div class="stg-subject-info">
+              <div class="stg-subject-code">${course.code}</div>
+              <div class="stg-subject-name">${course.name}</div>
+            </div>
+            <div class="course-actions">
+              <button class="course-act-btn view" onclick="event.stopPropagation(); toggleCourseEnabled('${course.id}')" aria-label="Toggle enable" title="${isEnabled ? "Disable" : "Enable"}">
+                ${eyeIcon}
+              </button>
+              <button class="course-act-btn edit" onclick="event.stopPropagation(); openCourseModal('${course.id}')" aria-label="Edit course" title="Edit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+              <button class="course-act-btn del" onclick="event.stopPropagation(); deleteCourse('${course.id}')" aria-label="Delete course" title="Delete">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+              </button>
+            </div>
+          `;
+          list.appendChild(row);
+        });
+      }
+
+      function toggleCourseEnabled(id) {
+        const c = customCourses.find((c) => c.id === id);
+        if (c) {
+          c.isEnabled = c.isEnabled === false ? true : false;
+          localStorage.setItem(
+            "MARKS_COURSES_V1",
+            JSON.stringify(customCourses),
+          );
+          renderSettingsContent();
+          renderCourseList();
+        }
+      }
+
+      /* ── Course CRUD ─────────────────────────────── */
+      function openCourseModal(id = null) {
+        editingCourseId = id;
+        const isEdit = id !== null;
+        document.getElementById("cfTitle").textContent = isEdit
+          ? "Edit Subject"
+          : "Add Subject";
+        document.getElementById("cf-name").value = "";
+        document.getElementById("cf-code").value = "";
+
+        const listContainer = document.getElementById("cf-assessments-list");
+        listContainer.innerHTML = "";
+
+        if (isEdit) {
+          const c = customCourses.find((c) => c.id === id);
+          if (c) {
+            document.getElementById("cf-name").value = c.name;
+            document.getElementById("cf-code").value = c.code;
+            const ascList = customCourseConfigs[c.id] || [
+              ...defaultAssessments,
+            ];
+            ascList.forEach((a) => {
+              const mark =
+                allMarksData[c.id] &&
+                allMarksData[c.id][a.id] !== undefined &&
+                allMarksData[c.id][a.id] !== "?"
+                  ? allMarksData[c.id][a.id]
+                  : "";
+              addAssessmentRow(a.name, a.weight, a.max, a.id, mark);
+            });
+          }
+        } else {
+          // Default new course assessments
+          defaultAssessments.forEach((a) =>
+            addAssessmentRow(a.name, a.weight, a.max, a.id, ""),
+          );
+        }
+
+        document.getElementById("settingsModal").classList.remove("active");
+        document.getElementById("courseModal").classList.add("active");
+        setTimeout(() => document.getElementById("cf-name").focus(), 350);
+      }
+
+      function closeCourseModal(e) {
+        if (e && e.target !== document.getElementById("courseModal")) return;
+        document.getElementById("courseModal").classList.remove("active");
+        editingCourseId = null;
+        // Re-open settings modal after closing subject editor
+        document.getElementById("settingsModal").classList.add("active");
+      }
+
+      function addAssessmentRow(
+        name = "",
+        weight = "",
+        max = "",
+        id = "",
+        mark = "",
+      ) {
+        const listContainer = document.getElementById("cf-assessments-list");
+        const row = document.createElement("div");
+        row.className = "asc-row";
+        if (id) row.dataset.id = id;
+        row.innerHTML = `
+          <div class="asc-inputs-group">
+            <input type="text" class="cf-group asc-name" placeholder="Name" value="${name}" />
+            <input type="number" class="cf-group asc-weight" placeholder="%" value="${weight}" min="1" max="100" title="%" />
+            <input type="number" class="cf-group asc-mark" placeholder="-" value="${mark}" min="0" max="999" title="Marks" />
+            <input type="number" class="cf-group asc-max" placeholder="Max" value="${max}" min="1" max="999" title="Max Marks" />
+          </div>
+          <button class="asc-del" onclick="this.parentElement.remove()" title="Remove row">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        `;
+        listContainer.appendChild(row);
+      }
+
+      function saveCourseForm() {
+        const name = document.getElementById("cf-name").value.trim();
+        const code = document
+          .getElementById("cf-code")
+          .value.trim()
+          .toUpperCase();
+
+        if (!name) {
+          alert("Subject name is required.");
+          return;
+        }
+
+        const ascRows = document.querySelectorAll(
+          "#cf-assessments-list .asc-row",
+        );
+        let newAssessments = [];
+        let valid = true;
+        let totalMax = 0;
+        let tempMarks = {};
+
+        ascRows.forEach((row) => {
+          const n = row.querySelector(".asc-name").value.trim();
+          const w = parseFloat(row.querySelector(".asc-weight").value);
+          const m = parseFloat(row.querySelector(".asc-max").value);
+          const mkRaw = row.querySelector(".asc-mark").value;
+
+          if (n && m > 0 && w > 0) {
+            const ascId =
+              row.dataset.id ||
+              n.replace(/\s+/g, "").toLowerCase() +
+                generateId().substring(0, 4);
+            newAssessments.push({
+              id: ascId,
+              name: n,
+              max: m,
+              weight: w,
+            });
+            totalMax += m;
+
+            if (mkRaw !== "" && !isNaN(parseFloat(mkRaw))) {
+              let mk = parseFloat(mkRaw);
+              if (mk < 0) mk = 0;
+              if (mk > m) mk = m;
+              tempMarks[ascId] = mk;
+            } else {
+              tempMarks[ascId] = "";
+            }
+          } else {
+            valid = false;
+          }
+        });
+
+        if (!valid || newAssessments.length === 0) {
+          alert(
+            "Please ensure all assessments have a valid name, weight > 0, and max marks > 0.",
+          );
+          return;
+        }
+
+        if (editingCourseId) {
+          const c = customCourses.find((c) => c.id === editingCourseId);
+          if (c) {
+            c.name = name;
+            c.code = code;
+          }
+
+          // check if we remove an assessment, the data is just hanging in allMarksData [id][ascId], it's okay because render respects active array
+          customCourseConfigs[editingCourseId] = newAssessments;
+          allMarksData[editingCourseId] = tempMarks;
+        } else {
+          const newId = "course_" + generateId();
+          customCourses.push({
+            id: newId,
+            code: code,
+            name: name,
+            icon: "M4 6h16M4 12h16M4 18h12", // generic icon
+            isEnabled: true,
+          });
+          customCourseConfigs[newId] = newAssessments;
+          allMarksData[newId] = tempMarks;
+        }
+
+        localStorage.setItem("MARKS_COURSES_V1", JSON.stringify(customCourses));
+        localStorage.setItem(
+          "MARKS_CONFIGS_V1",
+          JSON.stringify(customCourseConfigs),
+        );
+        localStorage.setItem(STORAGE_KEY_MULTI, JSON.stringify(allMarksData));
+
+        closeCourseModal();
+        renderSettingsContent();
+        renderCourseList();
+
+        if (currentCourseId) {
+          renderCalculatorTiles();
+          calculateScore();
+        }
+      }
+
+      function deleteCourse(id) {
+        if (!confirm("Remove this subject and all its marks?")) return;
+        customCourses = customCourses.filter((c) => c.id !== id);
+        delete customCourseConfigs[id];
+        delete allMarksData[id];
+
+        localStorage.setItem("MARKS_COURSES_V1", JSON.stringify(customCourses));
+        localStorage.setItem(
+          "MARKS_CONFIGS_V1",
+          JSON.stringify(customCourseConfigs),
+        );
+        localStorage.setItem(STORAGE_KEY_MULTI, JSON.stringify(allMarksData));
+
+        if (currentCourseId === id) {
+          goHome();
+        }
+
+        renderSettingsContent();
+        renderCourseList();
+      }
+
       /* ── Menu helpers ────────────────────────────── */
       function toggleMenu() {
         const menu = document.getElementById("popoverMenu");
@@ -1291,11 +2397,194 @@
       }
 
       /* ── Data / Config ───────────────────────────── */
+      function exportConfig() {
+        toggleMenu();
+        if (customCourses.length === 0) return alert("Nothing to export.");
+
+        const cleanConfigs = {};
+        for (const [courseId, assessments] of Object.entries(
+          customCourseConfigs,
+        )) {
+          if (Array.isArray(assessments)) {
+            cleanConfigs[courseId] = assessments.map(
+              ({ id, name, max, weight }) => ({
+                id,
+                name,
+                max,
+                weight,
+              }),
+            );
+          }
+        }
+
+        const config = {
+          version: 1,
+          type: "marks-config",
+          courses: customCourses.map(({ id, code, name, icon, isEnabled }) => ({
+            id,
+            code,
+            name,
+            icon,
+            isEnabled,
+          })),
+          configs: cleanConfigs,
+          exportedAt: new Date().toISOString(),
+        };
+
+        const blob = new Blob([JSON.stringify(config, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const date = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = `marks-config-${date}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function importConfig() {
+        toggleMenu();
+        const input = document.getElementById("marksConfigFileInput");
+        input.value = "";
+        input.click();
+      }
+
+      function handleConfigFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const payload = JSON.parse(e.target.result);
+            if (
+              payload.type !== "marks-config" ||
+              !Array.isArray(payload.courses)
+            ) {
+              alert(
+                "Invalid config file. Please use a file exported from this app.",
+              );
+              return;
+            }
+            if (!payload.courses.length) {
+              alert("The config file has no subjects.");
+              return;
+            }
+            if (
+              !confirm(
+                `Import ${payload.courses.length} subject(s) from this config?\n\nThis will replace your current subject list and assessments.`,
+              )
+            )
+              return;
+
+            // Apply courses with sanitization
+            customCourses = payload.courses.map((c, i) => ({
+              id: c.id || "imported_" + i + "_" + Date.now(),
+              code: c.code || "",
+              name: c.name || "Subject " + (i + 1),
+              icon: c.icon || "M4 6h16M4 12h16M4 18h12", // generic icon
+              isEnabled: c.isEnabled !== false,
+            }));
+
+            // Handle and sanitize configs
+            const importedConfigs = payload.configs || {};
+            customCourseConfigs = {};
+            customCourses.forEach((c) => {
+              if (
+                importedConfigs[c.id] &&
+                Array.isArray(importedConfigs[c.id])
+              ) {
+                customCourseConfigs[c.id] = importedConfigs[c.id].map(
+                  (a, j) => ({
+                    id: a.id || "asc_" + j + "_" + Date.now(),
+                    name: a.name || "Assessment " + (j + 1),
+                    max: parseFloat(a.max) || 100,
+                    weight: parseFloat(a.weight) || 100,
+                  }),
+                );
+              } else {
+                customCourseConfigs[c.id] = [...defaultAssessments];
+              }
+            });
+
+            localStorage.setItem(
+              "MARKS_COURSES_V1",
+              JSON.stringify(customCourses),
+            );
+            localStorage.setItem(
+              "MARKS_CONFIGS_V1",
+              JSON.stringify(customCourseConfigs),
+            );
+
+            renderSettingsContent();
+            renderCourseList();
+
+            if (currentCourseId) {
+              renderCalculatorTiles();
+              calculateScore();
+            }
+
+            alert("Configuration successfully imported!");
+          } catch (err) {
+            alert(
+              "Could not read config file. Make sure it is a valid JSON file.",
+            );
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      function resetMarks() {
+        if (
+          !confirm(
+            "Are you sure you want to clear ALL your inputted marks?\n\nYour custom subjects and assessments will be kept intact.",
+          )
+        )
+          return;
+        allMarksData = {};
+        customCourses.forEach((c) => {
+          allMarksData[c.id] = {};
+        });
+        localStorage.setItem(STORAGE_KEY_MULTI, JSON.stringify(allMarksData));
+        if (currentCourseId) {
+          renderCalculatorTiles();
+          calculateScore();
+        }
+        renderCourseList();
+        alert("All marks have been successfully reset.");
+      }
+
+      function resetToDefault() {
+        if (
+          !confirm(
+            "WARNING! This will wipe all custom courses and marks, and restore the default subjects.\n\nThis cannot be undone. Are you sure?",
+          )
+        )
+          return;
+
+        customCourses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
+        customCourseConfigs = JSON.parse(JSON.stringify(DEFAULT_CONFIGS));
+        allMarksData = {};
+
+        localStorage.setItem("MARKS_COURSES_V1", JSON.stringify(customCourses));
+        localStorage.setItem(
+          "MARKS_CONFIGS_V1",
+          JSON.stringify(customCourseConfigs),
+        );
+        localStorage.setItem(STORAGE_KEY_MULTI, JSON.stringify(allMarksData));
+
+        renderSettingsContent();
+        renderCourseList();
+
+        if (currentCourseId) goHome();
+        alert("Restored to default configuration.");
+      }
+
       const STORAGE_KEY_OLD = "STUDENT_DASH_COMPACT";
       const STORAGE_KEY_MULTI = "MARKS_CALC_V2_DATA";
       const TARGET_GRADE = 80;
 
-      const courses = [
+      const DEFAULT_COURSES = [
         {
           id: "embedded",
           code: "NMT21305",
@@ -1307,34 +2596,39 @@
           code: "NMT21403",
           name: "Network Security",
           icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+          isEnabled: false,
         },
         {
           id: "practices",
           code: "NMT21503",
           name: "Professional Practices",
           icon: "M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z",
+          isEnabled: false,
         },
         {
           id: "acquisition",
           code: "NMT21602",
           name: "Data Acquisition",
           icon: "M22 12h-4l-3 9L9 3l-3 9H2",
+          isEnabled: false,
         },
         {
           id: "german",
           code: "SMB11802",
           name: "German Language",
           icon: "M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1",
+          isEnabled: false,
         },
         {
           id: "english",
           code: "SMB31202",
           name: "English Language",
           icon: "M4 6h16M4 12h16M4 18h12",
+          isEnabled: false,
         },
       ];
 
-      const courseConfigs = {
+      const DEFAULT_CONFIGS = {
         embedded: [
           { id: "test", name: "Test", max: 20, weight: 20 },
           { id: "lab1", name: "Lab Test 1", max: 20, weight: 20 },
@@ -1426,6 +2720,13 @@
 
       let allMarksData = {};
       let currentCourseId = null;
+      let customCourses = [];
+      let customCourseConfigs = {};
+      let editingCourseId = null;
+
+      function generateId() {
+        return Math.random().toString(36).substr(2, 9);
+      }
 
       /* ── Init ─────────────────────────────────────── */
       document.addEventListener("DOMContentLoaded", () => {
@@ -1436,9 +2737,8 @@
 
       function loadData() {
         const raw = localStorage.getItem(STORAGE_KEY_MULTI);
-        if (raw) {
-          allMarksData = JSON.parse(raw);
-        } else {
+        if (raw) allMarksData = JSON.parse(raw);
+        else {
           const oldRaw = localStorage.getItem(STORAGE_KEY_OLD);
           if (oldRaw) {
             allMarksData["embedded"] = JSON.parse(oldRaw);
@@ -1447,6 +2747,28 @@
               JSON.stringify(allMarksData),
             );
           }
+        }
+
+        const rawCourses = localStorage.getItem("MARKS_COURSES_V1");
+        if (rawCourses) {
+          customCourses = JSON.parse(rawCourses);
+        } else {
+          customCourses = [...DEFAULT_COURSES];
+          localStorage.setItem(
+            "MARKS_COURSES_V1",
+            JSON.stringify(customCourses),
+          );
+        }
+
+        const rawConfigs = localStorage.getItem("MARKS_CONFIGS_V1");
+        if (rawConfigs) {
+          customCourseConfigs = JSON.parse(rawConfigs);
+        } else {
+          customCourseConfigs = JSON.parse(JSON.stringify(DEFAULT_CONFIGS));
+          localStorage.setItem(
+            "MARKS_CONFIGS_V1",
+            JSON.stringify(customCourseConfigs),
+          );
         }
       }
 
@@ -1460,7 +2782,7 @@
       }
 
       function getAssessments(courseId) {
-        return courseConfigs[courseId] || defaultAssessments;
+        return customCourseConfigs[courseId] || defaultAssessments;
       }
 
       /* ── Navigation ───────────────────────────────── */
@@ -1468,10 +2790,10 @@
         const grid = document.getElementById("coursesGrid");
         grid.innerHTML = "";
 
-        courses.forEach((course, index) => {
+        customCourses.forEach((course, index) => {
           const card = document.createElement("div");
           const bgClass = bgClasses[course.id] || "";
-          const isEnabled = course.id === "embedded";
+          const isEnabled = course.isEnabled !== false;
           const courseMarks = allMarksData[course.id] || {};
           const assessments = getAssessments(course.id);
 
@@ -1511,7 +2833,7 @@
               <div class="card-name">${course.name}</div>
             </div>
           </div>
-          <div class="preview-section">
+          <div class="preview-section" style="${!isEnabled ? "opacity: 0.4;" : ""}">
             <div class="preview-label">Recent</div>
             ${previewItems}
           </div>`;
@@ -1523,21 +2845,21 @@
         // reset header to home state
         document.getElementById("headerEyebrow").textContent = "Education";
         document.getElementById("headerTitle").textContent = "Grade Calculator";
+
         const backBtn = document.getElementById("mainBackBtn");
-        backBtn.href = "index.html";
-        backBtn.onclick = null;
+        if (backBtn) {
+          backBtn.href = "index.html";
+          backBtn.onclick = null;
+        }
       }
 
       function openCourse(courseId) {
         currentCourseId = courseId;
-        const course = courses.find((c) => c.id === courseId);
+        const course = customCourses.find((c) => c.id === courseId);
 
         document.getElementById("view-home").style.display = "none";
         document.getElementById("view-calculator").style.display = "flex";
         document.body.classList.add("calculator-mode");
-
-        document.getElementById("calcCourseCode").textContent =
-          `${course.code} · ${course.name.toUpperCase()}`;
 
         // Update header
         document.getElementById("headerEyebrow").textContent = course.code;
@@ -1577,19 +2899,22 @@
           tile.className = "assessment-tile";
           tile.style.animationDelay = `${index * 0.05}s`;
           tile.innerHTML = `
-          <div class="tile-header">
-            <div class="tile-name">${item.name}</div>
-            <div class="tile-weight">${item.weight}%</div>
+          <div class="tile-header" style="align-items: center; margin-bottom: 8px; gap: 6px;">
+            <div class="tile-name" style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1;">${item.name}</div>
+            <div class="tile-weight" style="background: rgba(16, 185, 129, 0.12); color: var(--accent-2); padding: 3px 6px; border-radius: 6px; font-size: 10px; font-weight: 800; flex-shrink: 0; white-space: nowrap;">${item.weight}%</div>
           </div>
-          <div class="input-area" onclick="document.getElementById('input-${item.id}').focus()">
-            <input type="number"
-              id="input-${item.id}"
-              placeholder="?"
-              value="${val}"
-              oninput="updateMark('${item.id}', this.value, ${item.max})"
-              onblur="validateMark('${item.id}', ${item.max})"
-            >
-            <span class="den">/${item.max}</span>
+          <div style="margin-top: auto;">
+            <div class="input-area" onclick="document.getElementById('input-${item.id}').focus()" style="margin-top: 0; padding: 8px 12px;">
+              <input type="number"
+                id="input-${item.id}"
+                placeholder="-"
+                value="${val}"
+                oninput="updateMark('${item.id}', this.value, ${item.max})"
+                onblur="validateMark('${item.id}', ${item.max})"
+                style="font-size: 1.35rem;"
+              >
+              <span class="den" style="font-size: 13px; opacity: 0.8;">/${item.max}</span>
+            </div>
           </div>`;
           grid.appendChild(tile);
         });

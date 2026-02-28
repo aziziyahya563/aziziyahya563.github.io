@@ -30,9 +30,11 @@ Track and project academic performance across multiple assessments.
 
 - **Key Features:**
   - Real-time grade calculation as marks are entered
-  - Assessment weight management
+  - Assessment weight management per subject
   - Interactive grade tiles with input validation
   - "Target Grade" projection based on remaining assessments
+  - **Configuration Sharing:** Export and import subject lists & settings to share with others (.json)
+  - Centralized Settings modal for managing subjects and actions
   - Persistent data via `localStorage`
 
 ---
