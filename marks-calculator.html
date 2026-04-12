@@ -1834,7 +1834,26 @@
           >
             Share your subject list and assessment configuration with
             classmates.
-          </p>
+        </div>
+        <!-- Presets Section -->
+        <div class="stg-section">
+          <div class="stg-section-header">
+            <span class="stg-label" style="color: var(--accent);">Quick Presets</span>
+          </div>
+          <div class="stg-subjects">
+            <div class="stg-row" onclick="loadPreset('sem3')">
+              <div class="stg-row-left">
+                <span class="stg-row-title" style="color: var(--accent);">Load Semester 3 Courses</span>
+                <span class="stg-row-desc">Switch to third semester's course list</span>
+              </div>
+            </div>
+            <div class="stg-row" onclick="loadPreset('sem2')">
+              <div class="stg-row-left">
+                <span class="stg-row-title">Load Semester 2 Courses</span>
+                <span class="stg-row-desc">Switch to previous semester's subjects</span>
+              </div>
+            </div>
+          </div>
         </div>
         <!-- Danger Zone Section -->
         <div class="stg-section">
@@ -2592,11 +2611,35 @@
         alert("Restored to default configuration.");
       }
 
+      function loadPreset(preset) {
+        let presetName = preset === 'sem2' ? "Semester 2 (Old)" : "Semester 3 (New)";
+        if (!confirm(`Are you sure you want to load ${presetName} courses?\n\nThis will replace your current subject list and clear all inputted marks! You will lose any customized assessments for the replaced subjects.`)) return;
+
+        allMarksData = {};
+        if (preset === 'sem2') {
+          customCourses = JSON.parse(JSON.stringify(SEM2_COURSES));
+        } else {
+          customCourses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
+        }
+        
+        customCourseConfigs = JSON.parse(JSON.stringify(DEFAULT_CONFIGS));
+
+        localStorage.setItem("MARKS_COURSES_V1", JSON.stringify(customCourses));
+        localStorage.setItem("MARKS_CONFIGS_V1", JSON.stringify(customCourseConfigs));
+        localStorage.setItem(STORAGE_KEY_MULTI, JSON.stringify(allMarksData));
+
+        renderSettingsContent();
+        renderCourseList();
+
+        if (currentCourseId) goHome();
+        alert(`${presetName} courses loaded successfully!`);
+      }
+
       const STORAGE_KEY_OLD = "STUDENT_DASH_COMPACT";
       const STORAGE_KEY_MULTI = "MARKS_CALC_V2_DATA";
       const TARGET_GRADE = 80;
 
-      const DEFAULT_COURSES = [
+      const SEM2_COURSES = [
         {
           id: "embedded",
           code: "NMT21305",
@@ -2608,35 +2651,69 @@
           code: "NMT21403",
           name: "Network Security",
           icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
-          isEnabled: false,
         },
         {
           id: "practices",
           code: "NMT21503",
           name: "Professional Practices",
           icon: "M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z",
-          isEnabled: false,
         },
         {
           id: "acquisition",
           code: "NMT21602",
           name: "Data Acquisition",
           icon: "M22 12h-4l-3 9L9 3l-3 9H2",
-          isEnabled: false,
         },
         {
           id: "german",
           code: "SMB11802",
           name: "German Language",
           icon: "M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1",
-          isEnabled: false,
         },
         {
           id: "english",
           code: "SMB31202",
           name: "English Language",
           icon: "M4 6h16M4 12h16M4 18h12",
-          isEnabled: false,
+        },
+      ];
+
+      const DEFAULT_COURSES = [
+        {
+          id: "acquisition2",
+          code: "NMT22104",
+          name: "Data Acquisition Technology and Analysis 2",
+          icon: "M22 12h-4l-3 9L9 3l-3 9H2",
+        },
+        {
+          id: "optimization",
+          code: "NMT22202",
+          name: "System Optimization Technology 1",
+          icon: "M18 20V10M12 20V4M6 20v-6",
+        },
+        {
+          id: "appdev",
+          code: "NMT22302",
+          name: "Application System Development 1",
+          icon: "M16 18l6-6-6-6M8 6l-6 6 6 6",
+        },
+        {
+          id: "operation",
+          code: "NMT22404",
+          name: "Operation Management Technology",
+          icon: "M3 3v18h18 M3 16l6-6 4 4 8-8",
+        },
+        {
+          id: "technopreneur",
+          code: "NMT22504",
+          name: "Technopreneur Project 1",
+          icon: "M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z",
+        },
+        {
+          id: "engineering",
+          code: "SMU22402",
+          name: "Engineering Entrepreneurship",
+          icon: "M13 2L3 14h9l-1 8 10-12h-9l1-8z",
         },
       ];
 
@@ -2764,6 +2841,26 @@
         const rawCourses = localStorage.getItem("MARKS_COURSES_V1");
         if (rawCourses) {
           customCourses = JSON.parse(rawCourses);
+
+          // Remove legacy courses from plain sight
+          const legacyIds = ["embedded", "security", "practices", "acquisition", "german", "english"];
+          const originalLen = customCourses.length;
+          customCourses = customCourses.filter(c => !legacyIds.includes(c.id));
+
+          // Auto-migrate new default courses
+          const existingIds = new Set(customCourses.map(c => c.id));
+          let migrated = false;
+          const newCourses = [];
+          DEFAULT_COURSES.forEach(dc => {
+            if (!existingIds.has(dc.id)) {
+              newCourses.push({...dc});
+              migrated = true;
+            }
+          });
+          if (migrated || customCourses.length !== originalLen) {
+            customCourses = [...newCourses, ...customCourses];
+            localStorage.setItem("MARKS_COURSES_V1", JSON.stringify(customCourses));
+          }
         } else {
           customCourses = [...DEFAULT_COURSES];
           localStorage.setItem(
@@ -2775,6 +2872,15 @@
         const rawConfigs = localStorage.getItem("MARKS_CONFIGS_V1");
         if (rawConfigs) {
           customCourseConfigs = JSON.parse(rawConfigs);
+          // Auto-migrate missing configs
+          let configMigrated = false;
+          DEFAULT_COURSES.forEach(dc => {
+            if (!customCourseConfigs[dc.id]) {
+              customCourseConfigs[dc.id] = DEFAULT_CONFIGS[dc.id] ? [...DEFAULT_CONFIGS[dc.id]] : [...defaultAssessments];
+              configMigrated = true;
+            }
+          });
+          if (configMigrated) localStorage.setItem("MARKS_CONFIGS_V1", JSON.stringify(customCourseConfigs));
         } else {
           customCourseConfigs = JSON.parse(JSON.stringify(DEFAULT_CONFIGS));
           localStorage.setItem(

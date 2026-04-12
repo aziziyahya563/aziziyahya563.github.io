@@ -1613,6 +1613,24 @@
             Share your subject list and grading scale with classmates.
           </p>
         </div>
+
+        <!-- Presets Section -->
+        <div class="stg-section">
+          <div class="stg-section-header">
+            <span class="stg-label" style="color: var(--accent);">Quick Presets</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button class="stg-cfg-btn stg-export" style="width:100%; justify-content:center; color:var(--accent); border-color:color-mix(in srgb, var(--accent) 50%, transparent)" onclick="loadPreset('sem3')">
+              Load Semester 3 Courses
+            </button>
+            <button class="stg-cfg-btn stg-import" style="width:100%; justify-content:center;" onclick="loadPreset('sem2')">
+              Load Semester 2 Courses
+            </button>
+            <p style="font-size: 11px; color: var(--text-p); margin-top: 4px; line-height: 1.5; text-align: center;">
+              Switching will overwrite your current subject list and reset your inputted grades.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -2120,8 +2138,7 @@
         "#6366f1",
       ];
 
-      // Default hardcoded courses — used only when no saved data exists
-      const DEFAULT_COURSES = [
+      const SEM2_COURSES = [
         {
           id: "sem3_embedded",
           code: "NMT21305",
@@ -2161,6 +2178,52 @@
           id: "sem3_english",
           code: "SMB31202",
           name: "English For Technical Communication",
+          credits: 2,
+          accent: "#4895ef",
+        },
+      ];
+
+      // Default hardcoded courses — used only when no saved data exists
+      const DEFAULT_COURSES = [
+        {
+          id: "sem4_acquisition2",
+          code: "NMT22104",
+          name: "Data Acquisition Technology and Analysis 2",
+          credits: 4,
+          accent: "#5b6bf0",
+        },
+        {
+          id: "sem4_optimization1",
+          code: "NMT22202",
+          name: "System Optimization Technology 1",
+          credits: 2,
+          accent: "#00c896",
+        },
+        {
+          id: "sem4_appdev1",
+          code: "NMT22302",
+          name: "Application System Development 1",
+          credits: 2,
+          accent: "#ff9f43",
+        },
+        {
+          id: "sem4_operation",
+          code: "NMT22404",
+          name: "Operation Management Technology",
+          credits: 4,
+          accent: "#9d4edd",
+        },
+        {
+          id: "sem4_technopreneur1",
+          code: "NMT22504",
+          name: "Technopreneur Project 1",
+          credits: 4,
+          accent: "#ff6b6b",
+        },
+        {
+          id: "sem4_engineering",
+          code: "SMU22402",
+          name: "Engineering Entrepreneurship",
           credits: 2,
           accent: "#4895ef",
         },
@@ -2330,7 +2393,32 @@
             customCourses = JSON.parse(raw);
           } catch (e) {}
         }
-        if (!customCourses.length) customCourses = [...DEFAULT_COURSES];
+        
+        let migrated = false;
+        
+        // Remove old sem3 courses from plain sight
+        const legacyIds = ["sem3_embedded", "sem3_security", "sem3_practices", "sem3_acquisi", "sem3_german", "sem3_english"];
+        const originalLen = customCourses.length;
+        customCourses = customCourses.filter(c => !legacyIds.includes(c.id));
+        if (customCourses.length !== originalLen) migrated = true;
+
+        if (!customCourses.length) {
+          customCourses = [...DEFAULT_COURSES];
+          migrated = true;
+        } else {
+          // Auto inject new courses for returning users
+          const existingIds = new Set(customCourses.map(c => c.id));
+          const newCourses = [];
+          DEFAULT_COURSES.forEach(dc => {
+            if (!existingIds.has(dc.id)) {
+              newCourses.push({...dc});
+              migrated = true;
+            }
+          });
+          customCourses = [...newCourses, ...customCourses];
+        }
+
+        if (migrated) saveCourses();
       }
 
       function saveCourses() {
@@ -2661,6 +2749,22 @@
         document.getElementById("manualCredits").value = "";
         toggleMenu();
         renderCourseList();
+      }
+
+      function loadPreset(preset) {
+        let presetName = preset === 'sem2' ? "Semester 2 (Old)" : "Semester 3 (New)";
+        if (!confirm(`Are you sure you want to load ${presetName} courses?\n\nThis will replace your current subject list and clear inputted grades!`)) return;
+
+        customCourses = preset === 'sem2' ? JSON.parse(JSON.stringify(SEM2_COURSES)) : JSON.parse(JSON.stringify(DEFAULT_COURSES));
+        gpaData.grades = {};
+
+        saveCourses();
+        localStorage.setItem(STORAGE_KEY_GPA, JSON.stringify(gpaData));
+
+        renderSettingsContent();
+        renderCourseList();
+        
+        alert(`${presetName} courses loaded successfully!`);
       }
 
       window.addEventListener("storage", (e) => {
