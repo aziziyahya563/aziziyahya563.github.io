@@ -2798,14 +2798,25 @@
         { id: "final", name: "Final", max: 60, weight: 60 },
       ];
 
-      const bgClasses = {
-        embedded: "embedded-bg",
-        security: "security-bg",
-        practices: "practices-bg",
-        acquisition: "acquisition-bg",
-        german: "german-bg",
-        english: "english-bg",
-      };
+      const ACCENT_PALETTE = [
+        "#5b6bf0", "#00c896", "#ff9f43", "#9d4edd", "#ff6b6b", "#4895ef", 
+        "#f72585", "#7209b7", "#3a0ca3", "#4361ee", "#4cc9f0", "#10b981", "#3b82f6"
+      ];
+
+      function getCourseColor(id, name) {
+        const legacy = {
+          embedded: "#5b6bf0", security: "#00c896", practices: "#ff9f43",
+          acquisition: "#9d4edd", german: "#ff6b6b", english: "#4895ef"
+        };
+        if (legacy[id]) return legacy[id];
+        
+        let hash = 0;
+        const str = id + name;
+        for (let i = 0; i < str.length; i++) {
+          hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return ACCENT_PALETTE[Math.abs(hash) % ACCENT_PALETTE.length];
+      }
 
       let allMarksData = {};
       let currentCourseId = null;
@@ -2910,7 +2921,7 @@
 
         customCourses.forEach((course, index) => {
           const card = document.createElement("div");
-          const bgClass = bgClasses[course.id] || "";
+          const accentColor = getCourseColor(course.id, course.name);
           const isEnabled = course.isEnabled !== false;
           const courseMarks = allMarksData[course.id] || {};
           const assessments = getAssessments(course.id);
@@ -2937,7 +2948,8 @@
             })
             .join("");
 
-          card.className = `course-card ${bgClass}${isEnabled ? "" : " disabled"}`;
+          card.className = `course-card${isEnabled ? "" : " disabled"}`;
+          card.style.setProperty("--card-accent", accentColor);
           card.style.animationDelay = `${index * 0.05}s`;
           card.innerHTML = `
           <div class="card-header">
