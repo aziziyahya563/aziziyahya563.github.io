@@ -1,1935 +1,1067 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <meta name="theme-color" content="#0a0a0f" id="themeColorMeta" />
-    <meta
-      name="description"
-      content="Story Card Maker — Create stunning 4K story backgrounds with automatic gradient matching"
-    />
-    <title>Story Card Maker</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-
-    <style>
-      /* ─── Reset ──────────────────────────────────────────────── */
-      *,
-      *::before,
-      *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      /* ─── Design Tokens ──────────────────────────────────────── */
-      :root {
-        --accent-1: #7c6fee;
-        --accent-2: #ec4899;
-        --accent-3: #06b6d4;
-
-        --bg: #f0f2f8;
-        --surface: rgba(255, 255, 255, 0.78);
-        --surface-solid: #ffffff;
-        --border: rgba(0, 0, 0, 0.07);
-        --text-h: #0d0f1a;
-        --text-p: #4a5069;
-        --text-muted: #8892b0;
-        --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-        --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
-        --header-bg: rgba(240, 242, 248, 0.88);
-
-        --radius-pill: 999px;
-      }
-
-      [data-theme="dark"] {
-        --bg: #0a0a0f;
-        --surface: rgba(22, 22, 34, 0.82);
-        --surface-solid: #16161f;
-        --border: rgba(255, 255, 255, 0.08);
-        --text-h: #f0f2ff;
-        --text-p: #8892b0;
-        --text-muted: #4a5069;
-        --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-        --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.7);
-        --header-bg: rgba(10, 10, 15, 0.88);
-      }
-
-      /* ─── Base ───────────────────────────────────────────────── */
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        position: fixed;
-        font-family:
-          "Inter",
-          -apple-system,
-          BlinkMacSystemFont,
-          sans-serif;
-        background: var(--bg);
-        color: var(--text-h);
-        -webkit-font-smoothing: antialiased;
-        transition:
-          background 0.4s ease,
-          color 0.4s ease;
-      }
-
-      /* ─── Animated Mesh Background ───────────────────────────── */
-      .bg-mesh {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        overflow: hidden;
-        pointer-events: none;
-      }
-
-      .bg-mesh::before,
-      .bg-mesh::after {
-        content: "";
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(90px);
-        opacity: 0.3;
-      }
-
-      [data-theme="dark"] .bg-mesh::before,
-      [data-theme="dark"] .bg-mesh::after {
-        opacity: 0.15;
-      }
-
-      .bg-mesh::before {
-        width: 70vw;
-        height: 70vw;
-        top: -25vw;
-        left: -20vw;
-        background: radial-gradient(circle, #7c6fee, #ec4899);
-        animation: floatA 18s ease-in-out infinite alternate;
-      }
-
-      .bg-mesh::after {
-        width: 55vw;
-        height: 55vw;
-        bottom: -15vw;
-        right: -15vw;
-        background: radial-gradient(circle, #06b6d4, #7c6fee);
-        animation: floatB 22s ease-in-out infinite alternate;
-      }
-
-      @keyframes floatA {
-        from {
-          transform: translate(0, 0) scale(1);
-        }
-        to {
-          transform: translate(6vw, 5vw) scale(1.1);
-        }
-      }
-      @keyframes floatB {
-        from {
-          transform: translate(0, 0) scale(1);
-        }
-        to {
-          transform: translate(-5vw, -6vw) scale(1.08);
-        }
-      }
-
-      /* ─── App Shell ──────────────────────────────────────────── */
-      .app-shell {
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-
-      /* ─── Sticky Header ──────────────────────────────────────── */
-      .site-header {
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 0 20px;
-        height: 56px;
-        background: var(--header-bg);
-        backdrop-filter: blur(24px) saturate(1.8);
-        -webkit-backdrop-filter: blur(24px) saturate(1.8);
-        border-bottom: 1px solid var(--border);
-        animation: slideDown 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-
-      @keyframes slideDown {
-        from {
-          opacity: 0;
-          transform: translateY(-16px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .header-left {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      /* Back button */
-      .back-btn {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        backdrop-filter: blur(10px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        color: var(--text-h);
-        transition: all 0.2s ease;
-        box-shadow: var(--shadow);
-        flex-shrink: 0;
-      }
-
-      .back-btn:hover {
-        border-color: var(--accent-1);
-        box-shadow: 0 0 0 3px rgba(124, 111, 238, 0.15);
-      }
-
-      .back-btn:active {
-        transform: scale(0.9);
-      }
-
-      .back-btn svg {
-        width: 16px;
-        height: 16px;
-        stroke-width: 2.5;
-      }
-
-      /* Title block */
-      .header-title-block {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-      }
-
-      .header-eyebrow {
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        color: var(--accent-1);
-        line-height: 1;
-        margin-bottom: 2px;
-      }
-
-      .header-title {
-        font-size: 15px;
-        font-weight: 800;
-        letter-spacing: -0.3px;
-        background: linear-gradient(135deg, var(--text-h) 40%, var(--text-p));
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        line-height: 1.2;
-      }
-
-      /* Right actions */
-      .header-actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .icon-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        backdrop-filter: blur(10px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        color: var(--text-p);
-        transition: all 0.2s ease;
-        box-shadow: var(--shadow);
-      }
-
-      .icon-btn:hover {
-        color: var(--text-h);
-        border-color: var(--accent-1);
-        box-shadow: 0 0 0 3px rgba(124, 111, 238, 0.15);
-      }
-
-      .icon-btn:active {
-        transform: scale(0.93);
-      }
-
-      .icon-btn svg {
-        width: 18px;
-        height: 18px;
-        stroke-width: 2;
-      }
-
-      /* ─── Preview Area ────────────────────────────────────────── */
-      .preview-container {
-        flex: 1;
-        min-height: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 24px 20px 12px;
-        animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
-      }
-
-      @keyframes fadeUp {
-        from {
-          opacity: 0;
-          transform: translateY(16px) scale(0.97);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-
-      .preview-wrapper {
-        height: 100%;
-        max-height: 100%;
-        max-width: 100%;
-        aspect-ratio: 9 / 16;
-        background: var(--surface);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-radius: 36px;
-        /* Force hardware acceleration for anti-aliased smooth corners */
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-        cursor: pointer;
-      }
-
-      .preview-wrapper.has-image {
-        background: #000;
-        border-color: transparent;
-        box-shadow: var(--shadow-lg);
-      }
-
-      .preview-wrapper:hover {
-        transform: translateY(-6px) scale(1.015) translateZ(0);
-        box-shadow: var(--shadow-lg);
-      }
-
-      .preview-wrapper.drag-over {
-        border: 2px dashed var(--accent-1);
-        background: color-mix(in srgb, var(--accent-1) 8%, var(--surface));
-        transform: scale(1.02);
-        box-shadow: 0 0 0 4px rgba(124, 111, 238, 0.2);
-      }
-
-      .preview-wrapper:active:not(.drag-over) {
-        transform: scale(0.98);
-      }
-
-      #previewImg {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: none;
-        transition: opacity 0.3s ease;
-      }
-
-      /* ─── Empty State ─────────────────────────────────────────── */
-      .empty-state {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        pointer-events: none;
-        transition: all 0.3s ease;
-      }
-
-      .preview-wrapper:hover .empty-state {
-        transform: scale(1.04);
-      }
-
-      .empty-icon-wrap {
-        width: 72px;
-        height: 72px;
-        border-radius: 22px;
-        background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 12px 32px rgba(124, 111, 238, 0.35);
-        animation: floatIcon 3s ease-in-out infinite;
-      }
-
-      @keyframes floatIcon {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-      }
-
-      .empty-icon-wrap svg {
-        width: 32px;
-        height: 32px;
-        stroke: white;
-        stroke-width: 1.8;
-        fill: none;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-
-      .empty-title {
-        font-size: 15px;
-        font-weight: 700;
-        color: var(--text-h);
-      }
-
-      .empty-hint {
-        font-size: 12px;
-        font-weight: 500;
-        color: var(--text-muted);
-      }
-
-      /* ─── Loader ──────────────────────────────────────────────── */
-      .loader {
-        width: 44px;
-        height: 44px;
-        display: none;
-        position: relative;
-      }
-
-      .loader::before,
-      .loader::after {
-        content: "";
-        position: absolute;
-        border-radius: 50%;
-        inset: 0;
-      }
-
-      .loader::before {
-        border: 3px solid color-mix(in srgb, var(--accent-1) 20%, transparent);
-      }
-
-      .loader::after {
-        border: 3px solid transparent;
-        border-top-color: var(--accent-1);
-        border-right-color: var(--accent-2);
-        animation: spin 0.75s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg) scale(1);
-        }
-        50% {
-          transform: rotate(180deg) scale(1.08);
-        }
-        100% {
-          transform: rotate(360deg) scale(1);
-        }
-      }
-
-      /* ─── Scale Control ───────────────────────────────────────── */
-      .scale-wrapper {
-        width: 100%;
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 6px;
-        animation: fadeUp 0.4s ease both;
-      }
-      .scale-wrapper.active {
-        display: flex;
-      }
-      .scale-header {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        max-width: 280px;
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--text-p);
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-      }
-      .scale-slider {
-        -webkit-appearance: none;
-        width: 100%;
-        max-width: 280px;
-        height: 6px;
-        background: color-mix(in srgb, var(--accent-1) 20%, var(--border));
-        border-radius: 99px;
-        outline: none;
-      }
-      .scale-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        background: white;
-        border: 2px solid var(--accent-1);
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(124, 111, 238, 0.3);
-        transition:
-          transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-          background 0.2s;
-      }
-      .scale-slider::-webkit-slider-thumb:active {
-        transform: scale(1.15);
-        background: var(--accent-1);
-        border-color: white;
-      }
-
-      /* ─── Controls Bar ────────────────────────────────────────── */
-      .controls {
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        padding: 14px 20px 20px;
-        animation: slideUpBar 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
-      }
-
-      @keyframes slideUpBar {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* Base button */
-      .btn {
-        height: 48px;
-        padding: 0 28px;
-        border: none;
-        border-radius: var(--radius-pill);
-        font-family: inherit;
-        font-weight: 700;
-        font-size: 14px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-        user-select: none;
-        position: relative;
-        overflow: hidden;
-        letter-spacing: -0.1px;
-      }
-
-      .btn svg {
-        width: 18px;
-        height: 18px;
-        stroke-width: 2.2;
-        stroke: currentColor;
-        fill: none;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        flex-shrink: 0;
-      }
-
-      .btn .desktop-text {
-        display: none;
-      }
-
-      .btn:hover svg {
-        transform: scale(1.1);
-      }
-
-      /* Ripple */
-      .btn::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: rgba(255, 255, 255, 0.18);
-        opacity: 0;
-        transition: opacity 0.2s;
-      }
-
-      .btn:active::after {
-        opacity: 1;
-      }
-
-      /* Upload / primary */
-      .btn-upload {
-        background: linear-gradient(
-          135deg,
-          var(--accent-1) 0%,
-          var(--accent-2) 100%
-        );
-        color: white;
-        box-shadow:
-          0 8px 24px rgba(124, 111, 238, 0.3),
-          inset 0 1px 1px rgba(255, 255, 255, 0.3);
-      }
-
-      .btn-upload:hover {
-        transform: translateY(-2px);
-        box-shadow:
-          0 12px 32px rgba(124, 111, 238, 0.45),
-          inset 0 1px 1px rgba(255, 255, 255, 0.3);
-        filter: brightness(1.05);
-      }
-
-      /* Icon-only (circular) */
-      .btn-icon {
-        width: 48px;
-        height: 48px;
-        padding: 0;
-        border-radius: 50%;
-        min-width: 48px;
-      }
-
-      /* Secondary / ghost */
-      .btn-ghost {
-        background: var(--surface);
-        color: var(--text-h);
-        border: 1px solid var(--border);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        box-shadow: var(--shadow);
-      }
-
-      .btn-ghost:hover {
-        border-color: var(--accent-1);
-        box-shadow: 0 8px 24px rgba(124, 111, 238, 0.15);
-        color: var(--accent-1);
-        transform: translateY(-2px);
-      }
-
-      /* Download / share (inactive → active) */
-      .btn-download {
-        background: color-mix(in srgb, var(--surface) 50%, transparent);
-        color: var(--text-muted);
-        border: 1px dashed var(--border);
-        pointer-events: none;
-        min-width: 130px;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-      }
-
-      .btn-download.active {
-        background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-        color: white;
-        pointer-events: auto;
-        border: 1px solid transparent;
-        box-shadow:
-          0 8px 24px rgba(124, 111, 238, 0.3),
-          inset 0 1px 1px rgba(255, 255, 255, 0.3);
-      }
-
-      .btn-download.active:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.05);
-        box-shadow:
-          0 12px 32px rgba(124, 111, 238, 0.45),
-          inset 0 1px 1px rgba(255, 255, 255, 0.3);
-      }
-
-      input[type="file"] {
-        display: none;
-      }
-
-      /* ─── Toast ───────────────────────────────────────────────── */
-      .toast {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translate(-50%, -120%);
-        background: var(--surface-solid);
-        border: 1px solid var(--border);
-        color: var(--text-h);
-        padding: 12px 22px;
-        border-radius: var(--radius-pill);
-        font-size: 13px;
-        font-weight: 600;
-        box-shadow: var(--shadow-lg);
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        opacity: 0;
-        transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-        visibility: hidden;
-        white-space: nowrap;
-      }
-
-      .toast.show {
-        transform: translate(-50%, 0);
-        opacity: 1;
-        visibility: visible;
-      }
-
-      .toast-icon {
-        width: 16px;
-        height: 16px;
-        stroke-width: 2.5;
-        flex-shrink: 0;
-      }
-
-      .toast.success {
-        background: color-mix(in srgb, #10b981 12%, var(--surface-solid));
-        color: #059669;
-        border-color: color-mix(in srgb, #10b981 20%, transparent);
-      }
-
-      .toast.error {
-        background: color-mix(in srgb, #ef4444 12%, var(--surface-solid));
-        color: #dc2626;
-        border-color: color-mix(in srgb, #ef4444 20%, transparent);
-      }
-
-      .toast.processing {
-        background: color-mix(
-          in srgb,
-          var(--accent-1) 12%,
-          var(--surface-solid)
-        );
-        color: var(--accent-1);
-        border-color: color-mix(in srgb, var(--accent-1) 20%, transparent);
-      }
-
-      /* ─── Popover Menu ────────────────────────────────────────── */
-      .click-outside {
-        position: fixed;
-        inset: 0;
-        z-index: 999;
-        display: none;
-      }
-
-      .menu-wrapper {
-        position: relative;
-      }
-
-      .popover-menu {
-        position: fixed;
-        background: var(--surface-solid);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 8px;
-        width: 220px;
-        display: none;
-        flex-direction: column;
-        gap: 2px;
-        z-index: 1000;
-        box-shadow: var(--shadow-lg);
-        transform-origin: top right;
-        animation: menuIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-
-      @keyframes menuIn {
-        from {
-          opacity: 0;
-          transform: scale(0.9);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
-
-      .popover-menu.active {
-        display: flex;
-      }
-
-      .popover-menu-header {
-        padding: 10px 14px 6px;
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        color: var(--text-muted);
-      }
-
-      .popover-divider {
-        height: 1px;
-        background: var(--border);
-        margin: 4px 0;
-      }
-
-      .menu-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 11px 14px;
-        border-radius: 12px;
-        cursor: pointer;
-        color: var(--text-h);
-        font-size: 14px;
-        font-weight: 600;
-        background: transparent;
-        border: none;
-        width: 100%;
-        text-align: left;
-        transition: background 0.15s;
-      }
-
-      .menu-item-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .menu-item-icon {
-        width: 28px;
-        height: 28px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .menu-item-icon svg {
-        width: 15px;
-        height: 15px;
-        stroke-width: 2;
-      }
-
-      .menu-item:hover {
-        background: color-mix(in srgb, var(--text-h) 6%, transparent);
-      }
-
-      /* Switch */
-      .switch {
-        position: relative;
-        width: 38px;
-        height: 22px;
-        flex-shrink: 0;
-      }
-
-      .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
-
-      .slider {
-        position: absolute;
-        cursor: pointer;
-        inset: 0;
-        background: var(--text-muted);
-        transition: 0.3s;
-        border-radius: 34px;
-      }
-
-      .slider:before {
-        position: absolute;
-        content: "";
-        height: 16px;
-        width: 16px;
-        left: 3px;
-        bottom: 3px;
-        background: white;
-        transition: 0.3s;
-        border-radius: 50%;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      }
-
-      input:checked + .slider {
-        background: var(--accent-1);
-      }
-      input:checked + .slider:before {
-        transform: translateX(16px);
-      }
-
-      /* ─── Info Modal ──────────────────────────────────────────── */
-      .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(8px);
-        z-index: 500;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-        opacity: 0;
-        transition: opacity 0.3s;
-      }
 
-      .modal-overlay.active {
-        display: flex;
-        opacity: 1;
-      }
-
-      .modal-card {
-        background: var(--surface-solid);
-        padding: 36px 32px 28px;
-        border-radius: 28px;
-        max-width: 340px;
-        width: 100%;
-        text-align: center;
-        transform: translateY(24px) scale(0.96);
-        transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow-lg);
-      }
-
-      .modal-overlay.active .modal-card {
-        transform: translateY(0) scale(1);
-      }
-
-      .modal-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 18px;
-        background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
-        box-shadow: 0 12px 30px rgba(124, 111, 238, 0.35);
-      }
-
-      .modal-icon svg {
-        width: 28px;
-        height: 28px;
-        stroke: white;
-        stroke-width: 1.8;
-        fill: none;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-
-      .modal-version {
-        display: inline-block;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        padding: 4px 12px;
-        border-radius: 99px;
-        background: color-mix(in srgb, var(--accent-1) 12%, transparent);
-        color: var(--accent-1);
-        margin-bottom: 12px;
-      }
-
-      .modal-title {
-        font-size: 22px;
-        font-weight: 800;
-        letter-spacing: -0.5px;
-        color: var(--text-h);
-        margin-bottom: 10px;
-      }
-
-      .modal-text {
-        font-size: 14px;
-        color: var(--text-p);
-        line-height: 1.65;
-        margin-bottom: 24px;
-      }
-
-      .modal-text strong {
-        color: var(--text-h);
-        font-weight: 700;
-      }
-
-      .modal-btn {
-        background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-        color: white;
-        border: none;
-        padding: 13px 32px;
-        border-radius: 99px;
-        font-size: 14px;
-        font-weight: 700;
-        cursor: pointer;
-        width: 100%;
-        box-shadow: 0 8px 20px rgba(124, 111, 238, 0.35);
-        transition:
-          opacity 0.2s,
-          transform 0.2s;
-      }
-
-      .modal-btn:hover {
-        opacity: 0.9;
-      }
-      .modal-btn:active {
-        transform: scale(0.97);
-      }
-
-      /* ─── Responsive tweaks ───────────────────────────────────── */
-      @media (max-height: 680px) {
-        .site-header {
-          height: 48px;
-        }
-        .preview-container {
-          padding-top: 12px;
-          padding-bottom: 6px;
-        }
-        .controls {
-          padding: 10px 20px 14px;
-          gap: 8px;
-        }
-        .btn {
-          height: 40px;
-          font-size: 13px;
-        }
-        .btn-icon {
-          width: 40px;
-          height: 40px;
-          min-width: 40px;
-        }
-      }
-
-      /* ─── Desktop App Layout ──────────────────────────────────── */
-      @media (min-width: 800px) {
-        .preview-container {
-          padding: 40px 40px 20px;
-        }
-
-        .preview-wrapper {
-          border-radius: 36px;
-          box-shadow: var(--shadow-lg);
-        }
-
-        .controls {
-          padding: 12px 40px 30px;
-          gap: 16px;
-          justify-content: center;
-        }
-
-        .btn {
-          height: 48px;
-          font-size: 14px;
-          flex: 1;
-          max-width: 220px;
-        }
-
-        .btn-icon {
-          border-radius: var(--radius-pill);
-          width: auto;
-          min-width: auto;
-        }
-      }
-    </style>
-
-    <script>
-      (function () {
-        const t = localStorage.getItem("APP_THEME");
-        if (t) document.documentElement.setAttribute("data-theme", t);
-        const meta = document.getElementById("themeColorMeta");
-        if (meta) meta.content = t === "dark" ? "#0a0a0f" : "#f0f2f8";
-      })();
-    </script>
-  </head>
-
-  <body>
-    <!-- Ambient background -->
-    <div class="bg-mesh" aria-hidden="true"></div>
-
-    <!-- Click-outside overlay -->
-    <div class="click-outside" id="clickOutside" onclick="toggleMenu()"></div>
-
-    <!-- Popover Menu -->
-    <div class="popover-menu" id="popoverMenu" role="menu">
-      <div class="popover-menu-header">Settings</div>
-      <div class="popover-divider"></div>
-      <div class="menu-item" onclick="toggleThemeSwitch(event)" role="menuitem">
-        <div class="menu-item-left">
-          <div
-            class="menu-item-icon"
-            style="
-              background: rgba(124, 111, 238, 0.12);
-              color: var(--accent-1);
-            "
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
-          </div>
-          <span>Dark Mode</span>
-        </div>
-        <label class="switch">
-          <input type="checkbox" id="themeSwitch" onchange="toggleTheme()" />
-          <span class="slider"></span>
-        </label>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0f" id="themeColorMeta" />
+  <meta name="description"
+    content="Story Card Maker — Create stunning story backgrounds with automatic gradient matching" />
+  <title>Story Card Studio v2.1.0</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ─── Modern Design System ────────────────────────────────── */
+    :root {
+      --accent: #4f46e5;
+      --accent-secondary: #6366f1;
+      --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-glass: rgba(255, 255, 255, 0.9);
+      --border: rgba(0, 0, 0, 0.06);
+      --text-h: #1e293b;
+      --text-p: #475569;
+      --text-muted: #94a3b8;
+      --radius: 20px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-glass: rgba(30, 41, 59, 0.9);
+      --border: rgba(255, 255, 255, 0.05);
+      --text-h: #f1f5f9;
+      --text-p: #94a3b8;
+      --text-muted: #475569;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text-h);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ─── Ambient Background ────────────────────────── */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .ambient-circle {
+      position: absolute;
+      width: 60vw;
+      height: 60vw;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.06;
+      animation: float 20s infinite alternate ease-in-out;
+    }
+
+    .circle-1 {
+      background: var(--accent);
+      top: -10vw;
+      left: -10vw;
+    }
+
+    .circle-2 {
+      background: var(--accent-secondary);
+      bottom: -10vw;
+      right: -10vw;
+      animation-delay: -5s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(5vw, 5vw) scale(1.1);
+      }
+    }
+
+    /* ─── App Structure ─────────────────────────── */
+    header {
+      height: 64px;
+      flex-shrink: 0;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-glass);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.5px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .version-badge {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent);
+      -webkit-text-fill-color: var(--accent);
+      opacity: 0.8;
+      margin-left: 10px;
+      padding-left: 10px;
+      border-left: 1px solid var(--border);
+      letter-spacing: 0.5px;
+    }
+
+    .header-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-p);
+      transition: all 0.2s;
+      background: transparent;
+    }
+
+    .header-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--bg);
+    }
+
+    /* ─── Floating Menu ─────────────────────────── */
+    .menu-container { position: relative; }
+
+    .floating-menu {
+      position: absolute;
+      top: 52px;
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 8px;
+      min-width: 160px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 1000;
+      animation: menuFade 0.2s ease-out;
+    }
+
+    @keyframes menuFade {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .floating-menu.active { display: block; }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-p);
+      transition: all 0.2s;
+    }
+
+    .menu-item:hover {
+      background: var(--bg);
+      color: var(--accent);
+    }
+
+    .menu-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 8px;
+    }
+
+    /* ─── Info Modal ────────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-card {
+      background: var(--surface);
+      padding: 36px 32px 28px;
+      border-radius: 28px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      transform: translateY(24px) scale(0.96);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      background: var(--accent-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.3);
+    }
+
+    .modal-icon svg {
+      width: 28px;
+      height: 28px;
+      stroke: white;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .modal-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+      color: var(--text-h);
+    }
+
+    .modal-body {
+      font-size: 14px;
+      color: var(--text-p);
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+
+    .modal-body strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .modal-version {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 4px 12px;
+      border-radius: 99px;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .modal-btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 13px 32px;
+      border-radius: 99px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .modal-btn:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+    }
+
+    .logo svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 2.5;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      min-height: 0;
+      width: 100%;
+      max-width: 1600px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr auto;
+      }
+
+      .sidebar {
+        border-left: none !important;
+        border-top: 1px solid var(--border);
+        max-height: 40vh;
+        padding: 24px !important;
+      }
+    }
+
+    /* ─── Workspace Area ─────────────────────────── */
+    .workspace {
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    .canvas-preview-wrap {
+      position: relative;
+      height: 100%;
+      max-height: 100%;
+      aspect-ratio: 9 / 16;
+      background: var(--surface);
+      border-radius: 32px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+    }
+
+    .canvas-preview-wrap:hover {
+      transform: translateY(-8px) scale(1.02);
+    }
+
+    #previewImg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .empty-state {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+      gap: 20px;
+    }
+
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--bg);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .empty-state p {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* ─── Sidebar Area ─────────────────────────── */
+    .sidebar {
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      overflow-y: auto;
+      height: 100%;
+    }
+
+    .sidebar-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-group.single {
+      grid-template-columns: 1fr;
+    }
+
+    button {
+      height: 48px;
+      padding: 0 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-h);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      background: var(--bg);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.primary {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      box-shadow: 0 8px 16px -4px rgba(99, 102, 241, 0.3);
+    }
+
+    button.primary:hover {
+      box-shadow: 0 12px 20px -6px rgba(99, 102, 241, 0.5);
+      filter: brightness(1.05);
+    }
+
+    button.secondary {
+      background: var(--bg);
+      border-color: var(--border);
+      color: var(--text-p);
+    }
+
+    button.secondary:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    button.icon-btn {
+      width: 48px;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    button svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .edit-toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .flex-grow {
+      flex: 1;
+    }
+
+    /* ─── Custom Inputs ─────────────────────────── */
+    .control-card {
+      background: var(--bg);
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+    }
+
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .slider-val {
+      color: var(--accent);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 10px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border: 3px solid var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.1s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    /* ─── Toast ─────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--text-h);
+      color: var(--bg);
+      padding: 12px 24px;
+      border-radius: 99px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 1000;
+    }
+
+    #toast.active {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ─── Utils ─────────────────────────── */
+    .hidden {
+      display: none !important;
+    }
+
+    .loader {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ─── Theme Toggle ─────────────────────────── */
+    .theme-toggle {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-p);
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-circle circle-1"></div>
+    <div class="ambient-circle circle-2"></div>
+  </div>
+
+  <header>
+    <div style="display: flex; gap: 12px; align-items: center">
+      <button class="header-btn" onclick="window.location.href='index.html'" title="Back to Home">
+        <svg style="width: 20px; height: 20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      </button>
+      <div class="logo">
+        <span>STORY CARD STUDIO</span>
+        <span class="version-badge">2.1.0</span>
       </div>
-      <div class="popover-divider"></div>
-      <button class="menu-item" onclick="openInfoModal()" role="menuitem">
-        <div class="menu-item-left">
-          <div
-            class="menu-item-icon"
-            style="background: rgba(6, 182, 212, 0.12); color: var(--accent-3)"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
-            </svg>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center" class="menu-container">
+      <div class="floating-menu" id="floatingMenu">
+        <div class="menu-item" onclick="quickToggleTheme()">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <div id="menuSunIcon">
+              <svg style="width: 18px; height: 18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.07l1.42-1.42m12.72-12.72l1.42-1.42"/></svg>
+            </div>
+            <div id="menuMoonIcon" style="display: none">
+              <svg style="width: 18px; height: 18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </div>
+            <span>Theme</span>
           </div>
-          <span>About</span>
         </div>
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          style="color: var(--text-muted)"
-        >
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
+        <div class="menu-divider"></div>
+        <div class="menu-item" onclick="openInfoModal()">
+          <svg style="width: 18px; height: 18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          About
+        </div>
+      </div>
+      <button class="header-btn" title="Menu" onclick="toggleMenu(event)">
+        <svg style="width: 20px; height: 20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
       </button>
     </div>
+  </header>
 
-    <!-- Info Modal -->
-    <div
-      class="modal-overlay"
-      id="infoModal"
-      onclick="closeInfoModal(event)"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="infoModalTitle"
-    >
-      <div class="modal-card" onclick="event.stopPropagation()">
-        <div class="modal-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" />
-            <circle cx="12" cy="12" r="4" />
-            <path d="M21.17 8A10 10 0 0 1 22 12" />
-            <path d="M2.83 8A10 10 0 0 0 2 12" />
-          </svg>
-        </div>
-        <div class="modal-version">v1.3</div>
-        <h3 class="modal-title" id="infoModalTitle">Story Card Maker</h3>
-        <p class="modal-text">
-          Create stunning <strong>gradient-matched backgrounds</strong> for your
-          social story cards in seconds.<br /><br />
-          Upload any image and the app automatically samples its colors to build
-          the perfect gradient backdrop.
-          <br /><br />
-          <span style="font-size: 12px; color: var(--text-muted)"
-            >© 2026 Azizi Yahya</span
-          >
-        </p>
-        <button class="modal-btn" onclick="closeInfoModal(event)">
-          Got it
-        </button>
-      </div>
-    </div>
-
-    <div class="app-shell">
-      <!-- ── Header ── -->
-      <header class="site-header">
-        <!-- Left: back + title -->
-        <div class="header-left">
-          <a href="index.html" class="back-btn" aria-label="Back to home">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
+  <main>
+    <section class="workspace">
+      <div class="canvas-preview-wrap" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">
+            <svg style="width: 32px; height: 32px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-          </a>
-          <div class="header-title-block">
-            <div class="header-eyebrow">Design Tool</div>
-            <div class="header-title">Story Card Maker</div>
+          </div>
+          <div>
+            <h3>Upload an image</h3>
+            <p>Drag and drop or click to start</p>
           </div>
         </div>
+        <div id="loader" class="hidden"></div>
+        <img id="previewImg" alt="Preview" />
+      </div>
+    </section>
 
-        <!-- Right: theme + menu -->
-        <div class="header-actions">
-          <button
-            class="icon-btn"
-            id="themeToggleBtn"
-            onclick="quickToggleTheme()"
-            title="Toggle theme"
-            aria-label="Toggle dark mode"
-          >
-            <svg
-              id="themeIconSun"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="12" cy="12" r="4" />
-              <path
-                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-              />
+    <aside class="sidebar">
+      <!-- State 1: Initial Upload -->
+      <div class="sidebar-section" id="uploadSection">
+        <div class="btn-group single">
+          <button class="primary" onclick="document.getElementById('fileInput').click()">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
-            <svg
-              id="themeIconMoon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              style="display: none"
-            >
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            Upload Image
+          </button>
+        </div>
+      </div>
+
+      <!-- State 2: Editor (Hidden initially) -->
+      <div class="sidebar-section hidden" id="editorSection">
+        <div class="edit-toolbar">
+          <!-- Back Button -->
+          <button class="secondary icon-btn" onclick="resetApp()" title="New Project">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
           </button>
 
-          <div class="menu-wrapper">
-            <button
-              class="icon-btn"
-              id="menuBtn"
-              onclick="toggleMenu()"
-              aria-label="Open menu"
-              aria-expanded="false"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <circle cx="12" cy="5" r="1" fill="currentColor" />
-                <circle cx="12" cy="12" r="1" fill="currentColor" />
-                <circle cx="12" cy="19" r="1" fill="currentColor" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header>
+          <!-- Main Export Button -->
+          <button id="downloadBtn" onclick="handleShareOrDownload()" class="primary flex-grow">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            Save Card
+          </button>
 
-      <!-- ── Preview ── -->
-      <div class="preview-container">
-        <div class="preview-wrapper" id="dropZone">
-          <div class="empty-state" id="emptyState">
-            <div class="empty-icon-wrap">
-              <svg viewBox="0 0 24 24">
-                <rect x="3" y="3" width="18" height="18" rx="3" ry="3" />
-                <circle cx="8.5" cy="8.5" r="1.5" />
-                <polyline points="21 15 16 10 5 21" />
-              </svg>
+          <!-- Shuffle Button -->
+          <button class="secondary icon-btn" id="shuffleBtn" onclick="shuffle()" title="Shuffle Pattern">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          </button>
+        </div>
+
+        <div class="control-card">
+          <div class="slider-container">
+            <div class="slider-header">
+              <span>Scale</span>
+              <span class="slider-val" id="scaleValue">70%</span>
             </div>
-            <div class="empty-title">Drop or tap to upload</div>
-            <div class="empty-hint">JPG, PNG, WebP, HEIC · up to 50 MB</div>
+            <input type="range" id="scaleSlider" min="60" max="90" value="70" oninput="updateScale(this.value)" />
           </div>
-          <div class="loader" id="loader"></div>
-          <img id="previewImg" alt="Story Preview" />
         </div>
       </div>
 
-      <!-- ── Controls ── -->
-      <div class="controls">
-        <div class="scale-wrapper" id="scaleWrapper">
-          <div class="scale-header">
-            <span>Image Scale</span>
-            <span id="scaleValue" style="color: var(--accent-1)">70%</span>
-          </div>
-          <input
-            type="range"
-            class="scale-slider"
-            id="scaleSlider"
-            min="60"
-            max="90"
-            value="70"
-            oninput="updateScale(this.value)"
-          />
-        </div>
+      <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleImage(this)" />
+    </aside>
+  </main>
 
-        <button
-          class="btn btn-upload"
-          id="openBtn"
-          onclick="document.getElementById('fileInput').click()"
-        >
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
-            />
-          </svg>
-          Open
-        </button>
+  <div id="toast">
+    <svg style="width: 18px; height: 18px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <span class="toast-message">Message</span>
+  </div>
 
-        <button
-          class="btn btn-ghost"
-          id="shuffleBtn"
-          onclick="render()"
-          style="display: none"
-          title="Shuffle gradient"
-          aria-label="Shuffle gradient"
-        >
-          <svg viewBox="0 0 24 24">
-            <polyline points="16 3 21 3 21 8" />
-            <line x1="4" y1="20" x2="21" y2="3" />
-            <polyline points="21 16 21 21 16 21" />
-            <line x1="15" y1="15" x2="21" y2="21" />
-          </svg>
-          Shuffle
-        </button>
-
-        <button
-          class="btn btn-download"
-          id="downloadBtn"
-          onclick="handleShareOrDownload()"
-        >
-          <span
-            id="downloadBtnContent"
-            style="display: flex; align-items: center; gap: 10px"
-          >
-            <svg viewBox="0 0 24 24">
-              <circle cx="18" cy="5" r="3" />
-              <circle cx="6" cy="12" r="3" />
-              <circle cx="18" cy="19" r="3" />
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-            </svg>
-            Share
-          </span>
-        </button>
+  <!-- Info Modal -->
+  <div class="modal-overlay" id="infoModal" onclick="closeInfoModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" stroke="currentColor">
+          <rect x="3" y="3" width="18" height="18" rx="4" />
+          <circle cx="8.5" cy="8.5" r="1.5" />
+          <polyline points="21 15 16 10 5 21" />
+        </svg>
       </div>
-
-      <input
-        type="file"
-        id="fileInput"
-        accept="image/*"
-        onchange="handleImage(this)"
-      />
-      <canvas id="storyCanvas" style="display: none"></canvas>
-
-      <!-- Toast -->
-      <div class="toast" id="toast" role="status" aria-live="polite">
-        <svg
-          class="toast-icon"
-          id="toastIcon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></svg>
-        <span class="toast-message">Message</span>
-      </div>
+      <div class="modal-version">v2.1.0</div>
+      <h3 class="modal-title">Story Card Studio</h3>
+      <p class="modal-body">
+        A professional design studio for creating <strong>gradient-matched</strong> story backgrounds. 
+        Automatically samples your images to build a perfectly coordinated aesthetic in seconds.
+      </p>
+      <button class="modal-btn" onclick="closeInfoModal()">Close</button>
     </div>
-    <!-- /.app-shell -->
+  </div>
 
-    <script>
-      /* ─────────────────────────────────────────────────────────────
-           Theme helpers
-        ───────────────────────────────────────────────────────────── */
-      function applyThemeIcons(isDark) {
-        document.getElementById("themeIconSun").style.display = isDark
-          ? "none"
-          : "";
-        document.getElementById("themeIconMoon").style.display = isDark
-          ? ""
-          : "none";
-        document.getElementById("themeColorMeta").content = isDark
-          ? "#0a0a0f"
-          : "#f0f2f8";
-      }
+  <canvas id="storyCanvas" class="hidden"></canvas>
 
-      function toggleTheme() {
-        const cb = document.getElementById("themeSwitch");
-        const target = cb.checked ? "dark" : "light";
-        document.documentElement.setAttribute("data-theme", target);
-        localStorage.setItem("APP_THEME", target);
-        applyThemeIcons(target === "dark");
-      }
+  <script>
+    /* ─────────────────────────────────────────────────────────────
+       Canvas & Image Logic
+    ───────────────────────────────────────────────────────────── */
+    const canvas = document.getElementById("storyCanvas");
+    const ctx = canvas.getContext("2d");
+    const previewImg = document.getElementById("previewImg");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    const emptyState = document.getElementById("emptyState");
+    const loader = document.getElementById("loader");
+    const dropZone = document.getElementById("dropZone");
+    const uploadSection = document.getElementById("uploadSection");
+    const editorSection = document.getElementById("editorSection");
 
-      function quickToggleTheme() {
-        const isDark =
-          document.documentElement.getAttribute("data-theme") === "dark";
-        const target = isDark ? "light" : "dark";
-        document.documentElement.setAttribute("data-theme", target);
-        localStorage.setItem("APP_THEME", target);
-        const cb = document.getElementById("themeSwitch");
-        if (cb) cb.checked = !isDark;
-        applyThemeIcons(!isDark);
-      }
+    const CANVAS_WIDTH = 2160;
+    const CANVAS_HEIGHT = 3840;
+    canvas.width = CANVAS_WIDTH;
+    canvas.height = CANVAS_HEIGHT;
 
-      function toggleThemeSwitch(event) {
-        if (!event.target.closest(".switch")) {
-          const cb = document.getElementById("themeSwitch");
-          cb.checked = !cb.checked;
-          toggleTheme();
-        }
-      }
+    const CORNER_RADIUS = 110;
+    let currentImgObj = null;
+    let currentScale = 0.7;
+    let cachedPalette = [];
+    let activeColors = [];
+    let patternIndex = 0;
+    let currentGradient = null;
 
-      /* ─────────────────────────────────────────────────────────────
-           Menu helpers
-        ───────────────────────────────────────────────────────────── */
-      function toggleMenu() {
-        const menu = document.getElementById("popoverMenu");
-        const overlay = document.getElementById("clickOutside");
-        const btn = document.getElementById("menuBtn");
-        const isOpen = menu.classList.toggle("active");
-        overlay.style.display = isOpen ? "block" : "none";
-        btn.setAttribute("aria-expanded", isOpen);
-        if (isOpen) {
-          const rect = btn.getBoundingClientRect();
-          menu.style.top = rect.bottom + 8 + "px";
-          menu.style.right = window.innerWidth - rect.right + "px";
-        }
-      }
+    function updateScale(val) {
+      currentScale = val / 100;
+      document.getElementById("scaleValue").innerText = val + "%";
+      if (currentImgObj) render();
+    }
 
-      function openInfoModal() {
-        toggleMenu();
-        document.getElementById("infoModal").classList.add("active");
-      }
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.querySelector(".toast-message").textContent = message;
+      toast.classList.add("active");
+      setTimeout(() => toast.classList.remove("active"), 3000);
+    }
 
-      function closeInfoModal(e) {
-        if (e) e.stopPropagation();
-        document.getElementById("infoModal").classList.remove("active");
-      }
+    function quickToggleTheme() {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      const target = isDark ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", target);
+      localStorage.setItem("APP_THEME", target);
+      updateThemeUI(target === "dark");
+    }
 
-      /* ─────────────────────────────────────────────────────────────
-           Init theme
-        ───────────────────────────────────────────────────────────── */
-      (function init() {
-        const saved = localStorage.getItem("APP_THEME");
-        const isDark = saved === "dark";
-        if (isDark) {
-          const cb = document.getElementById("themeSwitch");
-          if (cb) cb.checked = true;
-        }
-        applyThemeIcons(isDark);
+    function updateThemeUI(isDark) {
+      const menuSun = document.getElementById("menuSunIcon");
+      const menuMoon = document.getElementById("menuMoonIcon");
+      
+      if (menuSun) menuSun.style.display = isDark ? "none" : "block";
+      if (menuMoon) menuMoon.style.display = isDark ? "block" : "none";
+      
+      document.getElementById("themeColorMeta").content = isDark ? "#0f172a" : "#f8fafc";
+    }
 
-        // Platform detection for Download vs Share
-        const isMobile =
-          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-            navigator.userAgent,
-          );
-        if (!isMobile) {
-          const btn = document.getElementById("downloadBtnContent");
-          if (btn) {
-            btn.innerHTML = `
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              Download
-            `;
-          }
-        }
-      })();
+    function toggleMenu(e) {
+      e.stopPropagation();
+      document.getElementById("floatingMenu").classList.toggle("active");
+    }
 
-      window.addEventListener("storage", (e) => {
-        if (e.key === "APP_THEME") {
-          const isDark = e.newValue === "dark";
-          document.documentElement.setAttribute("data-theme", e.newValue);
-          const cb = document.getElementById("themeSwitch");
-          if (cb) cb.checked = isDark;
-          applyThemeIcons(isDark);
-        }
-      });
+    window.addEventListener("click", () => {
+      document.getElementById("floatingMenu").classList.remove("active");
+    });
 
-      /* ─────────────────────────────────────────────────────────────
-           Canvas / Image logic  (unchanged from original)
-        ───────────────────────────────────────────────────────────── */
-      const canvas = document.getElementById("storyCanvas");
-      const ctx = canvas.getContext("2d");
-      const previewImg = document.getElementById("previewImg");
-      const downloadBtn = document.getElementById("downloadBtn");
-      const openBtn = document.getElementById("openBtn");
-      const shuffleBtn = document.getElementById("shuffleBtn");
-      const emptyState = document.getElementById("emptyState");
-      const loader = document.getElementById("loader");
-      const dropZone = document.getElementById("dropZone");
+    function openInfoModal() {
+      document.getElementById("infoModal").classList.add("active");
+    }
 
-      const CANVAS_WIDTH = 2160;
-      const CANVAS_HEIGHT = 3840;
-      canvas.width = CANVAS_WIDTH;
-      canvas.height = CANVAS_HEIGHT;
+    function closeInfoModal(e) {
+      if (e && e.target !== e.currentTarget && e.type === "click") return;
+      document.getElementById("infoModal").classList.remove("active");
+    }
 
-      const CORNER_RADIUS = 110;
-      const SHADOW_BLUR = 100;
+    (function init() {
+      const saved = localStorage.getItem("APP_THEME");
+      const isDark = saved === "dark";
+      if (saved) document.documentElement.setAttribute("data-theme", saved);
+      updateThemeUI(isDark);
+    })();
 
-      let currentImgObj = null;
-      let currentScale = 0.7;
+    /* Drag & Drop */
+    ["dragenter", "dragover", "dragleave", "drop"].forEach((ev) =>
+      dropZone.addEventListener(ev, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }),
+    );
 
-      function updateScale(val) {
-        currentScale = val / 100;
-        document.getElementById("scaleValue").innerText = val + "%";
-        if (currentImgObj) render();
-      }
+    dropZone.addEventListener("dragenter", () => dropZone.style.borderColor = "var(--accent)");
+    dropZone.addEventListener("dragleave", () => dropZone.style.borderColor = "var(--border)");
 
-      /* Toast ─────────────────────────── */
-      let toastTimeout;
-      function showToast(message, duration = 3000, type = "error") {
-        const toast = document.getElementById("toast");
-        const msgEl = toast.querySelector(".toast-message");
-        const iconEl = document.getElementById("toastIcon");
+    dropZone.addEventListener("drop", (e) => {
+      dropZone.style.borderColor = "var(--border)";
+      if (e.dataTransfer.files.length > 0) handleImageFile(e.dataTransfer.files[0]);
+    });
 
-        msgEl.textContent = message;
-        toast.classList.remove("success", "error", "processing");
+    function handleImage(input) {
+      if (input.files[0]) handleImageFile(input.files[0]);
+    }
 
-        if (type === "success") {
-          iconEl.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
-          toast.classList.add("success");
-        } else if (type === "processing") {
-          iconEl.innerHTML =
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;animation:spin 0.75s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
-          toast.classList.add("processing");
-        } else {
-          iconEl.innerHTML =
-            '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
-          toast.classList.add("error");
-        }
-
-        toast.classList.add("show");
-        if (toastTimeout) clearTimeout(toastTimeout);
-        if (duration > 0) {
-          toastTimeout = setTimeout(() => {
-            toast.classList.remove("show");
-            toastTimeout = null;
-          }, duration);
-        }
-      }
-
-      /* Drag & Drop ───────────────────── */
-      ["dragenter", "dragover", "dragleave", "drop"].forEach((ev) =>
-        dropZone.addEventListener(
-          ev,
-          (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          },
-          false,
-        ),
-      );
-
-      dropZone.addEventListener("dragenter", () =>
-        dropZone.classList.add("drag-over"),
-      );
-      dropZone.addEventListener("dragleave", (e) => {
-        if (e.target === dropZone) dropZone.classList.remove("drag-over");
-      });
-      dropZone.addEventListener("drop", (e) => {
-        dropZone.classList.remove("drag-over");
-        if (e.dataTransfer.files.length > 0)
-          handleImageFile(e.dataTransfer.files[0]);
-      });
-
-      dropZone.addEventListener("click", () => {
-        if (!currentImgObj) document.getElementById("fileInput").click();
-      });
-
-      document.addEventListener("keydown", (e) => {
-        if ((e.key === "s" || e.key === "S") && e.ctrlKey && currentImgObj) {
-          e.preventDefault();
-          handleShareOrDownload();
-        }
-      });
-
-      /* File handling ─────────────────── */
-      function handleImage(input) {
-        if (input.files[0]) handleImageFile(input.files[0]);
-      }
-
-      function handleImageFile(file) {
-        if (!file) return;
-
-        const validTypes = [
-          "image/jpeg",
-          "image/jpg",
-          "image/png",
-          "image/gif",
-          "image/webp",
-          "image/bmp",
-          "image/svg+xml",
-          "image/heic",
-          "image/heif",
-        ];
-        const validExtensions = [
-          "jpg",
-          "jpeg",
-          "png",
-          "gif",
-          "webp",
-          "bmp",
-          "svg",
-          "heic",
-          "heif",
-        ];
-        const ext = file.name.toLowerCase().split(".").pop();
-
-        if (!validTypes.includes(file.type) && !validExtensions.includes(ext)) {
-          showToast("Unsupported format. Use JPG, PNG, GIF, WebP.", 4000);
-          return;
-        }
-        if (file.size > 50 * 1024 * 1024) {
-          showToast("File too large! Max 50 MB.", 4000);
-          return;
-        }
-
-        emptyState.style.display = "none";
-        previewImg.style.display = "none";
-        loader.style.display = "block";
-        downloadBtn.classList.remove("active");
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
-            currentImgObj = img;
-            render();
-            loader.style.display = "none";
-            previewImg.style.display = "block";
-            dropZone.classList.add("has-image");
-            downloadBtn.classList.add("active");
-
-            // Collapse Open button to icon
-            openBtn.innerHTML =
-              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
-            openBtn.classList.add("btn-icon", "btn-ghost");
-            openBtn.classList.remove("btn-upload");
-
-            shuffleBtn.style.display = "flex";
-            document.getElementById("scaleWrapper").classList.add("active");
-            showToast("Image loaded", 2000, "success");
-          };
-          img.onerror = () => {
-            showToast("Failed to load image.", 4000);
-            loader.style.display = "none";
-            emptyState.style.display = "flex";
-            dropZone.classList.remove("has-image");
-            document.getElementById("scaleWrapper").classList.remove("active");
-          };
-          img.src = e.target.result;
+    function handleImageFile(file) {
+      if (!file) return;
+      emptyState.classList.add("hidden");
+      loader.classList.remove("hidden");
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          currentImgObj = img;
+          cachedPalette = [];
+          activeColors = [];
+          patternIndex = 0;
+          currentGradient = null;
+          render();
+          loader.classList.add("hidden");
+          previewImg.style.display = "block";
+          uploadSection.classList.add("hidden");
+          editorSection.classList.remove("hidden");
+          showToast("Studio ready");
         };
-        reader.onerror = () => {
-          showToast("Failed to read file.", 3000);
-          loader.style.display = "none";
-          emptyState.style.display = "flex";
-          dropZone.classList.remove("has-image");
-        };
-        reader.readAsDataURL(file);
-      }
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
 
-      /* Gradient generation ───────────── */
-      function generateSmartGradient(img) {
+    function resetApp() {
+      currentImgObj = null;
+      previewImg.style.display = "none";
+      previewImg.src = "";
+      emptyState.classList.remove("hidden");
+      uploadSection.classList.remove("hidden");
+      editorSection.classList.add("hidden");
+      document.getElementById("fileInput").value = "";
+      showToast("Project reset");
+    }
+
+    function shuffle() {
+      if (!cachedPalette.length) return;
+      
+      // Pick two unique random colors from the 10 sampled
+      const c1 = cachedPalette[Math.floor(Math.random() * cachedPalette.length)];
+      let c2 = cachedPalette[Math.floor(Math.random() * cachedPalette.length)];
+      if (c1 === c2) c2 = cachedPalette[(cachedPalette.indexOf(c1) + 1) % cachedPalette.length];
+      
+      activeColors = [c1, c2];
+      patternIndex++;
+      render();
+    }
+
+    function generateSmartGradient(img) {
+      if (!cachedPalette.length) {
         const sc = document.createElement("canvas");
-        const w = 64,
-          h = 64;
-        sc.width = w;
-        sc.height = h;
+        const w = 64, h = 64;
+        sc.width = w; sc.height = h;
         const sctx = sc.getContext("2d");
         sctx.drawImage(img, 0, 0, w, h);
-
-        // Uses a lightweight K-Means clustering (k=2) to extract the dominant/vibrant color
-        const extractDominant = (sx, sy, sw, sh) => {
-          const data = sctx.getImageData(sx, sy, sw, sh).data;
-          let pixels = [];
-          // Step by 16 (4 pixels) for faster processing
-          for (let i = 0; i < data.length; i += 16) {
-            if (data[i + 3] > 0) {
-              // Ignore transparent pixels
-              pixels.push([data[i], data[i + 1], data[i + 2]]);
-            }
-          }
-          if (pixels.length === 0) return [128, 128, 128];
-
-          let c1 = pixels[0];
-          let c2 = pixels[pixels.length - 1];
-          let cl1 = [],
-            cl2 = [];
-
-          for (let iter = 0; iter < 4; iter++) {
-            cl1 = [];
-            cl2 = [];
-            for (let p of pixels) {
-              let d1 =
-                Math.abs(p[0] - c1[0]) +
-                Math.abs(p[1] - c1[1]) +
-                Math.abs(p[2] - c1[2]);
-              let d2 =
-                Math.abs(p[0] - c2[0]) +
-                Math.abs(p[1] - c2[1]) +
-                Math.abs(p[2] - c2[2]);
-              if (d1 < d2) cl1.push(p);
-              else cl2.push(p);
-            }
-            if (cl1.length > 0) {
-              let r = 0,
-                g = 0,
-                b = 0;
-              for (let p of cl1) {
-                r += p[0];
-                g += p[1];
-                b += p[2];
-              }
-              c1 = [r / cl1.length, g / cl1.length, b / cl1.length];
-            }
-            if (cl2.length > 0) {
-              let r = 0,
-                g = 0,
-                b = 0;
-              for (let p of cl2) {
-                r += p[0];
-                g += p[1];
-                b += p[2];
-              }
-              c2 = [r / cl2.length, g / cl2.length, b / cl2.length];
-            }
-          }
-
-          // Estimate vibrancy as diff between max and min rgb channels
-          const vibrancy = (c) =>
-            Math.max(c[0], c[1], c[2]) - Math.min(c[0], c[1], c[2]);
-          const v1 = vibrancy(c1);
-          const v2 = vibrancy(c2);
-
-          // Prefer larger cluster, unless smaller cluster is significant (20%+) and far more vibrant
-          if (cl1.length > cl2.length) {
-            return cl2.length > pixels.length * 0.2 && v2 > v1 + 30 ? c2 : c1;
-          } else {
-            return cl1.length > pixels.length * 0.2 && v1 > v2 + 30 ? c1 : c2;
-          }
-        };
-
-        const topCol = extractDominant(0, 0, w, h / 2);
-        const botCol = extractDominant(0, h / 2, w, h / 2);
-        const leftCol = extractDominant(0, 0, w / 2, h);
-        const rightCol = extractDominant(w / 2, 0, w / 2, h);
-
-        const formatCol = (c) =>
-          `rgb(${Math.round(c[0])}, ${Math.round(c[1])}, ${Math.round(c[2])})`;
-
-        // Intelligently map combinations based on layout regions
-        const presets = [
-          {
-            colors: [formatCol(topCol), formatCol(botCol)],
-            direction: [0, 0, 0, CANVAS_HEIGHT],
-          }, // Top to Bottom
-          {
-            colors: [formatCol(leftCol), formatCol(rightCol)],
-            direction: [0, 0, CANVAS_WIDTH, 0],
-          }, // Left to Right
-          {
-            colors: [formatCol(topCol), formatCol(rightCol)],
-            direction: [0, 0, CANVAS_WIDTH, CANVAS_HEIGHT],
-          }, // TL to BR
-          {
-            colors: [formatCol(leftCol), formatCol(botCol)],
-            direction: [0, CANVAS_HEIGHT, CANVAS_WIDTH, 0],
-          }, // BL to TR
+        
+        let colors = [];
+        // Sample 10 distributed areas for maximum variety
+        const regions = [
+          [0,0,32,32], [32,0,32,32], [0,32,32,32], [32,32,32,32], // Corners
+          [16,16,32,32], [0,16,32,32], [32,16,32,32], [16,0,32,32], [16,32,32,32], // Mid points
+          [24,24,16,16] // Center
         ];
-
-        const sel = presets[Math.floor(Math.random() * presets.length)];
-        return { colors: sel.colors, direction: sel.direction };
+        
+        regions.forEach(r => {
+          const d = sctx.getImageData(...r).data;
+          let rSum=0, gSum=0, bSum=0, count=0;
+          for(let i=0; i<d.length; i+=16) {
+            rSum += d[i]; gSum += d[i+1]; bSum += d[i+2]; count++;
+          }
+          colors.push([rSum/count, gSum/count, bSum/count]);
+        });
+        cachedPalette = colors.map(c => `rgb(${Math.round(c[0])}, ${Math.round(c[1])}, ${Math.round(c[2])})`);
       }
 
-      /* Render ────────────────────────── */
-      function render() {
-        if (!currentImgObj) return;
+      if (!activeColors.length) {
+        activeColors = [cachedPalette[0], cachedPalette[cachedPalette.length-1]];
+      }
 
-        const gradient = generateSmartGradient(currentImgObj);
-        const dir = gradient.direction;
-        const grad = ctx.createLinearGradient(dir[0], dir[1], dir[2], dir[3]);
+      const patterns = [
+        { type: 'linear', direction: [0, 0, 0, CANVAS_HEIGHT] }, // Top-Bottom
+        { type: 'linear', direction: [0, CANVAS_HEIGHT, 0, 0] }, // Bottom-Top
+        { type: 'linear', direction: [0, 0, CANVAS_WIDTH, CANVAS_HEIGHT] }, // Diagonal
+        { type: 'linear', direction: [CANVAS_WIDTH, 0, 0, CANVAS_HEIGHT] }, // Reverse Diagonal
+        { type: 'radial' }
+      ];
+
+      const p = patterns[patternIndex % patterns.length];
+      
+      return {
+        colors: activeColors,
+        ...p
+      };
+    }
+
+    function render() {
+      if (!currentImgObj) return;
+      const gradient = generateSmartGradient(currentImgObj);
+      
+      if (gradient.type === 'radial') {
+        const grad = ctx.createRadialGradient(
+          CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 0,
+          CANVAS_WIDTH/2, CANVAS_HEIGHT/2, CANVAS_HEIGHT/1.2
+        );
         grad.addColorStop(0, gradient.colors[0]);
         grad.addColorStop(1, gradient.colors[1]);
         ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      } else {
+        const grad = ctx.createLinearGradient(...gradient.direction);
+        grad.addColorStop(0, gradient.colors[0]);
+        grad.addColorStop(1, gradient.colors[1]);
+        ctx.fillStyle = grad;
+      }
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-        const targetWidth = CANVAS_WIDTH * currentScale;
-        const scaleFactor = targetWidth / currentImgObj.width;
-        let finalWidth = targetWidth;
-        let finalHeight = currentImgObj.height * scaleFactor;
+      const targetWidth = CANVAS_WIDTH * currentScale;
+      const scaleFactor = targetWidth / currentImgObj.width;
+      const finalWidth = targetWidth;
+      const finalHeight = currentImgObj.height * scaleFactor;
+      const x = (CANVAS_WIDTH - finalWidth) / 2;
+      const y = (CANVAS_HEIGHT - finalHeight) / 2;
 
-        if (finalHeight > CANVAS_HEIGHT * 0.85) {
-          const hs = (CANVAS_HEIGHT * 0.85) / currentImgObj.height;
-          finalHeight = CANVAS_HEIGHT * 0.85;
-          finalWidth = currentImgObj.width * hs;
-        }
+      const drawSquircle = (ctx, x, y, w, h, r) => {
+        ctx.beginPath();
+        const p = r * 1.28, c = r * 0.5;
+        ctx.moveTo(x + p, y);
+        ctx.lineTo(x + w - p, y);
+        ctx.bezierCurveTo(x + w - c, y, x + w, y + c, x + w, y + p);
+        ctx.lineTo(x + w, y + h - p);
+        ctx.bezierCurveTo(x + w, y + h - c, x + w - c, y + h, x + w - p, y + h);
+        ctx.lineTo(x + p, y + h);
+        ctx.bezierCurveTo(x + c, y + h, x, y + h - c, x, y + h - p);
+        ctx.lineTo(x, y + p);
+        ctx.bezierCurveTo(x, y + c, x + c, y, x + p, y);
+        ctx.closePath();
+      };
 
-        const x = (CANVAS_WIDTH - finalWidth) / 2;
-        const y = (CANVAS_HEIGHT - finalHeight) / 2;
-
-        const drawSquircle = (ctx, x, y, w, h, radius) => {
-          ctx.beginPath();
-          const r = Math.min(radius, w / 2, h / 2);
-
-          // Premium Continuous Corners (Apple iOS Smooth Corners)
-          // Instead of a simple harsh circle arc, we use extended cubic bezier
-          // curves that smoothly blend into the straight edges (C2 continuity).
-          const p = r * 1.28; // Curve blends in starting further back
-          const c = r * 0.5; // Control point tension for the perfect bulge
-
-          ctx.moveTo(x + p, y);
-          ctx.lineTo(x + w - p, y);
-
-          // Top Right Corner
-          ctx.bezierCurveTo(x + w - c, y, x + w, y + c, x + w, y + p);
-          ctx.lineTo(x + w, y + h - p);
-
-          // Bottom Right Corner
-          ctx.bezierCurveTo(
-            x + w,
-            y + h - c,
-            x + w - c,
-            y + h,
-            x + w - p,
-            y + h,
-          );
-          ctx.lineTo(x + p, y + h);
-
-          // Bottom Left Corner
-          ctx.bezierCurveTo(x + c, y + h, x, y + h - c, x, y + h - p);
-          ctx.lineTo(x, y + p);
-
-          // Top Left Corner
-          ctx.bezierCurveTo(x, y + c, x + c, y, x + p, y);
-          ctx.closePath();
-        };
-
-        ctx.save();
-        ctx.fillStyle = "#000";
-
-        // Premium 6-layered smooth shadow for ultra-realistic physical depth
-        // Mimics the diffused light-scattering behavior of an actual 3D object
-        const shadows = [
-          { blur: 210, y: 100, alpha: 0.18 },
-          { blur: 130, y: 60, alpha: 0.12 },
-          { blur: 65, y: 30, alpha: 0.08 },
-          { blur: 30, y: 15, alpha: 0.05 },
-          { blur: 14, y: 7, alpha: 0.04 },
-          { blur: 4, y: 2, alpha: 0.03 },
-        ];
-
-        shadows.forEach((s) => {
-          ctx.shadowColor = `rgba(0, 0, 0, ${s.alpha})`;
-          ctx.shadowBlur = s.blur;
-          ctx.shadowOffsetY = s.y;
-          drawSquircle(ctx, x, y, finalWidth, finalHeight, CORNER_RADIUS);
-          ctx.fill();
-        });
-
-        // Reset shadow for clipping and image drawing
-        ctx.shadowColor = "transparent";
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetY = 0;
-
+      ctx.save();
+      // Premium 6-layered shadow effect
+      const shadows = [
+        { blur: 180, alpha: 0.15 },
+        { blur: 80, alpha: 0.1 },
+        { blur: 30, alpha: 0.05 }
+      ];
+      shadows.forEach(s => {
+        ctx.shadowColor = `rgba(0,0,0,${s.alpha})`;
+        ctx.shadowBlur = s.blur;
+        ctx.shadowOffsetY = s.blur / 2;
         drawSquircle(ctx, x, y, finalWidth, finalHeight, CORNER_RADIUS);
-        ctx.clip();
-        ctx.drawImage(currentImgObj, x, y, finalWidth, finalHeight);
-        ctx.restore();
+        ctx.fill();
+      });
 
-        previewImg.src = canvas.toDataURL("image/jpeg", 0.8);
-      }
+      ctx.shadowColor = "transparent";
+      ctx.clip();
+      ctx.drawImage(currentImgObj, x, y, finalWidth, finalHeight);
+      ctx.restore();
 
-      /* Share / Download ──────────────── */
-      async function handleShareOrDownload() {
-        if (!currentImgObj) return;
+      previewImg.src = canvas.toDataURL("image/jpeg", 0.9);
+    }
 
-        showToast("Processing story card...", 0, "processing");
+    async function handleShareOrDownload() {
+      if (!currentImgObj) return;
+      showToast("Generating image...");
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.download = `story-card-${Date.now()}.png`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+        showToast("Export completed");
+      }, "image/png", 1.0);
+    }
+  </script>
+</body>
 
-        try {
-          canvas.toBlob(
-            async (blob) => {
-              if (!blob) {
-                showToast("Failed to generate image.", 3000, "error");
-                return;
-              }
-
-              const fileName = `story-card-${Date.now()}.png`;
-              const file = new File([blob], fileName, { type: "image/png" });
-
-              const isMobile =
-                /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-                  navigator.userAgent,
-                );
-
-              if (
-                isMobile &&
-                navigator.share &&
-                navigator.canShare &&
-                navigator.canShare({ files: [file] })
-              ) {
-                try {
-                  await navigator.share({
-                    files: [file],
-                    title: "My Story Card",
-                    text: "Check out this background I made!",
-                  });
-                  showToast("Shared successfully!", 3000, "success");
-                } catch (shareErr) {
-                  if (shareErr.name !== "AbortError") {
-                    triggerDownload(blob);
-                  } else {
-                    // Hide processing toast on abort
-                    document.getElementById("toast").classList.remove("show");
-                  }
-                }
-              } else {
-                if (
-                  window.location.protocol === "http:" &&
-                  window.location.hostname !== "localhost"
-                ) {
-                  showToast("Sharing needs HTTPS. Downloading instead…", 4000);
-                }
-                triggerDownload(blob);
-              }
-            },
-            "image/png",
-            1.0,
-          );
-        } catch (err) {
-          showToast("Action failed.", 3000, "error");
-        }
-
-        function triggerDownload(blob) {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.download = `story-card-${Date.now()}.png`;
-          link.href = url;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          setTimeout(() => URL.revokeObjectURL(url), 100);
-          showToast("Image downloaded!", 3000, "success");
-        }
-      }
-    </script>
-  </body>
 </html>
