@@ -37,6 +37,7 @@
       --radius-lg: 24px;
       --radius-md: 16px;
       --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+      --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     }
 
     [data-theme="dark"] {
@@ -47,12 +48,14 @@
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+      --bg-gradient: radial-gradient(circle at 20% 20%, #111827 0%, #09090b 100%);
     }
 
     /* ── Base Styles ───────────────────────────────── */
     body {
       font-family: 'Inter', -apple-system, sans-serif;
-      background-color: var(--bg);
+      background: var(--bg-gradient);
+      background-attachment: fixed;
       color: var(--text-main);
       line-height: 1.5;
       min-height: 100vh;
@@ -258,7 +261,7 @@
       border: none;
       border-bottom: 1px solid var(--border);
       border-radius: 0;
-      padding: 16px 24px;
+      padding: 15px 24px;
       display: flex;
       flex-direction: column;
       align-items: stretch;
@@ -581,11 +584,11 @@
     <!-- Results Hero -->
     <div class="bento-grid">
       <div class="bento-card full" id="gpaCard"
-        style="align-items: center; justify-content: center; text-align: center; min-height: 140px;">
+        style="align-items: center; justify-content: center; text-align: center; min-height: 130px;">
         <div class="score-value" id="total">0.00</div>
         <div
           style="font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 8px;">
-          Semester GPA</div>
+          Projected GPA</div>
       </div>
     </div>
 
@@ -811,28 +814,41 @@
   <!-- About Modal -->
   <div class="modal-overlay" id="aboutModal" onclick="closeAboutModal(event)">
     <div class="modal-content" style="max-width: 400px; padding: 0;" onclick="event.stopPropagation()">
-      <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid var(--border);">
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid var(--border);">
         <h3 style="font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px;">About App</h3>
         <button class="icon-btn" style="width: 36px; height: 36px; border-radius: 12px;" onclick="closeAboutModal()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
       </div>
-      
+
       <div style="padding: 24px; display: flex; flex-direction: column; gap: 20px; text-align: center;">
-        <div style="width: 64px; height: 64px; background: var(--primary-glow); border: 1px solid var(--primary); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <div
+          style="width: 64px; height: 64px; background: var(--primary-glow); border: 1px solid var(--primary); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          </svg>
         </div>
-        
+
         <div>
           <h4 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 4px;">GPA Calculator</h4>
-          <p style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Version 3.0.0</p>
+          <p
+            style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+            Version 3.0.0</p>
         </div>
 
         <p style="font-size: 14px; color: var(--text-main); line-height: 1.6; opacity: 0.8;">
-          A premium academic tool designed to help students track their progress with a high-performance, minimalist interface.
+          A premium academic tool designed to help students track their progress with a high-performance, minimalist
+          interface.
         </p>
 
-        <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+        <div
+          style="display: flex; flex-direction: column; gap: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
           <div style="display: flex; justify-content: space-between; font-size: 13px;">
             <span style="color: var(--text-muted);">Developer</span>
             <span style="font-weight: 700;">Azizi Yahya</span>
@@ -903,10 +919,10 @@
 
   <script>
     /* ── Data / Config ───────────────────────────── */
-    const STORAGE_KEY_GPA = "GPA_CGPA_CALC_DATA_V2";
-    const STORAGE_KEY_COURSES = "GPA_COURSES_V1";
-    const STORAGE_KEY_SCALE = "GPA_SCALE_V1";
-    const STORAGE_KEY_LABEL = "GPA_LABEL_V1";
+    const STORAGE_KEY_GPA = "PREMIUM_GPA_DATA_V3";
+    const STORAGE_KEY_COURSES = "PREMIUM_GPA_COURSES_V3";
+    const STORAGE_KEY_SCALE = "PREMIUM_GPA_SCALE_V3";
+    const STORAGE_KEY_LABEL = "PREMIUM_GPA_LABEL_V3";
 
     const SCALE_PRESETS = [
       {
@@ -1002,21 +1018,16 @@
         const sel = gpaData.grades[c.id];
         const item = document.createElement("div");
         item.className = "course-card";
-        item.style.cursor = "pointer";
-
-        // Toggle expansion
-        item.onclick = (e) => {
-          const details = item.querySelector('.course-details');
-          const isHidden = details.classList.contains('hidden');
-          details.classList.toggle('hidden');
-          item.style.background = isHidden ? 'var(--bg)' : 'transparent';
-        };
 
         item.innerHTML = `
             <div class="course-row-main" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-              <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0;">
-                <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); flex-shrink: 0;"></div>
-                <h3 style="font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name}</h3>
+              <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; text-transform: uppercase;">
+                  <span>${c.code}</span>
+                  <span style="width: 3px; height: 3px; border-radius: 50%; background: var(--border); opacity: 0.6;"></span>
+                  <span style="color: var(--text-muted); opacity: 0.8;">${c.credits} Credits</span>
+                </div>
+                <h3 style="font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name}</h3>
               </div>
               <select class="grade-select" style="margin: 0; min-width: 90px; height: 32px; padding: 0 8px; font-size: 12px;" 
                 onclick="event.stopPropagation()" 
@@ -1024,10 +1035,6 @@
                 <option value="">Grade</option>
                 ${grades.map(g => `<option value="${g.weight}" ${sel == g.weight ? 'selected' : ''}>${g.grade}</option>`).join("")}
               </select>
-            </div>
-            <div class="course-details hidden" style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); display: flex; gap: 16px; font-size: 12px; color: var(--text-muted); animation: slideDown 0.2s ease-out;">
-              <div><span style="opacity: 0.6; font-weight: 600; text-transform: uppercase;">Code</span><br><strong style="color: var(--text-main);">${c.code}</strong></div>
-              <div><span style="opacity: 0.6; font-weight: 600; text-transform: uppercase; font-size: 10px;">Credits</span><br><strong style="color: var(--text-main);">${c.credits}</strong></div>
             </div>`;
         grid.appendChild(item);
       });
@@ -1287,8 +1294,11 @@
       if (theme) document.documentElement.setAttribute("data-theme", theme);
 
       const savedCourses = localStorage.getItem(STORAGE_KEY_COURSES);
-      if (savedCourses) customCourses = JSON.parse(savedCourses);
-      else customCourses = [...DEFAULT_COURSES];
+      if (savedCourses) {
+        customCourses = JSON.parse(savedCourses);
+      } else {
+        customCourses = sem4Courses.map(c => ({ ...c, id: c.code }));
+      }
 
       const savedScale = localStorage.getItem(STORAGE_KEY_SCALE);
       if (savedScale) {
