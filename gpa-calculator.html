@@ -40,6 +40,51 @@
       --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     }
 
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border);
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: var(--primary);
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(20px);
+    }
+
     [data-theme="dark"] {
       --bg: #09090b;
       --surface: rgba(24, 24, 27, 0.8);
@@ -599,14 +644,49 @@
       </div>
     </div>
 
+    <!-- CGPA Section (Bottom) -->
+    <div id="cgpaSection" class="hidden">
+      <div class="bento-card full" id="cgpaCard" style="min-height: 140px; padding: 24px;">
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: center;">
+          <!-- Left: Result -->
+          <div style="text-align: center;">
+            <div class="score-value" id="cgpaTotal" style="font-size: 2.6rem;">0.00</div>
+            <div
+              style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px;">
+              Projected CGPA</div>
+          </div>
+
+          <!-- Right: Interactive Inputs -->
+          <div
+            style="display: flex; flex-direction: column; gap: 12px; border-left: 1px solid var(--border); padding-left: 24px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <label
+                style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Prev.
+                CGPA</label>
+              <input type="number" id="prev-cgpa" step="0.01" min="0" max="4" placeholder="0.00"
+                oninput="calculateCGPA()"
+                style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 700; color: var(--text-main); outline: none; width: 100%; transition: border-color 0.2s;" />
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <label
+                style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Total
+                Credits</label>
+              <input type="number" id="prev-credits" min="0" placeholder="0" oninput="calculateCGPA()"
+                style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 700; color: var(--text-main); outline: none; width: 100%; transition: border-color 0.2s;" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer style="text-align: center; padding: 20px 0; font-size: 12px; color: var(--text-muted); opacity: 0.6;">
-      &copy; 2026 Azizi Yahya &middot; Premium Calculator &middot; v3.0.0
+      &copy; 2026 Azizi Yahya &middot; Premium Calculator &middot; v3.2.0
     </footer>
 
     <!-- Menu Popover -->
     <div id="popoverMenu" class="popover-menu">
       <div class="menu-header">Academic</div>
-      <div class="menu-item" onclick="openSettingsModal()">
+      <div class="menu-item" onclick="openSubjectsModal()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 20h9" />
@@ -624,23 +704,14 @@
 
       <div style="height: 1px; background: var(--border); margin: 4px 8px; opacity: 0.5;"></div>
       <div class="menu-header">Config</div>
-      <div class="menu-item" onclick="openConfigModal()">
+      <div class="menu-item" onclick="openSettingsModal()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3" />
           <path
             d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
         </svg>
-        Grading Scale
-      </div>
-      <div class="menu-item" onclick="openDataModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="17 8 12 3 7 8" />
-          <line x1="12" y1="3" x2="12" y2="15" />
-        </svg>
-        Data Management
+        App Settings
       </div>
 
       <div style="height: 1px; background: var(--border); margin: 4px 8px; opacity: 0.5;"></div>
@@ -667,14 +738,14 @@
   </div>
 
   <!-- Subjects Management Modal -->
-  <div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal(event)">
+  <div class="modal-overlay" id="subjectsModal" onclick="closeSubjectsModal(event)">
     <div class="modal-content" style="max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 0;"
       onclick="event.stopPropagation()">
       <!-- Sticky Header -->
       <div
         style="display: flex; justify-content: space-between; align-items: center; padding: 24px; position: sticky; top: 0; background: var(--surface-solid); z-index: 20; border-bottom: 1px solid var(--border);">
         <h3 style="font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px;">Manage Subjects</h3>
-        <button class="icon-btn" style="width: 36px; height: 36px; border-radius: 12px;" onclick="closeSettingsModal()">
+        <button class="icon-btn" style="width: 36px; height: 36px; border-radius: 12px;" onclick="closeSubjectsModal()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
@@ -707,15 +778,15 @@
     </div>
   </div>
 
-  <!-- Grading Scale Modal -->
-  <div class="modal-overlay" id="configModal" onclick="closeConfigModal(event)">
+  <!-- App Settings Modal (Scale, Data, Features) -->
+  <div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal(event)">
     <div class="modal-content" style="max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 0;"
       onclick="event.stopPropagation()">
       <!-- Sticky Header -->
       <div
         style="display: flex; justify-content: space-between; align-items: center; padding: 24px; position: sticky; top: 0; background: var(--surface-solid); z-index: 20; border-bottom: 1px solid var(--border);">
-        <h3 style="font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px;">Grading Scale</h3>
-        <button class="icon-btn" style="width: 36px; height: 36px; border-radius: 12px;" onclick="closeConfigModal()">
+        <h3 style="font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px;">App Settings</h3>
+        <button class="icon-btn" style="width: 36px; height: 36px; border-radius: 12px;" onclick="closeSettingsModal()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
@@ -723,50 +794,73 @@
         </button>
       </div>
 
-      <div style="padding: 24px;">
-        <div id="scaleOptions" style="display: flex; flex-direction: column; gap: 12px;"></div>
-      </div>
-    </div>
-  </div>
+      <div style="padding: 24px; display: flex; flex-direction: column; gap: 24px;">
+        <!-- Features Section -->
+        <div>
+          <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <span
+              style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Features</span>
+            <div style="flex: 1; height: 1px; background: var(--border);"></div>
+          </div>
 
-  <!-- Data Management Modal -->
-  <div class="modal-overlay" id="dataModal" onclick="closeDataModal(event)">
-    <div class="modal-content" style="max-width: 450px; padding: 0;" onclick="event.stopPropagation()">
-      <div
-        style="display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid var(--border);">
-        <h3 style="font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px;">Data Management</h3>
-        <button class="icon-btn" style="width: 36px; height: 36px; border-radius: 12px;" onclick="closeDataModal()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-      </div>
-
-      <div style="padding: 24px; display: flex; flex-direction: column; gap: 20px;">
-        <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">Export your subjects and grades to a
-          JSON file for backup, or import an existing configuration.</p>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <button class="btn-primary"
-            style="background: var(--bg); color: var(--text-main); border: 1px solid var(--border);"
-            onclick="exportConfig()">Export JSON</button>
-          <button class="btn-primary"
-            style="background: var(--bg); color: var(--text-main); border: 1px solid var(--border);"
-            onclick="importConfig()">Import JSON</button>
-          <input type="file" id="configFileInput" class="hidden" onchange="handleConfigFile(event)" />
+          <div class="scale-card" style="padding: 16px; cursor: default;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h4 style="font-size: 14px; font-weight: 800;">CGPA Calculator</h4>
+                <p style="font-size: 11px; color: var(--text-muted);">Calculate overall CGPA based on previous results.
+                </p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="cgpaToggle" onchange="toggleCGPA(this.checked)">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
         </div>
 
-        <div
-          style="margin-top: 12px; padding: 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; display: flex; gap: 12px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
-          <p style="font-size: 12px; color: #92400e; font-weight: 500;">Importing a configuration will overwrite your
-            current subjects and grades.</p>
+        <!-- Grading Scale Section -->
+        <div>
+          <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <span
+              style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Grading
+              Scale</span>
+            <div style="flex: 1; height: 1px; background: var(--border);"></div>
+          </div>
+          <div id="scaleOptions" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+
+        <!-- Data Management Section -->
+        <div>
+          <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <span
+              style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Data
+              Management</span>
+            <div style="flex: 1; height: 1px; background: var(--border);"></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <button class="btn-primary" onclick="exportConfig()"
+              style="width: 100%; height: 50px; background: var(--bg); color: var(--text-main); border: 1px solid var(--border); box-shadow: none;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              Export Configuration
+            </button>
+
+            <button class="btn-primary" onclick="importConfig()" style="width: 100%; height: 50px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Import Configuration
+            </button>
+            <input type="file" id="configFileInput" style="display: none;" accept=".json"
+              onchange="handleConfigFile(event)" />
+          </div>
         </div>
       </div>
     </div>
@@ -839,7 +933,7 @@
           <h4 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 4px;">GPA Calculator</h4>
           <p
             style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-            Version 3.0.0</p>
+            Version 3.2.0</p>
         </div>
 
         <p style="font-size: 14px; color: var(--text-main); line-height: 1.6; opacity: 0.8;">
@@ -922,7 +1016,6 @@
     const STORAGE_KEY_GPA = "PREMIUM_GPA_DATA_V3";
     const STORAGE_KEY_COURSES = "PREMIUM_GPA_COURSES_V3";
     const STORAGE_KEY_SCALE = "PREMIUM_GPA_SCALE_V3";
-    const STORAGE_KEY_LABEL = "PREMIUM_GPA_LABEL_V3";
 
     const SCALE_PRESETS = [
       {
@@ -970,10 +1063,51 @@
     let grades = [...SCALE_PRESETS[0].grades];
     let customCourses = [];
     let gpaData = { grades: {}, manual: { cgpa: null, credits: null } };
-    let counters = { sgpa: 0 };
+    let counters = { sgpa: 0, totalCredits: 0 };
     let editingCourseId = null;
 
     /* ── Helpers ─────────────────────────────────── */
+    function toggleCGPA(enabled) {
+      const section = document.getElementById("cgpaSection");
+      const toggle = document.getElementById("cgpaToggle");
+
+      if (enabled) {
+        section.classList.remove("hidden");
+        if (toggle) toggle.checked = true;
+      } else {
+        section.classList.add("hidden");
+        if (toggle) toggle.checked = false;
+      }
+      localStorage.setItem("CGPA_ENABLED", enabled);
+      calculateCGPA();
+    }
+
+    function calculateCGPA() {
+      if (document.getElementById("cgpaSection").classList.contains("hidden")) return;
+
+      const prevCgpa = parseFloat(document.getElementById("prev-cgpa").value) || 0;
+      const prevCredits = parseFloat(document.getElementById("prev-credits").value) || 0;
+
+      const currentPoints = counters.sgpa * counters.totalCredits;
+      const totalPoints = (prevCgpa * prevCredits) + currentPoints;
+      const totalCreditsCombined = prevCredits + counters.totalCredits;
+
+      const cgpa = totalCreditsCombined === 0 ? 0 : totalPoints / totalCreditsCombined;
+
+      const cgpaEl = document.getElementById("cgpaTotal");
+      if (cgpaEl) {
+        if (cgpa.toFixed(2) !== cgpaEl.textContent) {
+          cgpaEl.textContent = cgpa.toFixed(2);
+          cgpaEl.classList.remove("score-pulse");
+          void cgpaEl.offsetWidth;
+          cgpaEl.classList.add("score-pulse");
+        }
+      }
+
+      gpaData.manual = { cgpa: prevCgpa, credits: prevCredits };
+      localStorage.setItem(STORAGE_KEY_GPA, JSON.stringify(gpaData));
+    }
+
     function toggleTheme() {
       const isDark = document.documentElement.getAttribute("data-theme") === "dark";
       const target = isDark ? "light" : "dark";
@@ -1008,6 +1142,8 @@
         totalEl.classList.add("score-pulse");
       }
       counters.sgpa = newSgpa;
+      counters.totalCredits = semCredits;
+      calculateCGPA();
     }
 
     /* ── Course / Settings ────────────────────────── */
@@ -1056,7 +1192,6 @@
     const ModalManager = {
       stack: [],
       open(id, callback) {
-        // If it's a primary modal (not nested), close others
         const nestedModals = ["courseModal"];
         if (!nestedModals.includes(id)) {
           this.stack.forEach(activeId => {
@@ -1096,20 +1231,20 @@
       }
     };
 
-    function openConfigModal() {
-      ModalManager.open("configModal", renderScaleOptions);
+    function openSettingsModal() {
+      ModalManager.open("settingsModal", renderScaleOptions);
     }
 
-    function closeConfigModal() {
-      ModalManager.close("configModal");
+    function closeSettingsModal() {
+      ModalManager.close("settingsModal");
     }
 
-    function openDataModal() {
-      ModalManager.open("dataModal");
+    function openSubjectsModal() {
+      ModalManager.open("subjectsModal", renderSettingsContent);
     }
 
-    function closeDataModal() {
-      ModalManager.close("dataModal");
+    function closeSubjectsModal() {
+      ModalManager.close("subjectsModal");
     }
 
     function openPresetModal() {
@@ -1128,14 +1263,6 @@
       ModalManager.close("aboutModal");
     }
 
-    function openSettingsModal() {
-      ModalManager.open("settingsModal", renderSettingsContent);
-    }
-
-    function closeSettingsModal() {
-      ModalManager.close("settingsModal");
-    }
-
     function renderSettingsContent() {
       const list = document.getElementById("stgSubjectsList");
       list.innerHTML = customCourses.length === 0
@@ -1145,10 +1272,13 @@
            </div>`
         : customCourses.map(c => `
             <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; border-bottom:1px solid var(--border); background: var(--surface-solid); transition: background 0.2s;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='var(--surface-solid)'">
-              <div style="flex: 1; min-width: 0; padding-right: 12px;">
-                <div style="font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; margin-bottom: 2px;">${c.code}</div>
+              <div style="flex: 1; min-width: 0; padding-right: 12px; display: flex; flex-direction: column; gap: 2px;">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; text-transform: uppercase;">
+                  <span>${c.code}</span>
+                  <span style="width: 3px; height: 3px; border-radius: 50%; background: var(--border); opacity: 0.6;"></span>
+                  <span style="color: var(--text-muted); opacity: 0.8;">${c.credits} Credits</span>
+                </div>
                 <div style="font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name}</div>
-                <div style="font-size: 11px; color: var(--text-muted);">${c.credits} Credits</div>
               </div>
               <div style="display:flex; gap:8px;">
                 <button class="btn-primary" onclick="openCourseModal('${c.id}')" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; background: var(--bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 10px;">
@@ -1237,7 +1367,12 @@
     }
 
     function exportConfig() {
-      const config = { scale: localStorage.getItem(STORAGE_KEY_SCALE), label: localStorage.getItem(STORAGE_KEY_LABEL), courses: customCourses };
+      const config = {
+        scale: localStorage.getItem(STORAGE_KEY_SCALE),
+        courses: customCourses,
+        gpaData: gpaData,
+        cgpaEnabled: !document.getElementById("cgpaSection").classList.contains("hidden")
+      };
       const blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -1249,7 +1384,7 @@
       localStorage.setItem(STORAGE_KEY_SCALE, id);
       const preset = SCALE_PRESETS.find(s => s.id === id);
       grades = [...preset.grades];
-      renderScaleOptions(); // Refresh the UI within the same modal
+      renderScaleOptions();
       renderCourseList();
       renderSettingsContent();
     }
@@ -1265,8 +1400,16 @@
       reader.onload = (e) => {
         try {
           const config = JSON.parse(e.target.result);
-          if (config.courses) { customCourses = config.courses; localStorage.setItem(STORAGE_KEY_COURSES, JSON.stringify(customCourses)); }
+          if (config.courses) {
+            customCourses = config.courses;
+            localStorage.setItem(STORAGE_KEY_COURSES, JSON.stringify(customCourses));
+          }
+          if (config.gpaData) {
+            gpaData = config.gpaData;
+            localStorage.setItem(STORAGE_KEY_GPA, JSON.stringify(gpaData));
+          }
           if (config.scale) applyScale(config.scale);
+
           renderCourseList();
           alert("Configuration imported successfully!");
         } catch (err) { alert("Invalid config file."); }
@@ -1309,7 +1452,14 @@
       const savedData = localStorage.getItem(STORAGE_KEY_GPA);
       if (savedData) {
         gpaData = JSON.parse(savedData);
+        if (gpaData.manual) {
+          document.getElementById("prev-cgpa").value = gpaData.manual.cgpa || "";
+          document.getElementById("prev-credits").value = gpaData.manual.credits || "";
+        }
       }
+
+      const cgpaEnabled = localStorage.getItem("CGPA_ENABLED") === "true";
+      toggleCGPA(cgpaEnabled);
 
       renderCourseList();
     }
