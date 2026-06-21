@@ -121,38 +121,72 @@
       pointer-events: none;
     }
 
-    .mesh-bg::before,
-    .mesh-bg::after {
-      content: "";
+    .mesh-circle {
       position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.22;
+      transition: opacity 0.4s ease;
+    }
+
+    [data-theme="dark"] .mesh-circle {
+      opacity: 0.18;
+    }
+
+    .circle-1 {
       width: 60vw;
       height: 60vw;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.15;
-    }
-
-    .mesh-bg::before {
-      top: -10vw;
+      top: -15vw;
       left: -10vw;
-      background: radial-gradient(circle, var(--primary), var(--secondary));
-      animation: float 20s infinite alternate;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.75) 0%, rgba(139, 92, 246, 0) 70%);
+      animation: float1 20s infinite alternate ease-in-out;
     }
 
-    .mesh-bg::after {
+    .circle-2 {
+      width: 55vw;
+      height: 55vw;
       bottom: -10vw;
       right: -10vw;
-      background: radial-gradient(circle, var(--accent), var(--primary));
-      animation: float 25s infinite alternate-reverse;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.65) 0%, rgba(6, 182, 212, 0) 70%);
+      animation: float2 25s infinite alternate ease-in-out;
     }
 
-    @keyframes float {
-      from {
-        transform: translate(0, 0) rotate(0deg);
+    .circle-3 {
+      width: 50vw;
+      height: 50vw;
+      top: 30vh;
+      right: 25vw;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.55) 0%, rgba(239, 68, 68, 0) 70%);
+      animation: float3 22s infinite alternate ease-in-out;
+    }
+
+    @keyframes float1 {
+      0% {
+        transform: translate(0, 0) scale(1);
       }
 
-      to {
-        transform: translate(5vw, 5vw) rotate(10deg);
+      100% {
+        transform: translate(8vw, 6vw) scale(1.1);
+      }
+    }
+
+    @keyframes float2 {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(-6vw, -8vw) scale(1.15);
+      }
+    }
+
+    @keyframes float3 {
+      0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+      }
+
+      100% {
+        transform: translate(4vw, -4vw) scale(0.9) rotate(45deg);
       }
     }
 
@@ -180,44 +214,190 @@
       }
     }
 
-    /* ── Header ────────────────────────────────────── */
+    .dashboard-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      width: 100%;
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        max-width: 1050px;
+        padding: 20px;
+      }
+
+      .dashboard-layout {
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 32px;
+        align-items: start;
+      }
+
+      .left-column {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        position: sticky;
+        top: 24px;
+      }
+
+      .right-column {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        min-height: 0;
+      }
+
+      #gpaCard {
+        min-height: 180px !important;
+        justify-content: center;
+      }
+
+      #gpaCard .score-value {
+        font-size: 3.8rem;
+      }
+    }
+
+    /* ── Sticky Header ─────────────────────────────── */
     .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      background: var(--surface);
+      backdrop-filter: blur(24px) saturate(1.8);
+      -webkit-backdrop-filter: blur(24px) saturate(1.8);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      height: 56px;
+      transition: background 0.4s, border-color 0.4s;
+      animation: slideDown 0.55s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .header-title-block h1 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .back-btn,
-    .icon-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
+    .site-header .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .site-header .back-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
       background: var(--surface);
       border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       display: flex;
       align-items: center;
       justify-content: center;
+      text-decoration: none;
       color: var(--text-main);
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow);
+      flex-shrink: 0;
+    }
+
+    .site-header .back-btn:hover {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .site-header .back-btn:active {
+      transform: scale(0.9);
+    }
+
+    .site-header .back-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2.5;
+      transition: transform 0.2s ease;
+    }
+
+    .site-header .back-btn:hover svg {
+      transform: translateX(-2px);
+    }
+
+    .site-header .header-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .site-header .header-eyebrow {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .site-header .header-title {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .site-header .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .site-header .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
       box-shadow: var(--shadow);
     }
 
-    .back-btn:hover,
-    .icon-btn:hover {
+    .site-header .icon-btn:hover {
+      color: var(--text-main);
       border-color: var(--primary);
-      transform: translateY(-2px);
+      box-shadow: 0 0 0 3px var(--primary-glow);
     }
+
+    .site-header .icon-btn:active {
+      transform: scale(0.93);
+    }
+
+    .site-header .icon-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.2;
+      transition: transform 0.25s ease;
+    }
+
+
 
     /* ── Bento Cards ───────────────────────────────── */
     .bento-grid {
@@ -229,6 +409,7 @@
     .bento-card {
       background: var(--surface);
       backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 24px;
@@ -236,7 +417,7 @@
       flex-direction: column;
       gap: 8px;
       box-shadow: var(--shadow);
-      transition: transform 0.3s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .bento-card.full {
@@ -245,6 +426,26 @@
 
     .bento-card:hover {
       transform: translateY(-4px);
+    }
+
+    #gpaCard {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(217, 70, 239, 0.08) 100%), var(--surface);
+      border: 1px solid rgba(99, 102, 241, 0.18);
+    }
+
+    [data-theme="dark"] #gpaCard {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.14) 0%, rgba(217, 70, 239, 0.14) 100%), var(--surface);
+      border: 1px solid rgba(99, 102, 241, 0.28);
+    }
+
+    #cgpaCard {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%), var(--surface);
+      border: 1px solid rgba(139, 92, 246, 0.18);
+    }
+
+    [data-theme="dark"] #cgpaCard {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(6, 182, 212, 0.14) 100%), var(--surface);
+      border: 1px solid rgba(139, 92, 246, 0.28);
     }
 
     .label-pill {
@@ -267,10 +468,14 @@
     }
 
     .score-value {
-      font-size: 2.8rem;
+      font-size: 3rem;
       font-weight: 900;
       letter-spacing: -2px;
-      color: var(--text-main);
+      background: linear-gradient(135deg, #6366f1 0%, #d946ef 50%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
       line-height: 1;
     }
 
@@ -533,10 +738,14 @@
     }
 
     /* ── Menu Popover ──────────────────────────────── */
+    .header-actions {
+      position: relative;
+    }
+
     .popover-menu {
       position: absolute;
-      top: 70px;
-      right: 20px;
+      top: calc(100% + 8px);
+      right: 0;
       background: var(--surface-solid);
       border: 1px solid var(--border);
       border-radius: 20px;
@@ -594,147 +803,165 @@
     .click-outside {
       position: fixed;
       inset: 0;
-      z-index: 1050;
+      z-index: 99;
+    }
+
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
 
 <body>
-  <div class="mesh-bg"></div>
+  <div class="mesh-bg" aria-hidden="true">
+    <div class="mesh-circle circle-1"></div>
+    <div class="mesh-circle circle-2"></div>
+    <div class="mesh-circle circle-3"></div>
+  </div>
 
-  <div class="container">
-    <!-- Header -->
-    <header class="site-header">
-      <a href="index.html" class="back-btn" aria-label="Back">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-          stroke-linecap="round" stroke-linejoin="round">
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-left">
+      <a href="index.html" class="back-btn" aria-label="Back to home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
       </a>
       <div class="header-title-block">
-        <h1>GPA Calc</h1>
-      </div>
-      <div class="header-actions">
-        <button class="icon-btn" onclick="toggleMenu()" aria-label="Menu">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="1" />
-            <circle cx="12" cy="5" r="1" />
-            <circle cx="12" cy="19" r="1" />
-          </svg>
-        </button>
-      </div>
-    </header>
-
-    <!-- Results Hero -->
-    <div class="bento-grid">
-      <div class="bento-card full" id="gpaCard"
-        style="align-items: center; justify-content: center; text-align: center; min-height: 130px;">
-        <div class="score-value" id="total">0.00</div>
-        <div
-          style="font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 8px;">
-          Projected GPA</div>
+        <div class="header-eyebrow">Academic</div>
+        <div class="header-title">GPA Calculator</div>
       </div>
     </div>
-
-    <!-- Subjects Section -->
-    <div class="subjects-section">
-      <div id="coursesGrid" class="courses-list">
-        <!-- Course items injected by JS -->
-      </div>
-    </div>
-
-    <!-- CGPA Section (Bottom) -->
-    <div id="cgpaSection" class="hidden">
-      <div class="bento-card full" id="cgpaCard" style="min-height: 140px; padding: 24px;">
-        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: center;">
-          <!-- Left: Result -->
-          <div style="text-align: center;">
-            <div class="score-value" id="cgpaTotal" style="font-size: 2.6rem;">0.00</div>
-            <div
-              style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px;">
-              Projected CGPA</div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="toggleMenu()" aria-label="Menu">
+        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="5" r="2" fill="currentColor" />
+          <circle cx="12" cy="12" r="2" fill="currentColor" />
+          <circle cx="12" cy="19" r="2" fill="currentColor" />
+        </svg>
+      </button>
+        <div id="popoverMenu" class="popover-menu">
+          <div class="menu-header">Academic</div>
+          <div class="menu-item" onclick="openSubjectsModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+            Manage Subjects
+          </div>
+          <div class="menu-item" onclick="openPresetModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 19l7-7-7-7M5 19l7-7-7-7" />
+            </svg>
+            Quick Presets
           </div>
 
-          <!-- Right: Interactive Inputs -->
-          <div
-            style="display: flex; flex-direction: column; gap: 12px; border-left: 1px solid var(--border); padding-left: 24px;">
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <label
-                style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Prev.
-                CGPA</label>
-              <input type="number" id="prev-cgpa" step="0.01" min="0" max="4" placeholder="0.00"
-                oninput="calculateCGPA()"
-                style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 700; color: var(--text-main); outline: none; width: 100%; transition: border-color 0.2s;" />
+          <div style="height: 1px; background: var(--border); margin: 4px 8px; opacity: 0.5;"></div>
+          <div class="menu-header">Config</div>
+          <div class="menu-item" onclick="openSettingsModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            App Settings
+          </div>
+
+          <div style="height: 1px; background: var(--border); margin: 4px 8px; opacity: 0.5;"></div>
+          <div class="menu-header">System</div>
+          <div class="menu-item" onclick="toggleTheme()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5" />
+              <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            Toggle Dark Mode
+          </div>
+          <div class="menu-item" onclick="openAboutModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            About App
+          </div>
+        </div>
+      </div>
+  </header>
+
+  <div class="container">
+    <!-- Dashboard Layout Wrapper -->
+    <div class="dashboard-layout">
+      <!-- Left Column: Results & CGPA -->
+      <div class="left-column">
+        <!-- Results Hero -->
+        <div class="bento-grid">
+          <div class="bento-card full" id="gpaCard"
+            style="align-items: center; justify-content: center; text-align: center; min-height: 130px;">
+            <div class="score-value" id="total">0.00</div>
+            <div
+              style="font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 8px;">
+              Projected GPA</div>
+          </div>
+        </div>
+
+        <!-- CGPA Section -->
+        <div id="cgpaSection" class="hidden">
+          <div class="bento-card full" id="cgpaCard" style="min-height: 140px; padding: 24px;">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: center;">
+              <!-- Left: Result -->
+              <div style="text-align: center;">
+                <div class="score-value" id="cgpaTotal" style="font-size: 2.6rem;">0.00</div>
+                <div
+                  style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px;">
+                  Projected CGPA</div>
+              </div>
+
+              <!-- Right: Interactive Inputs -->
+              <div
+                style="display: flex; flex-direction: column; gap: 12px; border-left: 1px solid var(--border); padding-left: 24px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <label
+                    style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Prev.
+                    CGPA</label>
+                  <input type="number" id="prev-cgpa" step="0.01" min="0" max="4" placeholder="0.00"
+                    oninput="calculateCGPA()"
+                    style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 700; color: var(--text-main); outline: none; width: 100%; transition: border-color 0.2s;" />
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <label
+                    style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Total
+                    Credits</label>
+                  <input type="number" id="prev-credits" min="0" placeholder="0" oninput="calculateCGPA()"
+                    style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 700; color: var(--text-main); outline: none; width: 100%; transition: border-color 0.2s;" />
+                </div>
+              </div>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <label
-                style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Total
-                Credits</label>
-              <input type="number" id="prev-credits" min="0" placeholder="0" oninput="calculateCGPA()"
-                style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 700; color: var(--text-main); outline: none; width: 100%; transition: border-color 0.2s;" />
-            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Course List -->
+      <div class="right-column">
+        <!-- Subjects Section -->
+        <div class="subjects-section">
+          <div id="coursesGrid" class="courses-list">
+            <!-- Course items injected by JS -->
           </div>
         </div>
       </div>
     </div>
 
-    <footer style="text-align: center; padding: 10px 0; font-size: 12px; color: var(--text-muted); opacity: 0.6;">
+    <footer style="text-align: center; padding: 0; font-size: 12px; color: var(--text-muted); opacity: 0.6;">
       &copy; 2026 Azizi Yahya &middot; Premium Calculator &middot; v3.2.1
     </footer>
 
-    <!-- Menu Popover -->
-    <div id="popoverMenu" class="popover-menu">
-      <div class="menu-header">Academic</div>
-      <div class="menu-item" onclick="openSubjectsModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 20h9" />
-          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-        </svg>
-        Manage Subjects
-      </div>
-      <div class="menu-item" onclick="openPresetModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 19l7-7-7-7M5 19l7-7-7-7" />
-        </svg>
-        Quick Presets
-      </div>
 
-      <div style="height: 1px; background: var(--border); margin: 4px 8px; opacity: 0.5;"></div>
-      <div class="menu-header">Config</div>
-      <div class="menu-item" onclick="openSettingsModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3" />
-          <path
-            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-        </svg>
-        App Settings
-      </div>
-
-      <div style="height: 1px; background: var(--border); margin: 4px 8px; opacity: 0.5;"></div>
-      <div class="menu-header">System</div>
-      <div class="menu-item" onclick="toggleTheme()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="5" />
-          <path
-            d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-        </svg>
-        Toggle Dark Mode
-      </div>
-      <div class="menu-item" onclick="openAboutModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="16" x2="12" y2="12" />
-          <line x1="12" y1="8" x2="12.01" y2="8" />
-        </svg>
-        About App
-      </div>
-    </div>
   </div>
 
   <!-- Subjects Management Modal -->
@@ -1114,6 +1341,7 @@
       document.documentElement.setAttribute("data-theme", target);
       localStorage.setItem("APP_THEME", target);
       if (document.getElementById("popoverMenu").classList.contains("active")) toggleMenu();
+      renderCourseList();
     }
 
     function toggleMenu() {
@@ -1147,6 +1375,44 @@
     }
 
     /* ── Course / Settings ────────────────────────── */
+    function getGradeColorStyle(weightStr) {
+      if (weightStr === "") return { border: "var(--border)", bg: "var(--bg)", color: "var(--text-main)" };
+      const w = parseFloat(weightStr);
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+
+      if (w >= 3.5) { // A, A-, B+
+        return {
+          border: "rgba(16, 185, 129, 0.4)",
+          bg: isDark ? "rgba(16, 185, 129, 0.15)" : "rgba(16, 185, 129, 0.08)",
+          color: "#10b981"
+        };
+      } else if (w >= 2.5) { // B, B-, C+
+        return {
+          border: "rgba(99, 102, 241, 0.4)",
+          bg: isDark ? "rgba(99, 102, 241, 0.15)" : "rgba(99, 102, 241, 0.08)",
+          color: "#6366f1"
+        };
+      } else if (w >= 1.5) { // C, C-, D+
+        return {
+          border: "rgba(245, 158, 11, 0.4)",
+          bg: isDark ? "rgba(245, 158, 11, 0.15)" : "rgba(245, 158, 11, 0.08)",
+          color: "#f59e0b"
+        };
+      } else if (w > 0) { // D, D-
+        return {
+          border: "rgba(239, 68, 68, 0.4)",
+          bg: isDark ? "rgba(239, 68, 68, 0.15)" : "rgba(239, 68, 68, 0.08)",
+          color: "#ef4444"
+        };
+      } else { // F
+        return {
+          border: "rgba(220, 38, 38, 0.6)",
+          bg: isDark ? "rgba(220, 38, 38, 0.25)" : "rgba(220, 38, 38, 0.15)",
+          color: "#dc2626"
+        };
+      }
+    }
+
     function renderCourseList() {
       const grid = document.getElementById("coursesGrid");
       grid.innerHTML = "";
@@ -1154,6 +1420,9 @@
         const sel = gpaData.grades[c.id];
         const item = document.createElement("div");
         item.className = "course-card";
+
+        const selVal = sel !== undefined ? sel : "";
+        const colorStyle = getGradeColorStyle(selVal);
 
         item.innerHTML = `
             <div class="course-row-main" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
@@ -1165,11 +1434,11 @@
                 </div>
                 <h3 style="font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name}</h3>
               </div>
-              <select class="grade-select" style="margin: 0; min-width: 90px; height: 32px; padding: 0 8px; font-size: 12px;" 
+              <select class="grade-select" style="margin: 0; min-width: 90px; height: 32px; padding: 0 8px; font-size: 12px; border-color: ${colorStyle.border}; background: ${colorStyle.bg}; color: ${colorStyle.color}; font-weight: 700; transition: all 0.2s;" 
                 onclick="event.stopPropagation()" 
-                onchange="updateGrade('${c.id}', this.value)">
-                <option value="">Grade</option>
-                ${grades.map(g => `<option value="${g.weight}" ${sel == g.weight ? 'selected' : ''}>${g.grade}</option>`).join("")}
+                onchange="updateGrade('${c.id}', this.value, this)">
+                <option value="" style="color: var(--text-main); background: var(--surface-solid);">Grade</option>
+                ${grades.map(g => `<option value="${g.weight}" ${sel == g.weight ? 'selected' : ''} style="color: var(--text-main); background: var(--surface-solid);">${g.grade}</option>`).join("")}
               </select>
             </div>`;
         grid.appendChild(item);
@@ -1182,10 +1451,17 @@
       document.body.classList.toggle("modal-open", lock);
     }
 
-    function updateGrade(id, weight) {
+    function updateGrade(id, weight, selectElement) {
       gpaData.grades[id] = weight;
       localStorage.setItem(STORAGE_KEY_GPA, JSON.stringify(gpaData));
       calculateGPA();
+      
+      if (selectElement) {
+        const colorStyle = getGradeColorStyle(weight);
+        selectElement.style.borderColor = colorStyle.border;
+        selectElement.style.background = colorStyle.bg;
+        selectElement.style.color = colorStyle.color;
+      }
     }
 
     /* ── Modal Manager ───────────────────────────── */
