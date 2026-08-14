@@ -37,7 +37,7 @@
       --radius-lg: 24px;
       --radius-md: 16px;
       --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
-      --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      --bg-gradient: linear-gradient(-45deg, #f8fafc, #f1f5f9, #e0e7ff, #f8fafc);
     }
 
     .switch {
@@ -93,19 +93,37 @@
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
-      --bg-gradient: radial-gradient(circle at 20% 20%, #111827 0%, #09090b 100%);
+      --bg-gradient: linear-gradient(-45deg, #09090b, #111827, #1e1b4b, #09090b);
     }
 
     /* ── Base Styles ───────────────────────────────── */
     body {
       font-family: 'Inter', -apple-system, sans-serif;
       background: var(--bg-gradient);
+      background-size: 400% 400%;
+      animation: subtleGradient 15s ease infinite;
       background-attachment: fixed;
       color: var(--text-main);
       line-height: 1.5;
       min-height: 100vh;
       overflow-x: hidden;
       transition: background-color 0.4s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes subtleGradient {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
     }
 
     body.modal-open {
@@ -192,6 +210,7 @@
 
     /* ── Layout ────────────────────────────────────── */
     .container {
+      width: 100%;
       max-width: 600px;
       margin: 0 auto;
       padding: 20px;
@@ -200,6 +219,7 @@
       gap: 24px;
       animation: fadeIn 0.6s ease-out;
       position: relative;
+      flex: 1;
     }
 
     @keyframes fadeIn {
@@ -223,30 +243,103 @@
 
     @media (min-width: 1024px) {
       .container {
-        max-width: 1050px;
-        padding: 20px;
+        max-width: 1250px;
+        padding: 40px 32px;
+        justify-content: center;
       }
 
       .dashboard-layout {
         display: grid;
-        grid-template-columns: 420px 1fr;
-        gap: 32px;
-        align-items: start;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        align-items: stretch;
       }
 
       .left-column {
         display: flex;
         flex-direction: column;
-        gap: 24px;
-        position: sticky;
-        top: 24px;
+        gap: 32px;
       }
 
+      .left-column>.bento-grid,
+      .left-column>#cgpaSection {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .left-column #gpaCard,
+      .left-column #cgpaCard {
+        flex: 1;
+        justify-content: center;
+        padding: 40px !important;
+      }
+
+      #gpaCard .score-value {
+        font-size: 9rem;
+      }
+
+      .gpa-label {
+        font-size: 26px !important;
+        margin-top: 24px !important;
+      }
+
+      #cgpaTotal {
+        font-size: 6rem !important;
+      }
+
+      .cgpa-label {
+        font-size: 18px !important;
+        margin-top: 16px !important;
+      }
+
+      .cgpa-input-label {
+        font-size: 14px !important;
+      }
+
+      .cgpa-input {
+        font-size: 20px !important;
+        padding: 16px 20px !important;
+        border-radius: 16px !important;
+      }
+
+      /* Right Column Course List Scaling */
       .right-column {
         display: flex;
         flex-direction: column;
         gap: 24px;
         min-height: 0;
+      }
+
+      .course-card {
+        padding: 24px 28px !important;
+        border-radius: 16px !important;
+      }
+
+      .course-info-col {
+        gap: 6px !important;
+      }
+
+      .course-meta {
+        font-size: 11px !important;
+        gap: 10px !important;
+      }
+
+      .course-dot {
+        width: 4px !important;
+        height: 4px !important;
+      }
+
+      .course-title {
+        font-size: 16px !important;
+      }
+
+      .grade-select {
+        min-width: 110px !important;
+        height: 40px !important;
+        font-size: 14px !important;
+        padding: 0 12px !important;
+        border-radius: 12px !important;
       }
 
       #gpaCard {
@@ -283,6 +376,7 @@
         opacity: 0;
         transform: translateY(-16px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -834,64 +928,65 @@
     </div>
     <div class="header-actions">
       <button class="icon-btn" onclick="toggleMenu()" aria-label="Menu">
-        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+          stroke-linejoin="round">
           <circle cx="12" cy="5" r="2" fill="currentColor" />
           <circle cx="12" cy="12" r="2" fill="currentColor" />
           <circle cx="12" cy="19" r="2" fill="currentColor" />
         </svg>
       </button>
-        <div id="popoverMenu" class="popover-menu">
-          <div class="menu-header">Academic</div>
-          <div class="menu-item" onclick="openSubjectsModal()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-            </svg>
-            Manage Subjects
-          </div>
-          <div class="menu-item" onclick="openPresetModal()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 19l7-7-7-7M5 19l7-7-7-7" />
-            </svg>
-            Quick Presets
-          </div>
+      <div id="popoverMenu" class="popover-menu">
+        <div class="menu-header">Academic</div>
+        <div class="menu-item" onclick="openSubjectsModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
+          Manage Subjects
+        </div>
+        <div class="menu-item" onclick="openPresetModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19l7-7-7-7M5 19l7-7-7-7" />
+          </svg>
+          Quick Presets
+        </div>
 
-          <div style="height: 1px; background: var(--border); margin: 4px 8px; opacity: 0.5;"></div>
-          <div class="menu-header">Config</div>
-          <div class="menu-item" onclick="openSettingsModal()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3" />
-              <path
-                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-            </svg>
-            App Settings
-          </div>
+        <div style="height: 1px; background: var(--border); margin: 4px 8px; opacity: 0.5;"></div>
+        <div class="menu-header">Config</div>
+        <div class="menu-item" onclick="openSettingsModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+          App Settings
+        </div>
 
-          <div style="height: 1px; background: var(--border); margin: 4px 8px; opacity: 0.5;"></div>
-          <div class="menu-header">System</div>
-          <div class="menu-item" onclick="toggleTheme()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5" />
-              <path
-                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-            </svg>
-            Toggle Dark Mode
-          </div>
-          <div class="menu-item" onclick="openAboutModal()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
-            </svg>
-            About App
-          </div>
+        <div style="height: 1px; background: var(--border); margin: 4px 8px; opacity: 0.5;"></div>
+        <div class="menu-header">System</div>
+        <div class="menu-item" onclick="toggleTheme()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+          Toggle Dark Mode
+        </div>
+        <div class="menu-item" onclick="openAboutModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12.01" y2="8" />
+          </svg>
+          About App
         </div>
       </div>
+    </div>
   </header>
 
   <div class="container">
@@ -904,7 +999,7 @@
           <div class="bento-card full" id="gpaCard"
             style="align-items: center; justify-content: center; text-align: center; min-height: 130px;">
             <div class="score-value" id="total">0.00</div>
-            <div
+            <div class="gpa-label"
               style="font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 8px;">
               Projected GPA</div>
           </div>
@@ -917,7 +1012,7 @@
               <!-- Left: Result -->
               <div style="text-align: center;">
                 <div class="score-value" id="cgpaTotal" style="font-size: 2.6rem;">0.00</div>
-                <div
+                <div class="cgpa-label"
                   style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px;">
                   Projected CGPA</div>
               </div>
@@ -926,18 +1021,19 @@
               <div
                 style="display: flex; flex-direction: column; gap: 12px; border-left: 1px solid var(--border); padding-left: 24px;">
                 <div style="display: flex; flex-direction: column; gap: 4px;">
-                  <label
+                  <label class="cgpa-input-label"
                     style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Prev.
                     CGPA</label>
-                  <input type="number" id="prev-cgpa" step="0.01" min="0" max="4" placeholder="0.00"
+                  <input type="number" id="prev-cgpa" class="cgpa-input" step="0.01" min="0" max="4" placeholder="0.00"
                     oninput="calculateCGPA()"
                     style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 700; color: var(--text-main); outline: none; width: 100%; transition: border-color 0.2s;" />
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 4px;">
-                  <label
+                  <label class="cgpa-input-label"
                     style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Total
                     Credits</label>
-                  <input type="number" id="prev-credits" min="0" placeholder="0" oninput="calculateCGPA()"
+                  <input type="number" id="prev-credits" class="cgpa-input" min="0" placeholder="0"
+                    oninput="calculateCGPA()"
                     style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 700; color: var(--text-main); outline: none; width: 100%; transition: border-color 0.2s;" />
                 </div>
               </div>
@@ -1113,10 +1209,19 @@
 
         <button class="btn-primary"
           style="background: var(--bg); color: var(--text-main); border: 1px solid var(--border); text-align: left; justify-content: flex-start; padding: 16px;"
+          onclick="loadPreset('sem5')">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-weight: 800;">Semester 5</span>
+            <span style="font-size: 11px; opacity: 0.6;">Load courses for Semester 5</span>
+          </div>
+        </button>
+
+        <button class="btn-primary"
+          style="background: var(--bg); color: var(--text-main); border: 1px solid var(--border); text-align: left; justify-content: flex-start; padding: 16px;"
           onclick="loadPreset('sem4')">
           <div style="display: flex; flex-direction: column; gap: 2px;">
-            <span style="font-weight: 800;">Current Semester (Sem 4)</span>
-            <span style="font-size: 11px; opacity: 0.6;">Load courses for the current semester</span>
+            <span style="font-weight: 800;">Semester 4</span>
+            <span style="font-size: 11px; opacity: 0.6;">Load courses for Semester 4</span>
           </div>
         </button>
 
@@ -1124,8 +1229,8 @@
           style="background: var(--bg); color: var(--text-main); border: 1px solid var(--border); text-align: left; justify-content: flex-start; padding: 16px;"
           onclick="loadPreset('sem3')">
           <div style="display: flex; flex-direction: column; gap: 2px;">
-            <span style="font-weight: 800;">Last Semester (Sem 3)</span>
-            <span style="font-size: 11px; opacity: 0.6;">Load courses from the previous semester</span>
+            <span style="font-weight: 800;">Semester 3</span>
+            <span style="font-size: 11px; opacity: 0.6;">Load courses for Semester 3</span>
           </div>
         </button>
       </div>
@@ -1287,6 +1392,14 @@
       { code: "SMU22402", name: "Engineering Entrepreneurship", credits: 2 },
     ];
 
+    const sem5Courses = [
+      { code: "NMT31104", name: "System Optimization Technology 2", credits: 4 },
+      { code: "NMT31204", name: "Application System Development 2", credits: 4 },
+      { code: "NMT31404", name: "Technopreneur Project 2", credits: 4 },
+      { code: "NMT32105", name: "System Integration Design", credits: 5 },
+      { code: "SMU13102", name: "Appreciation Of Ethics And Civilization", credits: 2 },
+    ];
+
     let grades = [...SCALE_PRESETS[0].grades];
     let customCourses = [];
     let gpaData = { grades: {}, manual: { cgpa: null, credits: null } };
@@ -1426,13 +1539,13 @@
 
         item.innerHTML = `
             <div class="course-row-main" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-              <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
-                <div style="display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; text-transform: uppercase;">
+              <div class="course-info-col" style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                <div class="course-meta" style="display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; text-transform: uppercase;">
                   <span>${c.code}</span>
-                  <span style="width: 3px; height: 3px; border-radius: 50%; background: var(--border); opacity: 0.6;"></span>
+                  <span class="course-dot" style="width: 3px; height: 3px; border-radius: 50%; background: var(--border); opacity: 0.6;"></span>
                   <span style="color: var(--text-muted); opacity: 0.8;">${c.credits} Credits</span>
                 </div>
-                <h3 style="font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name}</h3>
+                <h3 class="course-title" style="font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name}</h3>
               </div>
               <select class="grade-select" style="margin: 0; min-width: 90px; height: 32px; padding: 0 8px; font-size: 12px; border-color: ${colorStyle.border}; background: ${colorStyle.bg}; color: ${colorStyle.color}; font-weight: 700; transition: all 0.2s;" 
                 onclick="event.stopPropagation()" 
@@ -1455,7 +1568,7 @@
       gpaData.grades[id] = weight;
       localStorage.setItem(STORAGE_KEY_GPA, JSON.stringify(gpaData));
       calculateGPA();
-      
+
       if (selectElement) {
         const colorStyle = getGradeColorStyle(weight);
         selectElement.style.borderColor = colorStyle.border;
@@ -1693,18 +1806,39 @@
       reader.readAsText(file);
     }
 
-    function loadPreset(p) {
-      if (!confirm("Load preset? This will clear your current subjects.")) return;
+    function loadPreset(p, bypassConfirm = false) {
+      if (!bypassConfirm && !confirm("Load preset? This will clear your current subjects.")) return;
 
-      const source = (p === 'sem3') ? sem3Courses : sem4Courses;
+      let source = sem5Courses;
+      if (p === 'sem3') source = sem3Courses;
+      else if (p === 'sem4') source = sem4Courses;
       customCourses = source.map(c => ({ ...c, id: c.code }));
 
       gpaData.grades = {};
       localStorage.setItem(STORAGE_KEY_COURSES, JSON.stringify(customCourses));
       localStorage.setItem(STORAGE_KEY_GPA, JSON.stringify(gpaData));
       renderCourseList();
-      if (document.getElementById("popoverMenu").classList.contains("active")) toggleMenu();
+      const popMenu = document.getElementById("popoverMenu");
+      if (popMenu && popMenu.classList.contains("active")) toggleMenu();
       closePresetModal();
+    }
+
+    function checkUrlForPreset() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlHash = window.location.hash.substring(1);
+      let urlPreset = null;
+
+      if (urlParams.get('preset')) {
+        urlPreset = urlParams.get('preset');
+      } else if (['sem3', 'sem4', 'sem5'].includes(urlHash)) {
+        urlPreset = urlHash;
+      }
+
+      if (['sem3', 'sem4', 'sem5'].includes(urlPreset)) {
+        loadPreset(urlPreset, true);
+        return true;
+      }
+      return false;
     }
 
     /* ── Init ─────────────────────────────────────── */
@@ -1712,11 +1846,28 @@
       const theme = localStorage.getItem("APP_THEME");
       if (theme) document.documentElement.setAttribute("data-theme", theme);
 
-      const savedCourses = localStorage.getItem(STORAGE_KEY_COURSES);
-      if (savedCourses) {
-        customCourses = JSON.parse(savedCourses);
-      } else {
-        customCourses = sem4Courses.map(c => ({ ...c, id: c.code }));
+      // Restore manual inputs from gpaData first
+      const savedData = localStorage.getItem(STORAGE_KEY_GPA);
+      if (savedData) {
+        try {
+          gpaData = JSON.parse(savedData);
+          if (gpaData.manual) {
+            document.getElementById("prev-cgpa").value = gpaData.manual.cgpa || "";
+            document.getElementById("prev-credits").value = gpaData.manual.credits || "";
+          }
+        } catch (e) { }
+      }
+
+      const presetLoaded = checkUrlForPreset();
+
+      if (!presetLoaded) {
+        // --- Normal initialization ---
+        const savedCourses = localStorage.getItem(STORAGE_KEY_COURSES);
+        if (savedCourses) {
+          customCourses = JSON.parse(savedCourses);
+        } else {
+          customCourses = sem5Courses.map(c => ({ ...c, id: c.code }));
+        }
       }
 
       const savedScale = localStorage.getItem(STORAGE_KEY_SCALE);
@@ -1725,21 +1876,13 @@
         if (preset) grades = [...preset.grades];
       }
 
-      const savedData = localStorage.getItem(STORAGE_KEY_GPA);
-      if (savedData) {
-        gpaData = JSON.parse(savedData);
-        if (gpaData.manual) {
-          document.getElementById("prev-cgpa").value = gpaData.manual.cgpa || "";
-          document.getElementById("prev-credits").value = gpaData.manual.credits || "";
-        }
-      }
-
       const cgpaEnabled = localStorage.getItem("CGPA_ENABLED") === "true";
       toggleCGPA(cgpaEnabled);
 
       renderCourseList();
     }
 
+    window.addEventListener('hashchange', checkUrlForPreset);
     init();
   </script>
 </body>
