@@ -432,6 +432,10 @@
       display: flex;
       flex-direction: column;
       gap: 0;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      align-items: center;
     }
 
     .site-header .header-eyebrow {
@@ -922,7 +926,7 @@
         </svg>
       </a>
       <div class="header-title-block">
-        <div class="header-eyebrow">Academic</div>
+        <div id="headerEyebrow" class="header-eyebrow">Semester</div>
         <div class="header-title">GPA Calculator</div>
       </div>
     </div>
@@ -1054,7 +1058,7 @@
     </div>
 
     <footer style="text-align: center; padding: 0; font-size: 12px; color: var(--text-muted); opacity: 0.6;">
-      &copy; 2026 Azizi Yahya &middot; Premium Calculator &middot; v3.2.1
+      &copy; 2026 Azizi Yahya &middot; GPA Calculator &middot; v5.0
     </footer>
 
 
@@ -1265,7 +1269,7 @@
           <h4 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 4px;">GPA Calculator</h4>
           <p
             style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-            Version 3.2.1</p>
+            Version 5.0</p>
         </div>
 
         <p style="font-size: 14px; color: var(--text-main); line-height: 1.6; opacity: 0.8;">
@@ -1712,6 +1716,7 @@
         customCourses.push({ id: "c_" + Date.now(), name, code, credits });
       }
       localStorage.setItem(STORAGE_KEY_COURSES, JSON.stringify(customCourses));
+      updateHeaderLabel('custom');
       renderCourseList();
       renderSettingsContent();
       closeCourseModal();
@@ -1723,6 +1728,7 @@
       delete gpaData.grades[id];
       localStorage.setItem(STORAGE_KEY_COURSES, JSON.stringify(customCourses));
       localStorage.setItem(STORAGE_KEY_GPA, JSON.stringify(gpaData));
+      updateHeaderLabel('custom');
       renderCourseList();
       renderSettingsContent();
     }
@@ -1806,6 +1812,15 @@
       reader.readAsText(file);
     }
 
+    function updateHeaderLabel(p) {
+      const eb = document.getElementById("headerEyebrow");
+      if (!eb) return;
+      if (p === 'sem3') { eb.textContent = "Semester 3"; localStorage.setItem('ACTIVE_SEM', 'sem3'); }
+      else if (p === 'sem4') { eb.textContent = "Semester 4"; localStorage.setItem('ACTIVE_SEM', 'sem4'); }
+      else if (p === 'sem5') { eb.textContent = "Semester 5"; localStorage.setItem('ACTIVE_SEM', 'sem5'); }
+      else { eb.textContent = ""; localStorage.setItem('ACTIVE_SEM', 'custom'); }
+    }
+
     function loadPreset(p, bypassConfirm = false) {
       if (!bypassConfirm && !confirm("Load preset? This will clear your current subjects.")) return;
 
@@ -1817,6 +1832,9 @@
       gpaData.grades = {};
       localStorage.setItem(STORAGE_KEY_COURSES, JSON.stringify(customCourses));
       localStorage.setItem(STORAGE_KEY_GPA, JSON.stringify(gpaData));
+
+      updateHeaderLabel(p);
+
       renderCourseList();
       const popMenu = document.getElementById("popoverMenu");
       if (popMenu && popMenu.classList.contains("active")) toggleMenu();
@@ -1865,8 +1883,11 @@
         const savedCourses = localStorage.getItem(STORAGE_KEY_COURSES);
         if (savedCourses) {
           customCourses = JSON.parse(savedCourses);
+          const active = localStorage.getItem('ACTIVE_SEM');
+          updateHeaderLabel(active ? active : 'custom');
         } else {
           customCourses = sem5Courses.map(c => ({ ...c, id: c.code }));
+          updateHeaderLabel('sem5');
         }
       }
 
