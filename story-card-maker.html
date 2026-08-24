@@ -57,6 +57,7 @@
       background: var(--bg);
       color: var(--text-h);
       height: 100vh;
+      height: 100dvh;
       width: 100vw;
       overflow: hidden;
       display: flex;
@@ -847,6 +848,16 @@
               <span class="action-label">Scale</span>
             </div>
 
+            <!-- Curve Toggle Button -->
+            <div class="action-item">
+              <button class="secondary icon-btn" id="curveToggleBtn" onclick="toggleCurve()" title="Toggle Rounded Corners">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <rect x="5" y="5" width="14" height="14" rx="4" stroke-width="2" />
+                </svg>
+              </button>
+              <span class="action-label">Corners</span>
+            </div>
+
             <!-- Shuffle Button -->
             <div class="action-item">
               <button class="secondary icon-btn" id="shuffleBtn" onclick="shuffle()" title="Shuffle Pattern">
@@ -939,8 +950,8 @@
     const uploadSection = document.getElementById("uploadSection");
     const editorSection = document.getElementById("editorSection");
 
-    const CANVAS_WIDTH = 2160;
-    const CANVAS_HEIGHT = 3840;
+    const CANVAS_WIDTH = 1080;
+    const CANVAS_HEIGHT = 1920;
     canvas.width = CANVAS_WIDTH;
     canvas.height = CANVAS_HEIGHT;
 
@@ -951,6 +962,16 @@
     let activeColors = [];
     let patternIndex = 0;
     let currentGradient = null;
+    let useCurvedCorners = true;
+
+    function toggleCurve() {
+      useCurvedCorners = !useCurvedCorners;
+      const btnSvg = document.querySelector('#curveToggleBtn rect');
+      if (btnSvg) {
+        btnSvg.setAttribute('rx', useCurvedCorners ? '4' : '0');
+      }
+      if (currentImgObj) render();
+    }
 
     function updateScale(val) {
       currentScale = val / 100;
@@ -1188,6 +1209,10 @@
 
       const drawSquircle = (ctx, x, y, w, h, r) => {
         ctx.beginPath();
+        if (!useCurvedCorners) {
+          ctx.rect(x, y, w, h);
+          return;
+        }
         const p = r * 1.28, c = r * 0.5;
         ctx.moveTo(x + p, y);
         ctx.lineTo(x + w - p, y);
