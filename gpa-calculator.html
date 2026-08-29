@@ -335,12 +335,10 @@
         font-size: 16px !important;
       }
 
-      .grade-select {
+      .grade-btn {
         min-width: 110px !important;
         height: 40px !important;
         font-size: 14px !important;
-        padding: 0 12px !important;
-        border-radius: 12px !important;
       }
 
       #gpaCard {
@@ -600,7 +598,6 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      overflow: hidden;
       box-shadow: var(--shadow);
     }
 
@@ -616,10 +613,18 @@
       align-items: stretch;
       transition: all 0.2s;
       box-shadow: none;
+      position: relative;
+    }
+
+    .course-card:first-child {
+      border-top-left-radius: calc(var(--radius-lg) - 1px);
+      border-top-right-radius: calc(var(--radius-lg) - 1px);
     }
 
     .course-card:last-child {
       border-bottom: none;
+      border-bottom-left-radius: calc(var(--radius-lg) - 1px);
+      border-bottom-right-radius: calc(var(--radius-lg) - 1px);
     }
 
     .course-card:hover {
@@ -637,21 +642,92 @@
       color: var(--text-muted);
     }
 
-    .grade-select {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px 12px;
-      font-weight: 600;
-      font-family: inherit;
-      color: var(--text-main);
-      cursor: pointer;
-      outline: none;
-      transition: border-color 0.2s;
+    .custom-select-wrapper {
+      position: relative;
+      margin: 0;
+      min-width: 95px;
     }
 
-    .grade-select:focus {
-      border-color: var(--primary);
+    .custom-select-trigger {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 34px;
+      padding: 0 12px;
+      font-size: 13px;
+      font-weight: 800;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .custom-select-trigger:active {
+      transform: scale(0.95);
+    }
+
+    .custom-select-wrapper.open .custom-select-trigger svg {
+      transform: rotate(180deg);
+    }
+
+    .custom-select-options {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 120px;
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      padding: 6px;
+      animation: fadeInScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: top right;
+    }
+
+    .custom-select-wrapper.open .custom-select-options {
+      display: flex;
+    }
+
+    .custom-select-wrapper.dropup .custom-select-options {
+      top: auto;
+      bottom: calc(100% + 6px);
+      transform-origin: bottom right;
+    }
+
+    .custom-select-option {
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .custom-select-option:hover {
+      background: var(--bg);
+    }
+
+    .custom-select-option.selected {
+      background: var(--primary-glow);
+      color: var(--primary);
+    }
+
+    .custom-select-options::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .custom-select-options::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
     }
 
     /* ── Previous CGPA Section ────────────────────── */
@@ -722,6 +798,19 @@
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
       position: relative;
       border: 1px solid var(--border);
+      animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeInScale {
+      from {
+        transform: scale(0.95);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     #courseModal {
@@ -955,7 +1044,7 @@
             stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 19l7-7-7-7M5 19l7-7-7-7" />
           </svg>
-          Quick Presets
+          Sem Selection
         </div>
 
         <div style="height: 1px; background: var(--border); margin: 4px 8px; opacity: 0.5;"></div>
@@ -1294,6 +1383,8 @@
     </div>
   </div>
 
+
+
   <!-- Course Modal (Add/Edit) -->
   <div class="modal-overlay" id="courseModal" onclick="closeCourseModal(event)">
     <div class="modal-content" style="max-width: 400px; padding: 24px;" onclick="event.stopPropagation()">
@@ -1551,12 +1642,24 @@
                 </div>
                 <h3 class="course-title" style="font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name}</h3>
               </div>
-              <select class="grade-select" style="margin: 0; min-width: 90px; height: 32px; padding: 0 8px; font-size: 12px; border-color: ${colorStyle.border}; background: ${colorStyle.bg}; color: ${colorStyle.color}; font-weight: 700; transition: all 0.2s;" 
-                onclick="event.stopPropagation()" 
-                onchange="updateGrade('${c.id}', this.value, this)">
-                <option value="" style="color: var(--text-main); background: var(--surface-solid);">Grade</option>
-                ${grades.map(g => `<option value="${g.weight}" ${sel == g.weight ? 'selected' : ''} style="color: var(--text-main); background: var(--surface-solid);">${g.grade}</option>`).join("")}
-              </select>
+              <div class="custom-select-wrapper" id="select-wrapper-${c.id}">
+                <div class="custom-select-trigger" id="select-trigger-${c.id}" onclick="toggleCustomSelect(event, '${c.id}')" style="border: 1px solid ${colorStyle.border}; background: ${colorStyle.bg}; color: ${colorStyle.color};">
+                  <span id="select-label-${c.id}">${sel !== undefined && sel !== "" ? grades.find(g => g.weight == sel)?.grade || "Grade" : "Grade"}</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; transition: transform 0.2s;">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+                <div class="custom-select-options" id="select-options-${c.id}">
+                  <div class="custom-select-option" onclick="updateCustomGrade(event, '${c.id}', '', 'Grade', this)">
+                    <span>Grade</span>
+                    <span style="font-size: 10px; opacity: 0.5;"></span>
+                  </div>
+                  ${grades.map(g => {
+          const isSelected = sel == g.weight;
+          return `<div class="custom-select-option ${isSelected ? 'selected' : ''}" onclick="updateCustomGrade(event, '${c.id}', '${g.weight}', '${g.grade}', this)">${g.grade}</div>`;
+        }).join("")}
+                </div>
+              </div>
             </div>`;
         grid.appendChild(item);
       });
@@ -1568,18 +1671,71 @@
       document.body.classList.toggle("modal-open", lock);
     }
 
-    function updateGrade(id, weight, selectElement) {
+    function toggleCustomSelect(event, id) {
+      event.stopPropagation();
+      const wrapper = document.getElementById('select-wrapper-' + id);
+      const wasOpen = wrapper.classList.contains('open');
+
+      document.querySelectorAll('.custom-select-wrapper.open').forEach(el => {
+        el.classList.remove('open');
+        const card = el.closest('.course-card');
+        if (card) card.style.zIndex = "";
+      });
+
+      if (!wasOpen) {
+        wrapper.classList.add('open');
+        const card = wrapper.closest('.course-card');
+        if (card) card.style.zIndex = "50";
+        
+        const rect = wrapper.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        
+        if (spaceBelow < 250 && rect.top > spaceBelow) {
+          wrapper.classList.add('dropup');
+        } else {
+          wrapper.classList.remove('dropup');
+        }
+      }
+    }
+
+    function updateCustomGrade(event, id, weight, gradeLabel, optionElement) {
+      event.stopPropagation();
       gpaData.grades[id] = weight;
       localStorage.setItem(STORAGE_KEY_GPA, JSON.stringify(gpaData));
       calculateGPA();
 
-      if (selectElement) {
+      const wrapper = document.getElementById('select-wrapper-' + id);
+      const trigger = document.getElementById('select-trigger-' + id);
+      const label = document.getElementById('select-label-' + id);
+      const optionsContainer = document.getElementById('select-options-' + id);
+
+      if (trigger && label) {
         const colorStyle = getGradeColorStyle(weight);
-        selectElement.style.borderColor = colorStyle.border;
-        selectElement.style.background = colorStyle.bg;
-        selectElement.style.color = colorStyle.color;
+        trigger.style.borderColor = colorStyle.border;
+        trigger.style.background = colorStyle.bg;
+        trigger.style.color = colorStyle.color;
+        label.textContent = gradeLabel;
       }
+
+      if (optionsContainer) {
+        optionsContainer.querySelectorAll('.custom-select-option').forEach(opt => {
+          opt.classList.remove('selected');
+        });
+        optionElement.classList.add('selected');
+      }
+
+      wrapper.classList.remove('open');
     }
+
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.custom-select-wrapper')) {
+        document.querySelectorAll('.custom-select-wrapper.open').forEach(el => {
+          el.classList.remove('open');
+          const card = el.closest('.course-card');
+          if (card) card.style.zIndex = "";
+        });
+      }
+    });
 
     /* ── Modal Manager ───────────────────────────── */
     const ModalManager = {
