@@ -1182,6 +1182,10 @@
 
     function render() {
       if (!currentImgObj) return;
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+
       const gradient = generateSmartGradient(currentImgObj);
       
       if (gradient.type === 'radial') {
@@ -1246,7 +1250,7 @@
       ctx.drawImage(currentImgObj, x, y, finalWidth, finalHeight);
       ctx.restore();
 
-      previewImg.src = canvas.toDataURL("image/jpeg", 0.9);
+      previewImg.src = canvas.toDataURL("image/jpeg", 1.0);
     }
 
     async function handleShareOrDownload() {
