@@ -603,7 +603,6 @@
 
     .course-card {
       background: transparent;
-      backdrop-filter: blur(10px);
       border: none;
       border-bottom: 1px solid var(--border);
       border-radius: 0;
@@ -611,7 +610,7 @@
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      transition: all 0.2s;
+      transition: background-color 0.2s, border-color 0.2s;
       box-shadow: none;
       position: relative;
     }
@@ -658,8 +657,10 @@
       font-weight: 800;
       border-radius: 10px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
       user-select: none;
+      position: relative;
+      z-index: 10;
     }
 
     .custom-select-trigger:active {
@@ -681,12 +682,16 @@
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
       max-height: 250px;
       overflow-y: auto;
-      z-index: 100;
+      z-index: 9999;
       display: none;
       flex-direction: column;
       padding: 6px;
       animation: fadeInScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       transform-origin: top right;
+    }
+
+    .custom-select-wrapper.open {
+      z-index: 9999;
     }
 
     .custom-select-wrapper.open .custom-select-options {
@@ -1440,9 +1445,9 @@
 
   <script>
     /* ── Data / Config ───────────────────────────── */
-    const STORAGE_KEY_GPA = "PREMIUM_GPA_DATA_V3";
-    const STORAGE_KEY_COURSES = "PREMIUM_GPA_COURSES_V3";
-    const STORAGE_KEY_SCALE = "PREMIUM_GPA_SCALE_V3";
+    const STORAGE_KEY_GPA = "PREMIUM_GPA_DATA_V4";
+    const STORAGE_KEY_COURSES = "PREMIUM_GPA_COURSES_V4";
+    const STORAGE_KEY_SCALE = "PREMIUM_GPA_SCALE_V4";
 
     const SCALE_PRESETS = [
       {
@@ -1932,12 +1937,43 @@
     }
 
     function applyScale(id) {
+      const oldScaleId = localStorage.getItem(STORAGE_KEY_SCALE);
+      const oldPreset = SCALE_PRESETS.find(s => s.id === oldScaleId);
+      const newPreset = SCALE_PRESETS.find(s => s.id === id);
+
+      if (oldScaleId && oldScaleId !== id && oldPreset && newPreset) {
+        let changed = false;
+        Object.keys(gpaData.grades).forEach(courseId => {
+          const oldWeight = parseFloat(gpaData.grades[courseId]);
+          // Find the grade letter that corresponds to the old weight in the old scale
+          const oldGradeObj = oldPreset.grades.find(g => Math.abs(g.weight - oldWeight) < 0.01);
+          
+          if (oldGradeObj) {
+            // Try to find the same grade letter in the new scale
+            const newGradeObj = newPreset.grades.find(g => g.grade === oldGradeObj.grade);
+            if (newGradeObj) {
+              gpaData.grades[courseId] = newGradeObj.weight.toString();
+              changed = true;
+            } else {
+              delete gpaData.grades[courseId];
+              changed = true;
+            }
+          } else {
+            delete gpaData.grades[courseId];
+            changed = true;
+          }
+        });
+        if (changed) {
+          localStorage.setItem(STORAGE_KEY_GPA, JSON.stringify(gpaData));
+        }
+      }
+
       localStorage.setItem(STORAGE_KEY_SCALE, id);
-      const preset = SCALE_PRESETS.find(s => s.id === id);
-      grades = [...preset.grades];
+      grades = [...newPreset.grades];
       renderScaleOptions();
       renderCourseList();
       renderSettingsContent();
+      calculateGPA();
     }
 
     function importConfig() {
