@@ -1,0 +1,29 @@
+{
+  "name": "aziziyahya563.github.io",
+  "version": "1.0.0",
+  "description": "Azizi Yahya's personal collection of apps, tools, and creative projects.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aziziyahya563/aziziyahya563.github.io.git"
+  },
+  "keywords": [],
+  "author": "Azizi Yahya",
+  "license": "MIT",
+  "homepage": "https://aziziyahya563.github.io",
+  "dependencies": {
+    "lucide-react": "^1.73.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.3.0",
+    "vite": "^8.3.8"
+  }
+}

@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Responsive Design](https://img.shields.io/badge/Design-Responsive-brightgreen)](#)
-[![Built with Vanilla JS](https://img.shields.io/badge/Built%20with-Vanilla%20JS-F7DF1E)](#)
+[![Built with React + Vite](https://img.shields.io/badge/Built%20with-React%20%2B%20Vite-61DAFB?logo=react&logoColor=white)](#)
 
 Welcome to **Azizi Yahya's Web Apps Suite** — a collection of modern, responsive, and visually polished web applications built with a focus on premium aesthetics and seamless user experience.
 
@@ -148,15 +148,17 @@ Two utilities for generating and updating formatted participant or student name 
    cd aziziyahya563.github.io
    ```
 
-3. **Run locally:**
-
-   Open `index.html` directly in your browser, or use a local server for the best experience:
+3. **Install dependencies & run locally:**
 
    ```bash
-   # Python 3
-   python -m http.server 8000
+   # Install dependencies
+   npm install
 
-   # VS Code — Live Server extension
+   # Start Vite development server
+   npm run dev
+
+   # Build for production
+   npm run build
    ```
 
 ## ✅ Browser Support

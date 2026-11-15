@@ -1,0 +1,699 @@
+/* ── GPA Calculator Styles ─────────────────────────── */
+.gpa-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.gpa-container {
+  max-width: 1250px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+  flex: 1;
+}
+
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .gpa-container {
+    padding: 40px 32px;
+  }
+
+  .dashboard-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: stretch;
+  }
+
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .left-column > .bento-grid,
+  .left-column > .cgpa-section-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .left-column #gpaCard,
+  .left-column #cgpaCard {
+    flex: 1;
+    justify-content: center;
+    padding: 40px !important;
+  }
+
+  #gpaCard .score-value {
+    font-size: 9rem;
+  }
+
+  .gpa-label {
+    font-size: 26px !important;
+    margin-top: 24px !important;
+  }
+
+  #cgpaTotal {
+    font-size: 6rem !important;
+  }
+
+  .cgpa-label {
+    font-size: 18px !important;
+    margin-top: 16px !important;
+  }
+
+  .cgpa-input-label {
+    font-size: 14px !important;
+  }
+
+  .cgpa-input {
+    font-size: 20px !important;
+    padding: 16px 20px !important;
+    border-radius: 16px !important;
+  }
+
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-height: 0;
+  }
+
+  .course-card {
+    padding: 24px 28px !important;
+    border-radius: 16px !important;
+  }
+
+  .course-info-col {
+    gap: 6px !important;
+  }
+
+  .course-meta {
+    font-size: 11px !important;
+    gap: 10px !important;
+  }
+
+  .course-dot {
+    width: 4px !important;
+    height: 4px !important;
+  }
+
+  .course-title {
+    font-size: 16px !important;
+  }
+
+  .grade-btn {
+    min-width: 110px !important;
+    height: 40px !important;
+    font-size: 14px !important;
+  }
+
+  #gpaCard {
+    min-height: 180px !important;
+    justify-content: center;
+  }
+
+  #gpaCard .score-value {
+    font-size: 3.8rem;
+  }
+}
+
+/* ── Sticky Header ─────────────────────────────── */
+.gpa-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background: var(--surface);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  transition: background 0.4s, border-color 0.4s;
+}
+
+.gpa-header .header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gpa-header .back-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+
+.gpa-header .back-btn:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.gpa-header .back-btn:active {
+  transform: scale(0.9);
+}
+
+.gpa-header .back-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.5;
+  transition: transform 0.2s ease;
+}
+
+.gpa-header .back-btn:hover svg {
+  transform: translateX(-2px);
+}
+
+.gpa-header .header-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+  pointer-events: none;
+}
+
+.gpa-header .header-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--primary);
+  line-height: 1;
+  min-height: 12px;
+}
+
+.gpa-header .header-title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.gpa-header .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.gpa-header .icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow);
+}
+
+.gpa-header .icon-btn:hover {
+  color: var(--text-main);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.gpa-header .icon-btn:active {
+  transform: scale(0.93);
+}
+
+.gpa-header .icon-btn svg,
+.gpa-header .menu-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+  transition: transform 0.25s ease;
+  overflow: visible;
+}
+
+.gpa-header .icon-btn:hover .menu-icon {
+  transform: scale(1.05);
+}
+
+.gpa-header .menu-icon circle {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Popover Menu - Scoped to GPA Calculator */
+.gpa-popover-menu {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  right: 0 !important;
+  left: auto !important;
+  bottom: auto !important;
+  background: var(--surface-solid);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 8px;
+  width: 220px;
+  display: flex !important;
+  flex-direction: column !important;
+  z-index: 1100;
+  box-shadow: var(--shadow-lg);
+  animation: gpaMenuIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top right;
+}
+
+@keyframes gpaMenuIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.gpa-popover-menu .menu-header {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 16px 4px;
+  opacity: 0.6;
+}
+
+.gpa-popover-menu .menu-item {
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: background 0.2s, color 0.2s;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  user-select: none;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.gpa-popover-menu .menu-item:hover {
+  background: var(--bg);
+  color: var(--primary);
+}
+
+.gpa-popover-menu .menu-item svg {
+  flex-shrink: 0;
+}
+
+/* ── Bento Cards ───────────────────────────────── */
+.bento-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.bento-card {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: var(--shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bento-card.full {
+  grid-column: span 2;
+}
+
+.bento-card:hover {
+  transform: translateY(-4px);
+}
+
+#gpaCard {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(217, 70, 239, 0.08) 100%), var(--surface);
+  border: 1px solid rgba(99, 102, 241, 0.18);
+}
+
+[data-theme="dark"] #gpaCard {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.14) 0%, rgba(217, 70, 239, 0.14) 100%), var(--surface);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+}
+
+#cgpaCard {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%), var(--surface);
+  border: 1px solid rgba(139, 92, 246, 0.18);
+}
+
+[data-theme="dark"] #cgpaCard {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(6, 182, 212, 0.14) 100%), var(--surface);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+}
+
+.score-value {
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: -2px;
+  background: linear-gradient(135deg, #6366f1 0%, #d946ef 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+
+/* ── Subjects Section ──────────────────────────── */
+.courses-list {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.course-card {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  padding: 14px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  transition: background-color 0.2s, border-color 0.2s;
+  box-shadow: none;
+  position: relative;
+  cursor: pointer;
+}
+
+.course-card:first-child {
+  border-top-left-radius: calc(var(--radius-lg) - 1px);
+  border-top-right-radius: calc(var(--radius-lg) - 1px);
+}
+
+.course-card:last-child {
+  border-bottom: none;
+  border-bottom-left-radius: calc(var(--radius-lg) - 1px);
+  border-bottom-right-radius: calc(var(--radius-lg) - 1px);
+}
+
+.course-card:hover {
+  background: var(--bg);
+}
+
+.course-info-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.course-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.course-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--border);
+  opacity: 0.6;
+}
+
+.course-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.grade-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  min-width: 95px;
+  height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: inherit;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  user-select: none;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-main);
+  flex-shrink: 0;
+}
+
+.grade-btn:active {
+  transform: scale(0.95);
+}
+
+.grade-btn svg {
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+/* ── Grade Selector Modal ──────────────────────── */
+.grade-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.grade-modal-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 8px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s, border-color 0.18s, background-color 0.18s;
+  position: relative;
+  user-select: none;
+  outline: none;
+}
+
+.grade-modal-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  filter: brightness(1.03);
+}
+
+.grade-modal-tile:active {
+  transform: scale(0.96);
+}
+
+.grade-modal-tile .tile-grade {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.3px;
+}
+
+.grade-modal-tile .tile-weight {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+.grade-modal-tile.selected {
+  border-width: 2px !important;
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.grade-modal-tile.selected .tile-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grade-modal-clear-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px dashed var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.grade-modal-clear-btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.grade-modal-clear-btn:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 480px) {
+  .grade-modal-grid {
+    gap: 8px;
+  }
+
+  .grade-modal-tile {
+    padding: 12px 6px;
+  }
+
+  .grade-modal-tile .tile-grade {
+    font-size: 16px;
+  }
+}
+
+/* ── Modals / Sheets ───────────────────────────── */
+.modal-content {
+  background: var(--surface-solid);
+  width: 100%;
+  max-width: 450px;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  position: relative;
+  border: 1px solid var(--border);
+  animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Scale Cards */
+.scale-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  position: relative;
+}
+
+.scale-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.scale-card.active {
+  border-color: var(--primary);
+  background: var(--primary-glow);
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.scale-card .active-indicator {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: var(--primary);
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.input-field input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.input-field input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+/* Animations */
+.score-pulse {
+  animation: scorePulse 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scorePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); color: var(--primary); }
+  100% { transform: scale(1); }
+}
