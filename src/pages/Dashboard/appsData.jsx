@@ -43,8 +43,8 @@ export const APP_SECTIONS = [
         desc: 'Gradient story backgrounds in seconds',
         tag: 'Design',
         accent: '#a855f7',
-        href: '/story-card-maker.html',
-        isInternalRoute: false,
+        href: '/story-card-maker',
+        isInternalRoute: true,
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10" />
