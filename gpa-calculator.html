@@ -613,6 +613,7 @@
       transition: background-color 0.2s, border-color 0.2s;
       box-shadow: none;
       position: relative;
+      cursor: pointer;
     }
 
     .course-card:first-child {
@@ -641,98 +642,141 @@
       color: var(--text-muted);
     }
 
-    .custom-select-wrapper {
-      position: relative;
-      margin: 0;
-      min-width: 95px;
-    }
-
+    .grade-btn,
     .custom-select-trigger {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
+      min-width: 95px;
       height: 34px;
       padding: 0 12px;
       font-size: 13px;
       font-weight: 800;
+      font-family: inherit;
       border-radius: 10px;
       cursor: pointer;
-      transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
+      transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
       user-select: none;
-      position: relative;
-      z-index: 10;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-main);
     }
 
+    .grade-btn:active,
     .custom-select-trigger:active {
       transform: scale(0.95);
     }
 
-    .custom-select-wrapper.open .custom-select-trigger svg {
-      transform: rotate(180deg);
+    .grade-btn svg,
+    .custom-select-trigger svg {
+      transition: transform 0.2s;
+      flex-shrink: 0;
     }
 
-    .custom-select-options {
-      position: absolute;
-      top: calc(100% + 6px);
-      right: 0;
-      min-width: 120px;
-      background: var(--surface-solid);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-      max-height: 250px;
-      overflow-y: auto;
-      z-index: 9999;
-      display: none;
-      flex-direction: column;
-      padding: 6px;
-      animation: fadeInScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      transform-origin: top right;
+    /* ── Grade Selector Modal ──────────────────────── */
+    .grade-modal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
     }
 
-    .custom-select-wrapper.open {
-      z-index: 9999;
-    }
-
-    .custom-select-wrapper.open .custom-select-options {
+    .grade-modal-tile {
       display: flex;
-    }
-
-    .custom-select-wrapper.dropup .custom-select-options {
-      top: auto;
-      bottom: calc(100% + 6px);
-      transform-origin: bottom right;
-    }
-
-    .custom-select-option {
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-main);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 8px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--bg);
       cursor: pointer;
-      border-radius: 8px;
-      transition: background-color 0.2s, color 0.2s;
+      font-family: inherit;
+      transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s, border-color 0.18s, background-color 0.18s;
+      position: relative;
+      user-select: none;
+      outline: none;
+    }
+
+    .grade-modal-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      filter: brightness(1.03);
+    }
+
+    .grade-modal-tile:active {
+      transform: scale(0.96);
+    }
+
+    .grade-modal-tile .tile-grade {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.3px;
+    }
+
+    .grade-modal-tile .tile-weight {
+      font-size: 11px;
+      font-weight: 700;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    .grade-modal-tile.selected {
+      border-width: 2px !important;
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .grade-modal-tile.selected .tile-check {
+      position: absolute;
+      top: 6px;
+      right: 6px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
     }
 
-    .custom-select-option:hover {
+    .grade-modal-clear-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px dashed var(--border);
       background: var(--bg);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      outline: none;
     }
 
-    .custom-select-option.selected {
-      background: var(--primary-glow);
-      color: var(--primary);
+    .grade-modal-clear-btn:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.08);
     }
 
-    .custom-select-options::-webkit-scrollbar {
-      width: 4px;
+    .grade-modal-clear-btn:active {
+      transform: scale(0.98);
     }
 
-    .custom-select-options::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 4px;
+    @media (max-width: 480px) {
+      .grade-modal-grid {
+        gap: 8px;
+      }
+
+      .grade-modal-tile {
+        padding: 12px 6px;
+      }
+
+      .grade-modal-tile .tile-grade {
+        font-size: 16px;
+      }
     }
 
     /* ── Previous CGPA Section ────────────────────── */
@@ -1388,6 +1432,37 @@
     </div>
   </div>
 
+  <!-- Grade Selector Modal (Shared) -->
+  <div class="modal-overlay" id="gradeModal" onclick="closeGradeModal()">
+    <div class="modal-content" style="max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 0;" onclick="event.stopPropagation()">
+      <!-- Sticky Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; position: sticky; top: 0; background: var(--surface-solid); z-index: 20; border-bottom: 1px solid var(--border);">
+        <div style="min-width: 0; padding-right: 12px;">
+          <h3 style="font-size: 1.25rem; font-weight: 900; letter-spacing: -0.5px;">Select Grade</h3>
+          <div id="gradeModalSubtitle" style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+        </div>
+        <button class="icon-btn" style="width: 36px; height: 36px; border-radius: 12px; flex-shrink: 0;" onclick="closeGradeModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div style="padding: 20px 24px; display: flex; flex-direction: column; gap: 14px;">
+        <div id="gradeModalGrid" class="grade-modal-grid"></div>
+
+        <button type="button" class="grade-modal-clear-btn" id="gradeModalClearBtn" onclick="selectGradeForCourse('', 'Grade')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+          Clear Grade (None)
+        </button>
+      </div>
+    </div>
+  </div>
+
 
 
   <!-- Course Modal (Add/Edit) -->
@@ -1633,9 +1708,12 @@
         const sel = gpaData.grades[c.id];
         const item = document.createElement("div");
         item.className = "course-card";
+        item.onclick = () => openGradeModal(c.id);
 
         const selVal = sel !== undefined ? sel : "";
         const colorStyle = getGradeColorStyle(selVal);
+        const gradeObj = selVal !== "" ? grades.find(g => Math.abs(g.weight - parseFloat(selVal)) < 0.001) : null;
+        const currentGradeText = gradeObj ? gradeObj.grade : (selVal !== "" ? selVal : "Grade");
 
         item.innerHTML = `
             <div class="course-row-main" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
@@ -1647,24 +1725,12 @@
                 </div>
                 <h3 class="course-title" style="font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name}</h3>
               </div>
-              <div class="custom-select-wrapper" id="select-wrapper-${c.id}">
-                <div class="custom-select-trigger" id="select-trigger-${c.id}" onclick="toggleCustomSelect(event, '${c.id}')" style="border: 1px solid ${colorStyle.border}; background: ${colorStyle.bg}; color: ${colorStyle.color};">
-                  <span id="select-label-${c.id}">${sel !== undefined && sel !== "" ? grades.find(g => g.weight == sel)?.grade || "Grade" : "Grade"}</span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; transition: transform 0.2s;">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
-                </div>
-                <div class="custom-select-options" id="select-options-${c.id}">
-                  <div class="custom-select-option" onclick="updateCustomGrade(event, '${c.id}', '', 'Grade', this)">
-                    <span>Grade</span>
-                    <span style="font-size: 10px; opacity: 0.5;"></span>
-                  </div>
-                  ${grades.map(g => {
-          const isSelected = sel == g.weight;
-          return `<div class="custom-select-option ${isSelected ? 'selected' : ''}" onclick="updateCustomGrade(event, '${c.id}', '${g.weight}', '${g.grade}', this)">${g.grade}</div>`;
-        }).join("")}
-                </div>
-              </div>
+              <button type="button" class="grade-btn custom-select-trigger" id="select-trigger-${c.id}" onclick="event.stopPropagation(); openGradeModal('${c.id}')" style="border: 1px solid ${colorStyle.border}; background: ${colorStyle.bg}; color: ${colorStyle.color};">
+                <span id="select-label-${c.id}">${currentGradeText}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
             </div>`;
         grid.appendChild(item);
       });
@@ -1676,69 +1742,104 @@
       document.body.classList.toggle("modal-open", lock);
     }
 
-    function toggleCustomSelect(event, id) {
-      event.stopPropagation();
-      const wrapper = document.getElementById('select-wrapper-' + id);
-      const wasOpen = wrapper.classList.contains('open');
+    let activeGradingCourseId = null;
 
-      document.querySelectorAll('.custom-select-wrapper.open').forEach(el => {
-        el.classList.remove('open');
-        const card = el.closest('.course-card');
-        if (card) card.style.zIndex = "";
-      });
+    function openGradeModal(id) {
+      const course = customCourses.find(c => c.id === id);
+      if (!course) return;
 
-      if (!wasOpen) {
-        wrapper.classList.add('open');
-        const card = wrapper.closest('.course-card');
-        if (card) card.style.zIndex = "50";
-        
-        const rect = wrapper.getBoundingClientRect();
-        const spaceBelow = window.innerHeight - rect.bottom;
-        
-        if (spaceBelow < 250 && rect.top > spaceBelow) {
-          wrapper.classList.add('dropup');
-        } else {
-          wrapper.classList.remove('dropup');
-        }
+      activeGradingCourseId = id;
+      const subtitle = document.getElementById("gradeModalSubtitle");
+      if (subtitle) {
+        subtitle.innerHTML = `<span style="font-weight: 800; color: var(--primary);">${course.code}</span> &bull; ${course.name} <span style="opacity: 0.7;">(${course.credits} Credits)</span>`;
+      }
+
+      renderGradeModalOptions();
+      ModalManager.open("gradeModal");
+    }
+
+    function closeGradeModal() {
+      activeGradingCourseId = null;
+      ModalManager.close("gradeModal");
+    }
+
+    function renderGradeModalOptions() {
+      const container = document.getElementById("gradeModalGrid");
+      if (!container || !activeGradingCourseId) return;
+
+      const currentWeight = gpaData.grades[activeGradingCourseId];
+      const hasGradeSelected = currentWeight !== undefined && currentWeight !== "";
+
+      container.innerHTML = grades.map(g => {
+        const isSelected = hasGradeSelected && Math.abs(parseFloat(currentWeight) - parseFloat(g.weight)) < 0.001;
+        const colorStyle = getGradeColorStyle(g.weight);
+        return `
+          <button type="button" 
+                  class="grade-modal-tile ${isSelected ? 'selected' : ''}" 
+                  onclick="selectGradeForCourse('${g.weight}', '${g.grade}')"
+                  style="border-color: ${isSelected ? 'var(--primary)' : colorStyle.border}; background: ${colorStyle.bg}; color: ${colorStyle.color};">
+            <span class="tile-grade">${g.grade}</span>
+            <span class="tile-weight">${Number(g.weight).toFixed(2)}</span>
+            ${isSelected ? `
+              <span class="tile-check">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>` : ''}
+          </button>`;
+      }).join("");
+
+      const clearBtn = document.getElementById("gradeModalClearBtn");
+      if (clearBtn) {
+        clearBtn.style.opacity = hasGradeSelected ? "1" : "0.6";
       }
     }
 
-    function updateCustomGrade(event, id, weight, gradeLabel, optionElement) {
-      event.stopPropagation();
-      gpaData.grades[id] = weight;
+    function selectGradeForCourse(weight, gradeLabel) {
+      if (!activeGradingCourseId) return;
+
+      const id = activeGradingCourseId;
+      if (weight === "" || weight === null || weight === undefined) {
+        delete gpaData.grades[id];
+      } else {
+        gpaData.grades[id] = weight.toString();
+      }
+
       localStorage.setItem(STORAGE_KEY_GPA, JSON.stringify(gpaData));
       calculateGPA();
 
-      const wrapper = document.getElementById('select-wrapper-' + id);
       const trigger = document.getElementById('select-trigger-' + id);
       const label = document.getElementById('select-label-' + id);
-      const optionsContainer = document.getElementById('select-options-' + id);
-
       if (trigger && label) {
-        const colorStyle = getGradeColorStyle(weight);
+        const colorStyle = getGradeColorStyle(weight || "");
         trigger.style.borderColor = colorStyle.border;
         trigger.style.background = colorStyle.bg;
         trigger.style.color = colorStyle.color;
-        label.textContent = gradeLabel;
+        label.textContent = (weight !== "" && weight !== null && weight !== undefined) ? (gradeLabel || "Grade") : "Grade";
       }
 
-      if (optionsContainer) {
-        optionsContainer.querySelectorAll('.custom-select-option').forEach(opt => {
-          opt.classList.remove('selected');
-        });
-        optionElement.classList.add('selected');
-      }
-
-      wrapper.classList.remove('open');
+      closeGradeModal();
     }
 
-    document.addEventListener('click', (event) => {
-      if (!event.target.closest('.custom-select-wrapper')) {
-        document.querySelectorAll('.custom-select-wrapper.open').forEach(el => {
-          el.classList.remove('open');
-          const card = el.closest('.course-card');
-          if (card) card.style.zIndex = "";
-        });
+    function toggleCustomSelect(event, id) {
+      if (event) event.stopPropagation();
+      openGradeModal(id);
+    }
+
+    function updateCustomGrade(event, id, weight, gradeLabel) {
+      if (event) event.stopPropagation();
+      activeGradingCourseId = id;
+      selectGradeForCourse(weight, gradeLabel);
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (ModalManager.stack.length > 0) {
+          const topModal = ModalManager.stack[ModalManager.stack.length - 1];
+          ModalManager.close(topModal);
+        }
+        const pop = document.getElementById("popoverMenu");
+        if (pop && pop.classList.contains("active")) toggleMenu();
       }
     });
 
