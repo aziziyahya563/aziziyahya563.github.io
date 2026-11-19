@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import AboutModal from '../../components/AboutModal';
@@ -88,6 +88,42 @@ export default function StoryCardMaker() {
       };
     }
   }, [aboutOpen]);
+
+  // Dynamic scale limits based on image dimensions and rotation angle
+  const getScaleLimits = useCallback((img, rot = 0) => {
+    if (!img || !img.width || !img.height) {
+      return { min: 20, max: 94 };
+    }
+
+    const rad = (Math.abs(rot) * Math.PI) / 180;
+    const cos = Math.abs(Math.cos(rad));
+    const sin = Math.abs(Math.sin(rad));
+    const r = img.height / img.width;
+
+    const marginFactor = 0.94;
+    const maxS_width = marginFactor / (cos + r * sin);
+    const maxS_height = (marginFactor * (CANVAS_HEIGHT / CANVAS_WIDTH)) / (sin + r * cos);
+
+    const rawMax = Math.min(maxS_width, maxS_height);
+    const maxPercent = Math.max(30, Math.min(180, Math.round(rawMax * 100)));
+    const minPercent = Math.min(20, Math.max(10, Math.round(maxPercent * 0.25)));
+
+    return { min: minPercent, max: maxPercent };
+  }, []);
+
+  const scaleLimits = useMemo(() => {
+    return getScaleLimits(currentImgObj, rotation);
+  }, [currentImgObj, rotation, getScaleLimits]);
+
+  const scalePresets = useMemo(() => {
+    const { min, max } = scaleLimits;
+    if (max >= 85 && max <= 100) {
+      return [55, 70, max];
+    }
+    const mid1 = Math.round(min + (max - min) * 0.38);
+    const mid2 = Math.round(min + (max - min) * 0.72);
+    return [mid1, mid2, max];
+  }, [scaleLimits]);
 
   // Gradient computation
   const getGradientConfig = useCallback(
@@ -269,12 +305,15 @@ export default function StoryCardMaker() {
         setCachedPalette([]);
         setActiveColors([]);
         setPatternIndex(0);
-        setCurrentScale(0.7);
         setCornerRadius(110);
         setRotation(0);
         setActiveControl(null);
 
-        renderCanvas(img, 0.7, 110, 0, 0, [], []);
+        const limits = getScaleLimits(img, 0);
+        const initScale = Math.min(0.7, limits.max / 100);
+        setCurrentScale(initScale);
+
+        renderCanvas(img, initScale, 110, 0, 0, [], []);
         setIsLoading(false);
         showToast('Studio ready');
       };
@@ -318,7 +357,9 @@ export default function StoryCardMaker() {
 
   // Control handlers
   const handleScaleChange = (val) => {
-    const newScale = val / 100;
+    const limits = getScaleLimits(currentImgObj, rotation);
+    const clampedVal = Math.max(limits.min, Math.min(limits.max, val));
+    const newScale = clampedVal / 100;
     setCurrentScale(newScale);
     if (currentImgObj) {
       renderCanvas(
@@ -351,9 +392,18 @@ export default function StoryCardMaker() {
   const handleRotationChange = (val) => {
     setRotation(val);
     if (currentImgObj) {
+      const limits = getScaleLimits(currentImgObj, val);
+      let newScale = currentScale;
+      if (newScale > limits.max / 100) {
+        newScale = limits.max / 100;
+        setCurrentScale(newScale);
+      } else if (newScale < limits.min / 100) {
+        newScale = limits.min / 100;
+        setCurrentScale(newScale);
+      }
       renderCanvas(
         currentImgObj,
-        currentScale,
+        newScale,
         cornerRadius,
         val,
         patternIndex,
@@ -904,30 +954,21 @@ export default function StoryCardMaker() {
                       </div>
                       <input
                         type="range"
-                        min="50"
-                        max="90"
+                        min={scaleLimits.min}
+                        max={scaleLimits.max}
                         value={Math.round(currentScale * 100)}
                         onChange={(e) => handleScaleChange(Number(e.target.value))}
                       />
                       <div className="story-quick-presets">
-                        <button
-                          className={`story-preset-chip ${Math.round(currentScale * 100) === 55 ? 'active' : ''}`}
-                          onClick={() => handleScaleChange(55)}
-                        >
-                          55%
-                        </button>
-                        <button
-                          className={`story-preset-chip ${Math.round(currentScale * 100) === 70 ? 'active' : ''}`}
-                          onClick={() => handleScaleChange(70)}
-                        >
-                          70%
-                        </button>
-                        <button
-                          className={`story-preset-chip ${Math.round(currentScale * 100) === 85 ? 'active' : ''}`}
-                          onClick={() => handleScaleChange(85)}
-                        >
-                          85%
-                        </button>
+                        {scalePresets.map((p) => (
+                          <button
+                            key={p}
+                            className={`story-preset-chip ${Math.round(currentScale * 100) === p ? 'active' : ''}`}
+                            onClick={() => handleScaleChange(p)}
+                          >
+                            {p}%
+                          </button>
+                        ))}
                       </div>
                     </div>
                   )}
